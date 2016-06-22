@@ -61,7 +61,14 @@ int main(){
 		cout << itDic.SiguienteClave()<< endl;
 		itDic.Avanzar();
 	}
-	
+
+	cout << "\n y segun el iterador constante de diccioanrio son: "<<endl;
+
+	typename dicA<string, int>::const_Iterador itDic_const= edades.CrearIt();
+	while(itDic_const.HaySiguiente()){
+		cout << itDic_const.SiguienteClave()<< endl;
+		itDic_const.Avanzar();
+	}	
 
 	return 0;
 }	

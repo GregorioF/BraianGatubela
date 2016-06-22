@@ -57,7 +57,7 @@ private:
 
 	Nat accesos_;
 	String nombre_;
-	Lista<registro> registros_;
+	Lista<registro*> registros_;
 	Dicc<NombreCampo,tipoCampo> campos_;
 	Conj<NombreCampo> claves_;
 	indiceNat indiceN_;
@@ -115,6 +115,17 @@ Conj<registro> tabla::registros(){
 }
 Nat tabla::cantDeAccesos(){
 	return accesos_;
+}x
+
+void tabla::agregarRegistro(registro& r){
+	typename Lista<registro*>::Iterador it = registros_.CrearIt();
+	it.AgregaroComoSiguiente(&r);
+	accesos_++;
+	if(indiceN_.nombreC.size()!=0){
+		String campoN = r.Significado(indiceN_.nombreC);
+		if(!(indiceN_.valoresYreg.definido(campoN)))
+			indiceN_.valoresYreg.definir(campoN)
+	}
 }
  
 #endif

@@ -13,8 +13,8 @@ class dicA{
 public:
 	struct Nodo{
 			Nodo(K c, T& s, Nodo* p)
-			: significado(&s), clave(c), padre(p), izq(NULL), der(NULL){}
-			T* significado;
+			: significado(s), clave(c), padre(p), izq(NULL), der(NULL){}
+			T significado;
 			K clave;
 			Nodo* padre;
 			Nodo* izq;
@@ -22,6 +22,7 @@ public:
 	};
 
 	class Iterador;
+	class const_Iterador;
 	///////////////////////////
 	dicA();  				//definida
 	///////////////////////////
@@ -43,6 +44,8 @@ public:
 	///////////////////////////
 	Iterador CrearIt();  
 	///////////////////////////
+	const_Iterador CrearIt() const;
+	///////////////////////////
 	bool operator ==( const dicA<K,T> &otro) ;  //definida
 	///////////////////////////
 	K Minimo(); 		//definida
@@ -50,6 +53,11 @@ public:
 	K Maximo(); 		//definida
 	///////////////////////////
 	
+
+
+
+
+
 	class Iterador{
 	public:
 		Iterador();
@@ -79,16 +87,65 @@ public:
 		if(n->izq!=NULL)p.apilar(*(n->izq));
 		}
 	};
+
+
+
+
+
+
+
+
+	class const_Iterador{
+	public:
+		const_Iterador();
+        ///////////////////////////
+		const_Iterador(const typename dicA<K,T>::const_Iterador& otra);
+		///////////////////////////
+		bool HaySiguiente() const;
+		///////////////////////////
+		const K  SiguienteClave() const;
+		///////////////////////////
+		const T& SiguienteSignificado() const;
+		///////////////////////////
+		void Avanzar();
+	private:
+		const_Iterador(dicA<K,T>* d, Nodo* raiz): dic(d){
+			siguiente = raiz;
+			apilarHijos(siguiente, camino);
+		}
+		friend typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt() const; 
+
+		Nodo* siguiente;
+		pila<Nodo> camino;
+		dicA<K,T>* dic;
+		//AUXILAR QUE SE UTILIZA EN AVANZAR
+		void apilarHijos(Nodo* n, pila<Nodo>& p){
+		if(n->der!=NULL)p.apilar(*(n->der));
+		if(n->izq!=NULL)p.apilar(*(n->izq));
+		}	
+
+	};
 private:
 	
 	Nodo* raiz;
+	
+
+
+
+
+
+
+
+
 	///////////////////////////////////////////////
 	//FUNCIONES AUXILIARES
 	///////////////////////////////////////////////
 	void destruir(Nodo* n){
-		if(n->der!=NULL) destruir(n->der);
-		if(n->izq!=NULL) destruir(n->izq);
-		if(n!=NULL)delete(n);
+		if(n!=NULL){
+			if(n->der!=NULL) destruir(n->der);
+			if(n->izq!=NULL) destruir(n->izq);
+			if(n!=NULL)delete(n);
+		}
 	}
 	/////////////////////////////////////////////
 	//Se utiliza en borrar, devuelve en actual el nodo con la clave c
@@ -144,43 +201,43 @@ private:
 			raiz->padre=NULL;
 		}
 		else{
-		Nodo* predecesor = predecesorInmediato(n);
-		n->clave=predecesor->clave;
-		n->significado=predecesor->significado;
-		Nodo* padre=predecesor->padre;
-		if(esHoja(predecesor)){
-			if(esHijoDer(predecesor)) padre->der=NULL;
-			else padre->izq=NULL;
-			delete(predecesor);
-		}
-		else if(tieneUnHijo(predecesor)){
-			if(esHijoDer(predecesor)){
-				if(predecesor->der!=NULL){
-					padre->der=predecesor->der;
-					predecesor->der->padre= padre;	
-				}
-				else {
-					padre->der = predecesor->izq;
-					predecesor->izq->padre=padre;
-				}
+			Nodo* predecesor = predecesorInmediato(n);
+			n->clave=predecesor->clave;
+			n->significado=predecesor->significado;
+			Nodo* padre=predecesor->padre;
+			if(esHoja(predecesor)){
+				if(esHijoDer(predecesor)) padre->der=NULL;
+				else padre->izq=NULL;
 				delete(predecesor);
 			}
-			else{
-				if(predecesor->der!=NULL){
-					padre->izq=predecesor->der;
-
-					predecesor->der->padre= padre;	
+			else if(tieneUnHijo(predecesor)){
+				if(esHijoDer(predecesor)){
+					if(predecesor->der!=NULL){
+						padre->der=predecesor->der;
+						predecesor->der->padre= padre;	
+					}
+					else {
+						padre->der = predecesor->izq;
+						predecesor->izq->padre=padre;
+					}
+					delete(predecesor);
 				}
-				else {
-					padre->izq = predecesor->izq;
-					predecesor->izq->padre=padre;
-				}
-				delete(predecesor);
+				else{
+					if(predecesor->der!=NULL){
+						padre->izq=predecesor->der;
 
+						predecesor->der->padre= padre;	
+					}
+					else {
+						padre->izq = predecesor->izq;
+						predecesor->izq->padre=padre;
+					}
+					delete(predecesor);
+
+				}
 			}
 		}
 	}
-}
 	/////////////////////////////////////////////
 	// Se utiliza en Claves
 	void apilarHijos(Nodo* n, pila<Nodo>& p){
@@ -193,6 +250,16 @@ private:
 template<typename K, typename T>
 dicA<K,T>::dicA(): raiz(NULL)
 {}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename K, typename T> 
+dicA<K,T>::dicA (const dicA<K,T>& otro){
+	typename dicA<K,T>::Iterador it= otro.CrearIt();
+	while(it.HaySiguiente()){
+		definir(it.SiguienteClave(), it.SiguienteSignificado());
+		it.Avanzar();
+	}
+}
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
@@ -251,7 +318,7 @@ T& dicA<K,T>::obtener(K c){
 		if(actual->clave < c) actual=actual->der;
 		else actual=actual->izq;
 	}
-	return *(actual->significado);
+	return actual->significado;
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -385,6 +452,25 @@ typename dicA<K,T>::Iterador dicA<K,T>::CrearIt(){
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+template<typename K, typename T>
+typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt()const{
+	return const_Iterador(this, raiz);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //FUNCIONES ITERADOR DICA
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -424,5 +510,53 @@ void dicA<K,T>::Iterador::Avanzar(){
 	}
 	else siguiente=NULL;
 }
+
+
+
+
+
+
+
+
+/////////////////////////////////////
+//FUNCIONES ITERADOR CONST
+/////////////////////////////////////
+template<typename K, typename T>
+dicA<K,T>::const_Iterador::const_Iterador()
+	: siguiente(NULL), dic(NULL)
+{}
+///////////////////////////////////////////////////////////
+template<typename K, typename T>
+dicA<K,T>::const_Iterador::const_Iterador(const dicA<K,T>::const_Iterador& otro){
+	siguiente=otro.siguiente;
+	camino=otro.camino;
+	dic=otro.dic;
+}
+///////////////////////////////////////////////////////////
+template<typename K, typename T>
+bool dicA<K,T>::const_Iterador::HaySiguiente() const{
+	return siguiente!=NULL;
+}
+///////////////////////////////////////////////////////////
+template<typename K, typename T>
+const K dicA<K,T>::const_Iterador::SiguienteClave() const{
+	return siguiente->clave;
+}
+///////////////////////////////////////////////////////////
+template<typename K, typename T>
+const T& dicA<K,T>::const_Iterador::SiguienteSignificado() const{
+	return *(siguiente->significado);
+}
+///////////////////////////////////////////////////////////
+template<typename K, typename T>
+void dicA<K,T>::const_Iterador::Avanzar() {
+	if(!(camino.EsVacia())){
+		siguiente = &camino.tope();
+		camino.desapilar();
+		apilarHijos(siguiente, camino);
+	}
+	else siguiente=NULL;
+}
+
 
 #endif
