@@ -20,60 +20,69 @@ public:
 
 	struct Modificaciones
 	{
-		bool SeAgrego_;
+		Modificaciones(bool b, registro r)
+			: seAgrego_(b), reg_(r){}
+		bool seAgrego_;
 		registro reg_;		
 	};
 	struct TuplaJoin
 	{
-		NombreCampo CampoJ_;
-		Lista<Modificaciones> Mod_;
-		tabla Join_;		
+		TuplaJoin(NombreCampo c, tabla j){
+		campoJ_=c;
+		mod_=Vacia();
+		join_=j;
+			
+		}
+		
+		NombreCampo campoJ_;
+		Lista<Modificaciones> mod_;
+		tabla join_;		
 	};
 	
 	BD();
 	
-	void AgregarTabla(const tabla);	
+	void agregarTabla(const tabla);	
 	
 	~BD();  
 	
-	void InsertarEntrada(const Registro, const String);
+	void insertarEntrada(const registro, const NombreTabla);
 	
-	void Borrar(const registro, const String);
+	void borrar(const registro, const NombreTabla);
 	
-	typename::Lista<registro>::Iterador GenerarVistaJoin(String, String, NombreCampo); 
+	typename::Lista<registro>::Iterador generarVistaJoin(NombreTabla, NombreTabla, NombreCampo); 
 	
-	void BorrarJoin(String, String);
+	void borrarJoin(NombreTabla, NombreTabla);
 	
-	typename::Lista<tabla>::Iterador Tablas();
+	typename::Lista<tabla>::Iterador tablas();
 	
-	tabla DameTabla();
+	tabla dameTabla();
 	
-	bool HayJoin(String, String);
+	bool hayJoin(NombreTabla, NombreTabla);
 	
-	NombreCampo CampoJoin(String, String); 
+	NombreCampo campoJoin(NombreTabla, NombreTabla); 
 	
-	typename::Lista<registro>::Iterador Registros(String);
+	typename::Lista<registro>::Iterador registros(NombreTabla);
 	
-	typename::Lista<registro>::Iterador VistaJoin(String, String);
+	typename::Lista<registro>::Iterador vistaJoin(NombreTabla, NombreTabla);
 	
-	Nat CantidadDeAccesos(String);
+	Nat cantidadDeAccesos(NombreTabla);
 	
-	String TablaMaxima();
+	NombreTabla tablaMaxima();
 	
-	Lista<registro> Buscar(const registro, String);
+	Lista<registro> buscar(const registro, NombreTabla);
 	
 		
 private:
 	
 	Lista<tabla> tablas_;
-	dicT<String,tabla> TablasPuntero;
-	dicT<String,dicT<String,TuplaJoin> > joins;
-	String TablaMax;
+	dicT<NombreTabla,tabla> tablasPuntero;
+	dicT<NombreTabla,dicT<NombreTabla,TuplaJoin> > joins_;
+	NombreTabla tablaMax;
 	
 	///////////////////////////////////////////////
 	//FUNCIONES AUXILIARES
 	///////////////////////////////////////////////
-	registro Merge(registro r1, registro r2){
+	registro merge(registro r1, registro r2){
 		registro res=registro(r1);
 		typename::Lista<registro>::Iterador it=r2.CrearIt();
 		while(it.HaySiguiente()){
@@ -83,7 +92,7 @@ private:
 		return res;	
 	}
 	
-	void CrearCamposTablaJoin(registro r, Lista<NombreCampo> c, tabla t){
+	void crearCamposTablaJoin(registro r, Lista<NombreCampo> c, tabla t){
 		typename::Lista<NombreCampo>::Iterador it=c.CrearIt();
 		while(it.HaySiguiente()){
 			if(t.TipoCampo(it.Siguiente())){
@@ -102,7 +111,7 @@ private:
 		}				
 	}
 	
-	bool Pertenece(NombreCampo c, Lista<NombreCampo> cc){
+	bool pertenece(NombreCampo c, Lista<NombreCampo> cc){
 		typename::Lista<NombreCampo>::Iterador it=cc.CrearIt();
 		bool res=false;
 		while(it.HaySiguiente()){
@@ -112,19 +121,33 @@ private:
 		return res;	
 		}
 		
-	void GenerarRegistrosJoinT(Lista<registro> cr, dicT<String,estrAux> CT2, NombreCampo campoJoin, tabla Join){
+	void generarRegistrosJoinT(Lista<registro> cr, dicT<String,estrAux> CT2, NombreCampo campoJoin, tabla join){
 		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			registro RT1=it.Siguiente();
-			String ValorCampoJoin= (RT1.Significado(campoJoin)).valorString;
+			NombreTabla ValorCampoJoin= (RT1.Significado(campoJoin)).valorNombreTabla;
 			if(CT2.Definido(ValorCampoJoin)){
 				registro RT2=CT2.DameRegistro(valorCampoJoin);
 				registro Rmergeado=Merge(RT1,RT2); //X COPIA AMBOS!
-				Join.AgregarRegistro(Rmergeado);
+				join.agregarRegistro(Rmergeado);
 				}
 			it.Avanzar();	
 			}
 		}
+		
+	void generarRegistrosJoinN(Lista<registro> cr, dicA<Nat,estrAux> CT2, NombreCampo campoJoin, tabla join){
+		typename::Lista<registro>::Iterador it=cr.CrearIt();
+		while(it.HaySiguiente()){
+			registro RT1=it.Siguiente();
+			NombreTabla ValorCampoJoin= (RT1.Significado(campoJoin)).valorNombreTabla;
+			if(CT2.Definido(ValorCampoJoin)){
+				registro RT2=CT2.DameRegistro(valorCampoJoin);
+				registro Rmergeado=Merge(RT1,RT2); //X COPIA AMBOS!
+				join.agregarRegistro(Rmergeado);
+				}
+			it.Avanzar();	
+			}
+		}	
 		
 };
 
@@ -145,101 +168,176 @@ BD::~BD(){
 	TablaMax=Vacio();
 	}	
 	
-void BD::AgregarTabla(Tabla t){
-	tablas.AgregarAtras(t.nombre);
-	TablasPuntero.Definir(t.nombre,t);
+void BD::agregarTabla(Tabla t){
+	tablas.AgregarAtras(t.nombre());
+	tablasPuntero.Definir(t.nombre(),t);
 	if(Longitud(tablas)==1){
-		TablaMax=t.nombre;
+		tablaMax=t.nombre();
 		}
 	else{
-		if(t.CantidadDeAccesos()>(DameTabla(TablaMaxima())).CantidadDeAccesos){
-			TablaMax=t.nombre
+		if(t.cantidadDeAccesos()>((*dameTabla(TablaMaxima()))).cantidadDeAccesos){
+			tablaMax=t.nombre();
 			}
 		}	
 	}
 	
-void BD::InsertarEntrada(registro r, String s){
-	tabla t=DameTabla(s);
-	t.AgregarRegistro(r);
-	tabla Maxima=DameTabla(TablaMaxima());
-	if(t.CantidadDeAccesos()>Maxima.CantidadDeAccesos()){
-		TablaMax=s;
+void BD::insertarEntrada(registro r, NombreTabla s){
+	tabla &t=dameTabla(s);
+	t.agregarRegistro(r);
+	tabla &maxima=dameTabla(tablaMaxima());
+	if((*t).cantidadDeAccesos()>(*maxima).cantidadDeAccesos()){
+		tablaMax=s;
 		}
-	typename::Lista<tabla>::Iterador it=Tablas();
+	typename::Lista<tabla>::Iterador it=tablas();
 	while(it.HaySiguiente()){
 		if(HayJoin(s,it.Siguiente())){
-			typename::Lista<Modificaciones>::Iterador modif= (((joins.Significado(s)).Significado(it.Siguiente)).Mod_).CrearIt()
+			typename::Lista<Modificaciones>::Iterador modif= (((joins_.obtener(s)).obtener(it.Siguiente)).mod_).CrearIt();
+			Modificaciones m=Modificaciones(true,r);
+			modif.AgregarComoSiguiente(m);
 			}
 		if(HayJoin(it.Siguiente(),s)){
-			
-			}	
+			typename::Lista<Modificaciones>::Iterador modif= (((joins_.obtener(it.Siguiente)).obtener(s)).mod_).CrearIt();
+			Modificaciones m=Modificaciones(true,r);
+			modif.AgregarComoSiguiente(m);
+			}
+		it.Avanzar();
 		}
-	
 	}	
 	
-void BD::Borrar(const registro r, const String s){
-	tabla t=DameTabla(s);
-	BorrarRegistro(r);
-	typename::Lista<tabla>::Iterador it=Tablas();
+void BD::borrar(const registro r, const NombreTabla s){
+	borrarRegistro(r);
+	typename::Lista<tabla>::Iterador it=tablas();
 	while(it.HaySiguiente()){
-		if(HayJoin(s,it.Siguiente())){
-			
+	if(HayJoin(s,it.Siguiente())){
+			typename::Lista<Modificaciones>::Iterador modif= (((joins_.obtener(s)).obtener(it.Siguiente)).mod_).CrearIt();
+			Modificaciones m=Modificaciones(false,r);
+			modif.AgregarComoSiguiente(m);
 			}
 		if(HayJoin(it.Siguiente(),s)){
-			
+			typename::Lista<Modificaciones>::Iterador modif= (((joins_.obtener(it.Siguiente)).obtener(s)).mod_).CrearIt();
+			Modificaciones m=Modificaciones(false,r);
+			modif.AgregarComoSiguiente(m);
 			}
+		it.Avanzar();
+		}
+	if(tablaMaxima()!=s){
+		if(tablaMaxima().cantidadDeAccesos() < (*dameTabla(s)).cantidadDeAccesos()){
+			tablaMax=s;
+		}
+	}	
+}
+	
+typename::Lista<registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTabla s2){
+	String j="Join";
+	tabla &t1=dameTabla(s1);
+	tabla &t2=dameTabla(s2);
+	registro columnas=Vacio();
+	crearCamposTablaJoin(columnas,(*t1).campos(),(*t1));
+	crearCamposTablaJoin(columnas,(*t2).campos(),(*t2));
+	tabla j1=nuevaTabla(j,claves(columnas),columnas);
+		Lista<Modificaciones> modd=Vacia();
+	if(!joins_.definido(s1)){
+		joins_.definir(s1,Vacio());
+	}
+	TuplaJoin t=TuplaJoin(c,modd,j1);
+	joins_.obtener(s1).definir(s2,t);
+	}
+	tabla* nuevojoin= (joins_.obtener(s1)).obtener(s2).tablaJoin_;
+	(*nuevojoin).Indexar(c);
+	bool campoJoinIndexadoT1=pertenece((*t1).indices(),c);
+	bool campoJoinIndexadoT2=pertenece((*t2).indices(),c);
+	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
+		if((*t1).tipoCampo(c)){
+			dicA<Nat,estrAux> columnaT2=(*t2).dameColumnaNat;
+			Lista<registro> regis=Lista((*t1).registros);
+			generarRegistrosJoin(regis,columnaT2,c,(*nuevojoin));
+		}
+		else{
+			dicT<String,estrAux> columnaT2=(*t2).dameColumnaString;
+			Lista<registro> regis=Lista((*t1).registros);
+			generarRegistrosJoin(regis,ColumnaT2,c,(*nuevojoin));
+		}
+	else{
+		typename::Lista<registro>::Iterador it=(*t1).registros().CrearIt();
+		while(it.HaySiguiente()){
+			typename::Lista<registro>::Iterador it2=(*t2).registros().CrearIt();
+			while(it2.HaySiguiente()){
+				if(it.Siguiente().Significado(c) == it2.Siguiente().Significado(c)){
+					registro r1=registro(it.Siguiente());
+					registro r2=registro(it2.Siguiente());
+					(*nuevojoin).agregarRegistro(merge(r1,r2));
+				}
+				it2.Avanzar();
+			}
+			it.Avanzar();
 		}
 	}
+}	
 	
-typename::Lista<registro>::Iterador BD::GenerarVistaJoin(String s1,String s2){}	
-	
-void BD::BorrarJoin(String s1, String s2){
-	dicT<String,TuplaJoin> aux=joins.Significado(s1);
-	aux.Borrar(s2);
-	if(aux.Vacio?()) joins.Borrar(s1);
+void BD::borrarJoin(NombreTabla s1, NombreTabla s2){
+	dicT<NombreTabla,TuplaJoin> aux=joins_.obtener(s1);
+	aux.borrar(s2);
+	if(aux.Vacio?()) joins_.borrar(s1);
 	}	
 
-typename::Lista<tabla>::Iterador BD::Tablas(){
+typename::Lista<tabla>::Iterador BD::tablas(){
 	typename::Lista<tabla>::Iterador res=tablas_.CrearIt();
 	return res;
 	}
 	
-tabla BD::DameTabla(String s){
-	tabla res=TablasPuntero.Significado(s);
+tabla& BD::dameTabla(NombreTabla s){
+	tabla res=tablasPuntero.Significado(s);
 	return res;
 	}	
 	
-bool BD::HayJoin(String s1,String s2){
-	bool res=joins.Definido(s1);
+bool BD::hayJoin(NombreTabla s1,NombreTabla s2){
+	bool res=joins_.definido(s1);
 	if(res){
-		res=joins.Significado(s1).Definido(s2);
+		res=joins_.obtener(s1).definido(s2);
 		}
 	return res;	
 	}	
-NombreCampo BD::CampoJoin(String s1,String s2){
-	dicT<String,TuplaJoin> aux=joins.Significado(s1);
-	TuplaJoin tj=aux.Significado(s2);
-	NombreCampo res=Tj.CampoJ_;
+NombreCampo BD::campoJoin(NombreTabla s1,NombreTabla s2){
+	dicT<NombreTabla,TuplaJoin> aux=joins_.obtener(s1);
+	TuplaJoin tj=aux.obtener(s2);
+	NombreCampo res=tj.CampoJ_;
 	return res;
 	}	
 	
-typename::Lista<registro>::Iterador BD::Registros(String s){
-	tabla t=DameTabla(s);
-	typename::Lista<registro>::Iterador res=t.Registros.CrearIt()
+typename::Lista<registro>::Iterador BD::registros(NombreTabla s){
+	tabla &t = dameTabla(s);
+	typename::Lista<registro>::Iterador res=(*t).registros.CrearIt() //fijarse si hay que desrefernciarlo o no
 	return res;
 	}	
 	
-typename::Lista<registro>::Iterador BD::VistaJoin(String s1, String s2){}
+typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
+	tabla &t1=dameTabla(s1);
+	tabla &t2=dameTabla(s2);
+	bool campoJoinIndexadoT1=pertenece((*t1).indices(),c);
+	bool campoJoinIndexadoT2=pertenece((*t2).indices(),c);
+	Lista<Modificaciones> modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+	tabla join=joins_.obtener(s1).obtener(s2).join_;
+	while(modif.HaySiguiente()){
+		bool seAgrego=modif.Siguiente().seAgrego_;
+		if(seAgrego){
+			registro registroAgregado=modif.Siguiente().reg_;
+			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
+				AUXILIARES PARA NAT Y STRING
+			}
+		}
+	}
 	
-Nat BD::CantidadDeAccesos(String s){
-	tabla t=DameTabla(s);
-	Nat res=t.CantidadDeAccesos();
+}
+	
+Nat BD::cantidadDeAccesos(NombreTabla s){
+	tabla &t=dameTabla(s);
+	Nat res=(*t).cantidadDeAccesos();
 	return res;
 	}	
 	
-String BD::TablaMaxima(){
-	String res=TablaMax;
+NombreTabla BD::tablaMaxima(){
+	NombreTabla res=tablaMax;
 	}	
 	
-Lista<registro> BD::Buscar(String s, registro criterio){}	
+Lista<registro> BD::buscar(NombreTabla s, registro criterio){}	
 #endif
