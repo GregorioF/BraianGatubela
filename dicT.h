@@ -14,14 +14,15 @@ class dicT
 {
 public:
 	class Iterador;
+	class const_Iterador;
 	///////////////////////////
-	dicT();  				//definida
+	dicT();                 //definida
 	///////////////////////////
 	dicT(const dicT<T> &otro);  // falta definir
 	///////////////////////////
-	~dicT();  				//definida
+	~dicT();                //definida
 	///////////////////////////
-	bool esVacio() const;  	//definida
+	bool esVacio() const;   //definida
 	///////////////////////////
 	void definir(string clave, T& elem);  //definida
 	///////////////////////////
@@ -31,22 +32,27 @@ public:
 	///////////////////////////
 	void borrar(string clave);  //definida
 	///////////////////////////
-	aed2::Conj<string> claves();  //definida
+	aed2::Conj<string> claves() const;  //definida
 	///////////////////////////
 	Iterador CrearIt();  
 	///////////////////////////
+	const_Iterador CrearIt2();  
+	///////////////////////////
 	bool operator ==( dicT<T> &otro) ;  //definida
 	///////////////////////////
-	string Minimo(); 		//definida
+	string Minimo();        //definida
 	///////////////////////////
-	string Maximo(); 		//definida
+	string Maximo();        //definida
 	///////////////////////////
+
+
+
 
 
 	class Iterador{
 	public:
 		Iterador();
-        ///////////////////////////
+		///////////////////////////
 		Iterador(const typename dicT<T>::Iterador& otra);
 		///////////////////////////
 		bool HaySiguiente() const;
@@ -70,18 +76,54 @@ public:
 		dicT<T>* dic;
 	};
 
+
+
+
+
+	class const_Iterador{
+	public:
+		const_Iterador();
+		///////////////////////////
+		const_Iterador(const typename dicT<T>::const_Iterador& otra);
+		///////////////////////////
+		bool HaySiguiente() const;
+		///////////////////////////
+		const string  SiguienteClave() const;
+		///////////////////////////
+		const T& SiguienteSignificado() const;
+		///////////////////////////
+		void Avanzar();
+	private:
+		const_Iterador(dicT<T>* d): dic(d){
+			claves= (*d).claves();
+			typename Conj<string>::Iterador it = claves.CrearIt();
+			siguiente=make_pair(it.Siguiente(), (*d).obtener(it.Siguiente()));
+			it.EliminarSiguiente();
+		}
+		friend typename dicT<T>::const_Iterador dicT<T>::CrearIt2();
+
+		pair<string, T> siguiente;
+		aed2::Conj<string> claves;
+		const dicT<T>* dic;
+
+	};
+
+
+
+
 private:
 	struct Nodo{
-		Nodo():  letra('a'), padre(NULL){
+		Nodo():  letra('a'), padre(NULL), esPalabra(false){
 			ponerTodoEnNull(hijos);
 		}
-		Nodo(char c, Nodo* p) :  letra(c), padre(p){
+		Nodo(char c, Nodo* p) :  letra(c), padre(p) , esPalabra(false){
 			ponerTodoEnNull(hijos);
 		} 
-		Nodo(char c, Nodo* p, T& elem ): significado(&elem), letra(c), padre(p){
+		Nodo(char c, Nodo* p, T& elem ): significado(&elem), letra(c), padre(p), esPalabra(false){
 			ponerTodoEnNull(hijos);
 		} 
-		T* significado;
+		T significado;
+		bool esPalabra;
 		char letra;
 		Nodo* padre;
 		Nodo* hijos [256];
@@ -100,7 +142,7 @@ private:
 	
 	// Se utiliza en Claves()
 	template <typename K>
-	void apilarHijos(Nodo* actual, pila<K>& recoridos){
+	void apilarHijos(Nodo* actual, pila<K>& recoridos) const{
 		for(int i=255;i>=0;i--){
 			if(actual->hijos[i]!=NULL)recoridos.apilar(*actual->hijos[i]);
 		}
@@ -118,7 +160,7 @@ private:
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	//Se utiliza en borrar() y en Claves() devuelve true si no tiene hijos el nodo Actual
-	bool EsVaciaHijos(Nodo* actual){
+	bool EsVaciaHijos(Nodo* actual) const{
 		bool res=true;
 		int i=0;
 		while(i<256){
@@ -128,12 +170,12 @@ private:
 		return true;}
 	////////////////////////////////////////////////////////////////////////////////
 	//se utiliza en claves(), en Minimo(), y en Maximo() devuelve si el puntero a significado es != Null
-	bool esPalabra(Nodo* actual){
-		return (actual->significado!=NULL);
+	bool esPalabraFunc(Nodo* actual) const{
+		return actual->esPalabra;
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	//Se utiliza en Claves(), en Minimo(), y en Maximo() Devuelve la palabra que se forma hasta n
-	string DameNombre(Nodo* n){
+	string DameNombre(Nodo* n) const{
 		Nodo* actual= n;
 		string res;
 		while(actual->padre!=NULL){
@@ -164,7 +206,7 @@ private:
 		if(actual==NULL) return false;
 		else if(actual->letra < n->letra)return true;
 		else return false;
-	}	
+	}   
 	////////////////////////////////////////////////////////////////////////////////
 	// Se utiliza en Maximo()
 	bool tieneUnHijosMasGrande(Nodo* n){
@@ -177,7 +219,7 @@ private:
 		if(actual==NULL) return false;
 		else if(actual->letra < n->letra)return true;
 		else return false;
-	}	
+	}   
 };
 ///////////////////////////////////////////////////////////
 //ALGORITMOS FUNCIONES INTERFAZ
@@ -185,6 +227,12 @@ private:
 template <typename T>
 dicT<T>::dicT(){
 	raiz= new Nodo();
+}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+dicT<T>::dicT(const dicT<T>& otro){
+	
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -217,8 +265,9 @@ void dicT<T>::definir(string clave, T& elem){
 			actual= actual->hijos[clave[i]];
 		}
 		i++;
-	}	
-	actual->significado= &elem;
+	}   
+	actual->significado= elem;     /////HACER EL CONSTRUCTOR POR COPIA BIZZARO DE ANTES
+	actual->esPalabra=true;
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -230,7 +279,7 @@ bool dicT<T>::definido(string clave) const{
 		actual = actual->hijos[clave[i]];
 		i++;
 	}
-	if(i==clave.size()){
+	if(i==clave.size() && actual->esPalabra){
 		return true;
 	}
 	else return false;
@@ -245,8 +294,8 @@ T& dicT<T>::obtener(string clave) const{
 	while(i<tamanio){
 		actual= actual->hijos[clave[i]];
 		i++;
-	}	
-	return *(actual->significado);
+	}   
+	return actual->significado;
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -275,7 +324,7 @@ void dicT<T>::borrar(string s){
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename T>
-aed2::Conj<string> dicT<T>::claves() {
+aed2::Conj<string> dicT<T>::claves() const{
 	Nodo* actual= raiz;
 	pila<Nodo> recorridos;
 	apilarHijos(actual, recorridos);
@@ -285,11 +334,11 @@ aed2::Conj<string> dicT<T>::claves() {
 		actual = &recorridos.tope();
 		recorridos.desapilar();
 		if(! EsVaciaHijos(actual)) apilarHijos(actual, recorridos);
-		if(esPalabra(actual)){
+		if(esPalabraFunc(actual)){
 			string aux= DameNombre(actual); ///ANDA DAME NOMBRE ! :D
-			res.AgregarRapido(aux); 	
+			res.AgregarRapido(aux);     
 		}
-	}	
+	}   
 	return res;
 }
 ///////////////////////////////////////////////////////////
@@ -315,7 +364,7 @@ string dicT<T>::Minimo(){
 		actual = raiz->hijos[i];
 		i++;
 	}
-	while(tieneUnHijosMasChico(actual) || !esPalabra(actual)){
+	while(tieneUnHijosMasChico(actual) || !esPalabraFunc(actual)){
 		Nodo* aux=NULL;
 		i=0;
 		while(aux==NULL){
@@ -336,7 +385,7 @@ string dicT<T>::Maximo(){
 		actual = raiz->hijos[i];
 		i--;
 	}
-	while(tieneUnHijosMasGrande(actual) || !esPalabra(actual)){
+	while(tieneUnHijosMasGrande(actual) || !esPalabraFunc(actual)){
 		Nodo* aux=NULL;
 		i=255;
 		while(aux==NULL){
@@ -355,6 +404,28 @@ typename dicT<T>::Iterador dicT<T>::CrearIt(){
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
+template<typename T>
+typename dicT<T>::const_Iterador dicT<T>::CrearIt2(){
+	return const_Iterador(this);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 //FUNCIONES ITERADOR
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -370,7 +441,7 @@ dicT<T>::Iterador::Iterador()
 template<typename T>
 dicT<T>::Iterador::Iterador(const typename dicT<T>::Iterador& otro)
 	: dic(otro.dic), claves(otro.claves), siguiente(otro.siguiente)
-{}	
+{}  
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename T>
@@ -401,7 +472,61 @@ void dicT<T>::Iterador::Avanzar(){
 	siguiente.first=it.Siguiente();
 	siguiente.second=(*dic).obtener(it.Siguiente());
 	it.EliminarSiguiente();
-	}	
+	}   
 }
+
+
+
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+//FUNCIONES CONST_ITERADOR
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
+
+template<typename T>
+dicT<T>::const_Iterador::const_Iterador()
+	: dic(NULL)
+{}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+dicT<T>::const_Iterador::const_Iterador(const typename dicT<T>::const_Iterador& otro)
+	: dic(otro.dic), claves(otro.claves), siguiente(otro.siguiente)
+{}  
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+bool dicT<T>::const_Iterador::HaySiguiente() const{
+	return (siguiente.first.size()!=0);
+}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+const string  dicT<T>::const_Iterador::SiguienteClave() const{
+	return (siguiente.first);
+}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+const T& dicT<T>::const_Iterador::SiguienteSignificado() const{
+	return (siguiente.second);
+}
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+template<typename T>
+void dicT<T>::const_Iterador::Avanzar(){
+	typename Conj<string>::Iterador it = claves.CrearIt();
+	if(!it.HaySiguiente()){
+		siguiente.first.clear();
+	}
+	else{
+	siguiente.first=it.Siguiente();
+	siguiente.second=(*dic).obtener(it.Siguiente());
+	it.EliminarSiguiente();
+	}   
+}
+
 
 #endif

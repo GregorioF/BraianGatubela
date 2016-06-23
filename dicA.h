@@ -1,4 +1,4 @@
-#ifndef DICC_A
+	#ifndef DICC_A
 #define DICC_A
 
 #include "pila.h"
@@ -12,7 +12,7 @@ template<typename K, typename T>
 class dicA{
 public:
 	struct Nodo{
-			Nodo(K c, T& s, Nodo* p)
+			Nodo(const K c, const T& s, Nodo* p)
 			: significado(s), clave(c), padre(p), izq(NULL), der(NULL){}
 			T significado;
 			K clave;
@@ -32,9 +32,9 @@ public:
 	///////////////////////////
 	bool esVacio() const;  	//definida
 	///////////////////////////
-	void definir(K clave, T& elem);  //definida
+	void definir(const K clave, const T& elem);  //definida
 	///////////////////////////
-	bool definido(K clave) const;  //definida
+	bool definido(const K clave) const;  //definida
 	///////////////////////////
 	T& obtener(K clave);  //definida
 	///////////////////////////
@@ -44,7 +44,7 @@ public:
 	///////////////////////////
 	Iterador CrearIt();  
 	///////////////////////////
-	const_Iterador CrearIt() const;
+	const_Iterador CrearIt2() const;
 	///////////////////////////
 	bool operator ==( const dicA<K,T> &otro) ;  //definida
 	///////////////////////////
@@ -109,15 +109,15 @@ public:
 		///////////////////////////
 		void Avanzar();
 	private:
-		const_Iterador(dicA<K,T>* d, Nodo* raiz): dic(d){
+		const_Iterador(const dicA<K,T>* d, Nodo* raiz): dic(d){
 			siguiente = raiz;
 			apilarHijos(siguiente, camino);
 		}
-		friend typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt() const; 
+		friend typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt2() const; 
 
 		Nodo* siguiente;
 		pila<Nodo> camino;
-		dicA<K,T>* dic;
+		const dicA<K,T>* dic;
 		//AUXILAR QUE SE UTILIZA EN AVANZAR
 		void apilarHijos(Nodo* n, pila<Nodo>& p){
 		if(n->der!=NULL)p.apilar(*(n->der));
@@ -254,7 +254,7 @@ dicA<K,T>::dicA(): raiz(NULL)
 ///////////////////////////////////////////////////////////
 template<typename K, typename T> 
 dicA<K,T>::dicA (const dicA<K,T>& otro){
-	typename dicA<K,T>::Iterador it= otro.CrearIt();
+	typename dicA<K,T>::const_Iterador it= otro.CrearIt2();
 	while(it.HaySiguiente()){
 		definir(it.SiguienteClave(), it.SiguienteSignificado());
 		it.Avanzar();
@@ -275,8 +275,8 @@ bool dicA<K,T>::esVacio() const{
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
-void dicA<K,T>::definir(K c, T& elem){
-	if(raiz==NULL)raiz=new Nodo(c, elem, NULL);
+void dicA<K,T>::definir(const K c, const T& elem){
+	if(raiz==NULL)raiz=new Nodo(c, elem, NULL);  
 	else{
 		Nodo* actual =raiz;
 		while(actual->clave != c){
@@ -453,7 +453,7 @@ typename dicA<K,T>::Iterador dicA<K,T>::CrearIt(){
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
-typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt()const{
+typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt2() const{
 	return const_Iterador(this, raiz);
 }
 
@@ -498,7 +498,7 @@ K dicA<K,T>::Iterador::SiguienteClave(){
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
 T& dicA<K,T>::Iterador::SiguienteSignificado(){
-	return *(siguiente->significado);
+	return siguiente->significado;
 }
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
@@ -545,7 +545,7 @@ const K dicA<K,T>::const_Iterador::SiguienteClave() const{
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
 const T& dicA<K,T>::const_Iterador::SiguienteSignificado() const{
-	return *(siguiente->significado);
+	return siguiente->significado;
 }
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
