@@ -1,14 +1,19 @@
 #include <iostream>
 #include <stdlib.h>
 #include "registro.h"
+#include "tabla.h"
+#include "pair.h"
 //#include <tuple>
-using namespace std;
+
 
 int main(){
-	string a="hola";
-	cout << a<< endl;
-	a.clear();
-	cout << a << endl;
+
+	aed2::pair<int, int> a;
+	a.make_pair(2,3);
+
+	std::cout << a.first()<<std::endl;
+	a.first()= 5;
+	std::cout << a.first()<< std::endl;
 
 	return 0;
 }
