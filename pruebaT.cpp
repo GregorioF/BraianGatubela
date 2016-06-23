@@ -95,7 +95,10 @@ int main(){
 		cout <<"   -"<<itDic_const.SiguienteClave()<< endl;
 		itDic_const.Avanzar();
 	}
+
 	a.borrar(x);
+	a.borrar(y);
+	a.borrar("superfragilisticoespiralidoso");
 	//TODO OK HASTA ACA, SIN PERDIDA DE MEMORIA :P
 	return 0;
 }

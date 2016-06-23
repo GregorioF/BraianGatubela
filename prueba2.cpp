@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include "registro.h"
 //#include <tuple>
 using namespace std;
 

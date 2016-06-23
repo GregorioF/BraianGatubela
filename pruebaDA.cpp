@@ -41,7 +41,6 @@ int main(){
 	cout << "\nHago borrado: "<<endl;
 	//funciona borrar bien
 
-	cout << "Segun claves, las claves son : "<<endl;
 	edades.definir("gregorio", emia);	
 	edades.definir("charo", echaro);
 	edades.definir("turra", elucia); 
@@ -69,6 +68,8 @@ int main(){
 		cout << itDic_const.SiguienteClave()<< endl;
 		itDic_const.Avanzar();
 	}	
+
+
 
 	return 0;
 }	
