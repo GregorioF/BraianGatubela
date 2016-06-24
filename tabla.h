@@ -45,6 +45,30 @@ public:
 	Conj<Registro> dameColumna(NombreCampo c);
 	dicA<Nat, Lista<estrAux> > dameColumnaNat();
 	dicT< Lista<estrAux> > dameColumnaString();
+	
+	//AUXILIARES:
+	
+	bool pertenece(NombreCampo c, Conj<NombreCampo> cc){
+		typename::Conj<NombreCampo>::Iterador it=cc.CrearIt();
+		bool res=false;
+		while(it.HaySiguiente()){
+			if(it.Siguiente()==c) res=true;
+			it.Avanzar();
+			}
+		return res;	
+		}
+		
+	bool hayIndiceString(){
+		bool res=false;
+		if(indiceS_.nombreC.size()!=0){res=true;}
+		return res;
+		}
+	bool hayIndiceNat(){
+		bool res=false;
+		if(indiceN_.nombreC.size()!=0){res=true;}
+		return res;
+		}			
+		
 
 private:
 	struct indiceNat{
@@ -176,5 +200,96 @@ void tabla::agregarRegistro(Registro& r){
 		if(r.Significado(indiceS_.nombreC).dameString()<indiceS_.minimo) indiceS_.minimo=r.Significado(indiceS_.nombreC).dameString();
 	}
 }
+
+void tabla::borrarRegistro(Registro& crit){
+	accesos_++;
+	typename Dicc<NombreCampo, Dato>::Iterador itCrit=crit.CrearIt();
+	NombreCampo claveCrit=itCrit.SiguienteClave();
+	Dato significadoCrit=itCrit.SiguienteSignificado();
+	if(pertenece(claveCrit,indices())){
+		if(tipoCampo(claveCrit)){
+			if(indiceN_.valoresYreg.definido(significadoCrit.dameNat())){
+				typename Lista<estrAux>::Iterador it=indiceN_.valoresYreg.obtener(significadoCrit.dameNat()).CrearIt();
+				while(it.HaySiguiente()){
+					if(indices().Cardinal()==2){
+						Dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceS_.nombreC);
+						it.Siguiente().itEstr.EliminarSiguiente();
+						if(indiceS_.valoresYreg.obtener(datoDelOtroIndice.dameString()).EsVacia()){
+							indiceS_.valoresYreg.borrar(datoDelOtroIndice.dameString());
+							indiceS_.maximo=indiceS_.valoresYreg.Maximo();
+							indiceS_.minimo=indiceS_.valoresYreg.Minimo();
+							}	
+						}
+					it.Siguiente().itReg.EliminarSiguiente();
+					it.Avanzar;
+					}
+				indiceN_.valoresYreg.borrar(significadoCrit.dameNat());	
+				indiceN_.maximo=indiceN_.valoresYreg.Maximo();
+				indiceN_.minimo=indiceN_.valoresYreg.Minimo();		
+			}
+		}
+		else{
+			if(indiceS_.valoresYreg.definido(significadoCrit.dameString())){
+				typename Lista<estrAux>::Iterador it=indiceS_.valoresYreg.obtener(significadoCrit.dameString()).CrearIt();
+				while(it.HaySiguiente()){
+					if(indices().Cardinal()==2){
+						Dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceN_.nombreC);
+						it.Siguiente().itEstr.EliminarSiguiente();
+						if(indiceN_.valoresYreg.obtener(datoDelOtroIndice.dameNat()).EsVacia()){
+							indiceN_.valoresYreg.borrar(datoDelOtroIndice.dameNat());
+							indiceN_.maximo=indiceN_.valoresYreg.Maximo();
+							indiceN_.minimo=indiceN_.valoresYreg.Minimo();
+							}	
+						}
+					it.Siguiente().itReg.EliminarSiguiente();
+					it.Avanzar;
+					}
+				indiceS_.valoresYreg.borrar(significadoCrit.dameString());	
+				indiceS_.maximo=indiceS_.valoresYreg.Maximo();
+				indiceS_.minimo=indiceS_.valoresYreg.Minimo();		
+			}
+			}	
+		}
+		else{
+			typename Lista<Registro>::Iterador it=registros().CrearIt();
+			while(it.HaySiguiente()){
+				bool b=false;
+				if(tipoCampo(claveCrit)){
+					if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameNat()){
+						b=true;
+					}
+				}
+				else{
+					if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameString()){
+						b=true;
+					}
+					}
+				if(b){
+					Registro registroABorrar=it.Siguiente();
+					if(hayIndiceNat()){
+						Nat valor=registroABorrar.Significado(indiceN_.nombreC).dameNat();
+						typename Lista<estrAux>::Iterador itN=indiceN_.valoresYreg.obtener(valor).CrearIt();
+						while(itN.HaySiguiente() && !(itN.Siguiente().itReg.Siguiente() == registroABorrar)){
+							itN.Avanzar();
+							}
+						itN.EliminarSiguiente();	
+						}
+					if(hayIndiceString()){
+						String valor=registroABorrar.Significado(indiceS_.nombreC).dameString();
+						typename Lista<estrAux>::Iterador itS=indiceS_.valoresYreg.obtener(valor).CrearIt();
+						while(itS.HaySiguiente() && !(itS.Siguiente().itReg.Siguiente() == registroABorrar)){
+							itS.Avanzar();
+							}
+						itS.EliminarSiguiente();
+						}
+					it.Avanzar();
+					it.EliminarAnterior();
+					}
+				else{it.Avanzar();}	
+				}
+			}
+	}
+	
+			
  
 #endif
