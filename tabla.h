@@ -221,7 +221,7 @@ void tabla::borrarRegistro(Registro& crit){
 							}	
 						}
 					it.Siguiente().itReg.EliminarSiguiente();
-					it.Avanzar;
+					it.Avanzar();
 					}
 				indiceN_.valoresYreg.borrar(significadoCrit.dameNat());	
 				indiceN_.maximo=indiceN_.valoresYreg.Maximo();
@@ -242,7 +242,7 @@ void tabla::borrarRegistro(Registro& crit){
 							}	
 						}
 					it.Siguiente().itReg.EliminarSiguiente();
-					it.Avanzar;
+					it.Avanzar();
 					}
 				indiceS_.valoresYreg.borrar(significadoCrit.dameString());	
 				indiceS_.maximo=indiceS_.valoresYreg.Maximo();
