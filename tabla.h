@@ -158,7 +158,7 @@ Nat tabla::cantDeAccesos(){
 void tabla::agregarRegistro(Registro& r){
 	accesos_++;
 	registros_.AgregarAtras(r);
-	if(esValidoIndiceNat(indiceN_)){
+	if(hayIndiceNat()){
 		if(!(indiceN_.valoresYreg.definido(r.Significado(indiceN_.nombreC).dameNat()))){
 			Lista<estrAux> comelaFrancisco; // no se llama aux :DD
 			indiceN_.valoresYreg.definir(r.Significado(indiceN_.nombreC).dameNat(), comelaFrancisco);
@@ -173,7 +173,7 @@ void tabla::agregarRegistro(Registro& r){
 		if(r.Significado(indiceN_.nombreC).dameNat()<indiceN_.minimo) indiceN_.minimo=r.Significado(indiceN_.nombreC).dameNat();
 	}//end if
 
-	if(esValidoIndiceString(indiceS_)){
+	if(hayIndiceString()){
 		if(!(indiceS_.valoresYreg.definido(r.Significado(indiceS_.nombreC).dameString()))){
 			Lista<estrAux> aux; 
 			indiceS_.valoresYreg.definir(r.Significado(indiceS_.nombreC).dameString(), aux);
@@ -254,7 +254,7 @@ void tabla::borrarRegistro(Registro& crit){
 			typename Lista<Registro>::Iterador it=registros().CrearIt();
 			while(it.HaySiguiente()){
 				bool b=false;
-				if(tipoCampo(claveCrit)){
+				if(tipoCampo(claveCrit) == NAT){
 					if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameNat()){
 						b=true;
 					}
@@ -286,6 +286,7 @@ void tabla::borrarRegistro(Registro& crit){
 					it.EliminarAnterior();
 					}
 				else{it.Avanzar();}	
+				
 				}
 			}
 	}
