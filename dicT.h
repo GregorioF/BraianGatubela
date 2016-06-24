@@ -161,7 +161,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////
 	//Se utiliza en borrar() y en Claves() devuelve true si no tiene hijos el nodo Actual
 	bool EsVaciaHijos(Nodo* actual) const{
-		bool res=true;
+
 		int i=0;
 		while(i<256){
 			if(actual->hijos[i]!=NULL) return false;
