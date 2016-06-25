@@ -227,6 +227,7 @@ void tabla::borrarRegistro(Registro& crit){
 				indiceN_.maximo=indiceN_.valoresYreg.Maximo();
 				indiceN_.minimo=indiceN_.valoresYreg.Minimo();		
 			}
+
 		}
 		else{
 			if(indiceS_.valoresYreg.definido(significadoCrit.dameString())){

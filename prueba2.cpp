@@ -1,19 +1,25 @@
-#include <iostream>
-#include <stdlib.h>
 #include "registro.h"
 #include "tabla.h"
 #include "pair.h"
 //#include <tuple>
 
-
+using namespace aed2;
 int main(){
-
-	aed2::pair<int, int> a;
-	a.make_pair(2,3);
-
-	std::cout << a.first()<<std::endl;
-	a.first()= 5;
-	std::cout << a.first()<< std::endl;
+	Registro r;
+	Nat x= 3;
+	Dato a (43);
+	Dato s ("pachorro");
+	string str= "hola";
+	r.Definir("hola",  a);
+	r.Definir("asterix", s);
+	tabla t;
+	Conj<NombreCampo> claves;
+	claves.AgregarRapido("hola");
+	claves.AgregarRapido("asterix");
+	t.nuevaTabla("t1",claves,r);
+	t.agregarRegistro(r);
+	t.borrarRegistro(r);
+	
 
 	return 0;
 }

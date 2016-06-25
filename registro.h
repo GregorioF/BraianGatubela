@@ -1,13 +1,13 @@
 #ifndef REGISTRO_H
 #define REGISTRO_H
 
-#include "aed2/Conj.h"
-#include "Driver.cpp"
+#include "Conj.h"
+#include "Driver.h"
 
 using namespace aed2;
 
-typedef Driver::Registro Registro;
-typedef Driver::Dato Dato;
+typedef  Driver::Registro Registro;
+typedef  typename Driver::Dato Dato;
 
 //MODIFICA R1!
 void mergear(Registro& r1, Registro& r2){
