@@ -3,6 +3,7 @@
 #include "pair.h"
 //#include <tuple>
 
+
 using namespace aed2;
 int main(){
 	Registro r;
@@ -18,7 +19,11 @@ int main(){
 	claves.AgregarRapido("asterix");
 	t.nuevaTabla("t1",claves,r);
 	t.agregarRegistro(r);
-	t.borrarRegistro(r);
+	bool c= t.tipoCampo("hola")==STR;
+	std::cout<< c << std::endl;
+	t.indexar("hola");
+
+	//////////////////////////////////////
 	
 
 	return 0;

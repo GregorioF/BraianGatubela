@@ -111,7 +111,8 @@ public:
 	private:
 		const_Iterador(const dicA<K,T>* d, Nodo* raiz): dic(d){
 			siguiente = raiz;
-			apilarHijos(siguiente, camino);
+			if(raiz!=NULL)
+				apilarHijos(siguiente, camino);
 		}
 		friend typename dicA<K,T>::const_Iterador dicA<K,T>::CrearIt2() const; 
 

@@ -45,30 +45,6 @@ public:
 	Conj<Registro> dameColumna(NombreCampo c);
 	dicA<Nat, Lista<estrAux> > dameColumnaNat();
 	dicT< Lista<estrAux> > dameColumnaString();
-	
-	//AUXILIARES:
-	
-	bool pertenece(NombreCampo c, Conj<NombreCampo> cc){
-		typename::Conj<NombreCampo>::Iterador it=cc.CrearIt();
-		bool res=false;
-		while(it.HaySiguiente()){
-			if(it.Siguiente()==c) res=true;
-			it.Avanzar();
-			}
-		return res;	
-		}
-		
-	bool hayIndiceString(){
-		bool res=false;
-		if(indiceS_.nombreC.size()!=0){res=true;}
-		return res;
-		}
-	bool hayIndiceNat(){
-		bool res=false;
-		if(indiceN_.nombreC.size()!=0){res=true;}
-		return res;
-		}			
-		
 
 private:
 	struct indiceNat{
@@ -94,6 +70,69 @@ private:
 	indiceNat indiceN_;
 	indiceString indiceS_;
 
+
+
+	//AUXILIARES:
+
+	bool pertenece(NombreCampo c, Conj<NombreCampo> cc){
+		typename::Conj<NombreCampo>::Iterador it=cc.CrearIt();
+		bool res=false;
+		while(it.HaySiguiente()){
+			if(it.Siguiente()==c) res=true;
+			it.Avanzar();
+			}
+		return res;	
+		}
+		
+	bool hayIndiceString(){
+		bool res=false;
+		if(indiceS_.nombreC.size()!=0){res=true;}
+		return res;
+		}
+	bool hayIndiceNat(){
+		bool res=false;
+		if(indiceN_.nombreC.size()!=0){res=true;}
+		return res;
+		}			
+	void indexarNatAux(){ //si no lo paso por referencia hay un error q no sabria bien como resolver
+		typename Lista<Registro>::Iterador it = registros_.CrearIt();
+		while(it.HaySiguiente()){
+			Nat valorADefinir = it.Siguiente().Significado(indiceN_.nombreC).dameNat();
+			
+			// creo la base para lo que viene
+			if(! indiceN_.valoresYreg.definido(valorADefinir)){
+					Lista<estrAux> vacia;
+					indiceN_.valoresYreg.definir(valorADefinir, vacia);
+			}
+			
+			if(hayIndiceString()){
+				String valorDelOtro = it.Siguiente().Significado(indiceS_.nombreC).dameString();
+				
+				typename Lista<estrAux>::Iterador itListEstr= indiceS_.valoresYreg.obtener(valorDelOtro).CrearIt();
+				//mientras no haya llegado a la estrAux que apuntan al mismo registro
+				while(itListEstr.HaySiguiente() && !(itListEstr.Siguiente().itReg.Siguiente() == it.Siguiente()) ){
+					itListEstr.Avanzar();
+				}
+				//Salen itListEstr.Siguiente().itReg.Siguiente()  e it apuntando al mismo registro
+				typename Lista<estrAux>::Iterador itAux = indiceN_.valoresYreg.obtener(valorADefinir).CrearItUlt();
+				estrAux estrTemp;
+				estrTemp.itReg= it;
+				estrTemp.itEstr= itListEstr;
+				itAux.AgregarComoSiguiente(estrTemp);
+				itListEstr.Siguiente().itEstr= itAux; 
+			}
+			else{
+				typename Lista<estrAux>::Iterador itAux = indiceN_.valoresYreg.obtener(valorADefinir).CrearItUlt();
+				estrAux estrTemp;
+				estrTemp.itReg= it;
+				itAux.AgregarComoSiguiente(estrTemp);
+			}
+			it.Avanzar();
+		}
+		///ACTUALIZAR MAXIMO Y MINIMO!!!
+	}	
+
+
 	bool esValidoIndiceNat(indiceNat i){
 		return i.nombreC.size()!=0;
 	}
@@ -101,7 +140,19 @@ private:
 		return i.nombreC.size()!=0;
 	}
 	
+	
 };
+
+
+
+
+
+
+
+
+
+
+
 
 tabla::tabla(): accesos_(0)
 {}//preguntar si esta bien que deje todos los valores por defecto
@@ -291,6 +342,15 @@ void tabla::borrarRegistro(Registro& crit){
 				}
 			}
 	}
+
+	void tabla::indexar(NombreCampo c){
+		if(tipoCampo(c)==NAT){
+			indiceN_.nombreC=c;
+			indexarNatAux();
+		}
+	}
+
+
 	
 			
  
