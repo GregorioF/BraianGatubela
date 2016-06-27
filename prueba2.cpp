@@ -22,6 +22,22 @@ int main(){
 	bool c= t.tipoCampo("hola")==STR;
 	std::cout<< c << std::endl;
 	t.indexar("hola");
+	t.indexar("asterix");
+	Conj<NombreCampo> indices= t.indices();
+	typename Conj<NombreCampo>::Iterador it = indices.CrearIt();
+	while(it.HaySiguiente()){
+		std::cout << it.Siguiente() << std::endl;
+		it.Avanzar();
+	}
+
+	//dicA<Nat, Lista<tabla::estrAux> > indiceNat = t.dameColumnaNat();
+	
+	Conj<Nat> claveDeINat= t.dameColumnaNat().claves();
+	typename Conj<Nat>::Iterador itINat= claveDeINat.CrearIt();
+	while(itINat.HaySiguiente()){
+		std::cout << itINat.Siguiente()<< std::endl;
+		itINat.Avanzar();
+	}
 
 	//////////////////////////////////////
 	

@@ -43,8 +43,8 @@ public:
 	Dato maximo(NombreCampo c);
 	Conj<Registro> buscar(Registro& crit);
 	Conj<Registro> dameColumna(NombreCampo c);
-	dicA<Nat, Lista<estrAux> > dameColumnaNat();
-	dicT< Lista<estrAux> > dameColumnaString();
+	dicA<Nat, Lista<estrAux> >& dameColumnaNat();
+	dicT< Lista<estrAux> >& dameColumnaString();
 
 private:
 	struct indiceNat{
@@ -131,6 +131,42 @@ private:
 		}
 		///ACTUALIZAR MAXIMO Y MINIMO!!!
 	}	
+	void indexarStringAux(){
+		typename Lista<Registro>::Iterador it = registros_.CrearIt();
+		while(it.HaySiguiente()){
+			String valorADefinir = it.Siguiente().Significado(indiceS_.nombreC).dameString();
+			
+			// creo la base para lo que viene
+			if(! indiceS_.valoresYreg.definido(valorADefinir)){
+					Lista<estrAux> vacia;
+					indiceS_.valoresYreg.definir(valorADefinir, vacia);
+			}
+			
+			if(hayIndiceNat()){
+				Nat valorDelOtro = it.Siguiente().Significado(indiceN_.nombreC).dameNat();
+				
+				typename Lista<estrAux>::Iterador itListEstr= indiceN_.valoresYreg.obtener(valorDelOtro).CrearIt();
+				//mientras no haya llegado a la estrAux que apuntan al mismo registro
+				while(itListEstr.HaySiguiente() && !(itListEstr.Siguiente().itReg.Siguiente() == it.Siguiente()) ){
+					itListEstr.Avanzar();
+				}
+				//Salen itListEstr.Siguiente().itReg.Siguiente()  e it apuntando al mismo registro
+				typename Lista<estrAux>::Iterador itAux = indiceS_.valoresYreg.obtener(valorADefinir).CrearItUlt();
+				estrAux estrTemp;
+				estrTemp.itReg= it;
+				estrTemp.itEstr= itListEstr;
+				itAux.AgregarComoSiguiente(estrTemp);
+				itListEstr.Siguiente().itEstr= itAux; 
+			}
+			else{
+				typename Lista<estrAux>::Iterador itAux = indiceS_.valoresYreg.obtener(valorADefinir).CrearItUlt();
+				estrAux estrTemp;
+				estrTemp.itReg= it;
+				itAux.AgregarComoSiguiente(estrTemp);
+			}
+			it.Avanzar();
+		}
+	}
 
 
 	bool esValidoIndiceNat(indiceNat i){
@@ -348,8 +384,19 @@ void tabla::borrarRegistro(Registro& crit){
 			indiceN_.nombreC=c;
 			indexarNatAux();
 		}
+		else{
+			indiceS_.nombreC=c;
+			indexarStringAux();
+		}
 	}
 
+	dicA<Nat, Lista<tabla::estrAux> >& tabla::dameColumnaNat(){
+		return indiceN_.valoresYreg;
+	}
+
+	dicT< Lista<tabla::estrAux> >& tabla::dameColumnaString(){
+		return indiceS_.valoresYreg;
+	}
 
 	
 			
