@@ -313,7 +313,6 @@ void tabla::borrarRegistro(Registro& crit){
 				indiceN_.maximo=indiceN_.valoresYreg.Maximo();
 				indiceN_.minimo=indiceN_.valoresYreg.Minimo();		
 			}
-
 		}
 		else{
 			if(indiceS_.valoresYreg.definido(significadoCrit.dameString())){
@@ -336,46 +335,43 @@ void tabla::borrarRegistro(Registro& crit){
 				indiceS_.minimo=indiceS_.valoresYreg.Minimo();		
 			}
 			}	
-		}
-		else{
-			typename Lista<Registro>::Iterador it=registros().CrearIt();
-			while(it.HaySiguiente()){
-				bool b=false;
-				if(tipoCampo(claveCrit) == NAT){
-					if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameNat()){
-						b=true;
-					}
-				}
-				else{
-					if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameString()){
-						b=true;
-					}
-					}
-				if(b){
-					Registro registroABorrar=it.Siguiente();
-					if(hayIndiceNat()){
-						Nat valor=registroABorrar.Significado(indiceN_.nombreC).dameNat();
-						typename Lista<estrAux>::Iterador itN=indiceN_.valoresYreg.obtener(valor).CrearIt();
-						while(itN.HaySiguiente() && !(itN.Siguiente().itReg.Siguiente() == registroABorrar)){
-							itN.Avanzar();
-							}
-						itN.EliminarSiguiente();	
-						}
-					if(hayIndiceString()){
-						String valor=registroABorrar.Significado(indiceS_.nombreC).dameString();
-						typename Lista<estrAux>::Iterador itS=indiceS_.valoresYreg.obtener(valor).CrearIt();
-						while(itS.HaySiguiente() && !(itS.Siguiente().itReg.Siguiente() == registroABorrar)){
-							itS.Avanzar();
-							}
-						itS.EliminarSiguiente();
-						}
-					it.Avanzar();
-					it.EliminarAnterior();
-					}
-				else{it.Avanzar();}	
-				
-				}
+	}
+	else{
+		typename Lista<Registro>::Iterador it=registros_.CrearIt();
+		while(it.HaySiguiente()){
+			bool b=false;
+			if(tipoCampo(claveCrit) == NAT) {
+				if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameNat())	b=true;
 			}
+			else {
+				if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameString()) b=true;
+			}
+						
+			if(b){
+				Registro registroABorrar=it.Siguiente();
+				if(hayIndiceNat()){
+					Nat valor=registroABorrar.Significado(indiceN_.nombreC).dameNat();
+					typename Lista<estrAux>::Iterador itN=indiceN_.valoresYreg.obtener(valor).CrearIt();
+					while(itN.HaySiguiente() && !(itN.Siguiente().itReg.Siguiente() == registroABorrar)){
+						itN.Avanzar();
+						}
+					itN.EliminarSiguiente();	
+					}
+				if(hayIndiceString()){
+					String valor=registroABorrar.Significado(indiceS_.nombreC).dameString();
+					typename Lista<estrAux>::Iterador itS=indiceS_.valoresYreg.obtener(valor).CrearIt();
+					while(itS.HaySiguiente() && !(itS.Siguiente().itReg.Siguiente() == registroABorrar)){
+						itS.Avanzar();
+						}
+					itS.EliminarSiguiente();
+					}
+				it.Avanzar();
+				it.EliminarAnterior();
+				}
+			else it.Avanzar();	
+			
+			}
+		}
 	}
 
 	void tabla::indexar(NombreCampo c){

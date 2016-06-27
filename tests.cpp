@@ -101,7 +101,9 @@ void testTabla(){
   ASSERT(t.registros().Longitud()==3);
   Registro crit;
   crit.Definir("LU", 43315);
+  ASSERT(t.tipoCampo("LU")==NAT);
   t.borrarRegistro(crit);
+  ASSERT(t.registros().Longitud() == 2);
 
 }
 
