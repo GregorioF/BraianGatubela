@@ -26,8 +26,8 @@ public:
 
 	tabla();
 	tabla( const tabla& otra);
-	~tabla();
-	void nuevaTabla(String nombre, Conj<NombreCampo>& claves, Registro& columnas);
+	~tabla(); 
+	void nuevaTabla(String nombre, Registro& columnas ,  Conj<NombreCampo>& claves);
 	String nombre();
 	Conj<NombreCampo> claves();
 	Conj<NombreCampo> indices();
@@ -41,11 +41,10 @@ public:
 	void indexar(NombreCampo c);
 	Dato minimo(NombreCampo c);
 	Dato maximo(NombreCampo c);
-	Conj<Registro> buscar(Registro& crit);
-	Conj<Registro> dameColumna(NombreCampo c);
-	dicA<Nat, Lista<estrAux> >& dameColumnaNat();
-	dicT< Lista<estrAux> >& dameColumnaString();
-
+	//Conj<Registro> dameColumna(NombreCampo c);
+	Conj<Nat> dameColumnaNat(NombreCampo c);
+	Conj<String> dameColumnaString(NombreCampo c);
+	
 private:
 	struct indiceNat{
 		indiceNat(): maximo(0), minimo(0){}
@@ -196,7 +195,7 @@ tabla::tabla(): accesos_(0)
 tabla::~tabla()
 {}
 
-void tabla::nuevaTabla(String n, Conj<NombreCampo>& c, Registro& col){
+void tabla::nuevaTabla(String n, Registro& col, Conj<NombreCampo>& c){
 	nombre_= n;
 	claves_=c;
 	typename ::Registro::Iterador it = col.CrearIt();
@@ -390,14 +389,48 @@ void tabla::borrarRegistro(Registro& crit){
 		}
 	}
 
-	dicA<Nat, Lista<tabla::estrAux> >& tabla::dameColumnaNat(){
-		return indiceN_.valoresYreg;
+	Dato tabla::minimo(NombreCampo c){
+		if(tipoCampo(c)==NAT && hayIndiceNat()){
+			Dato res (indiceN_.valoresYreg.Minimo());
+			return res;
+		}else if(hayIndiceString()){
+			Dato res (indiceS_.valoresYreg.Minimo());
+			return res;
+		}
+		Dato res (3);
+		return res;
+	}
+	Dato tabla::maximo(NombreCampo c){
+		if(tipoCampo(c)==NAT && hayIndiceNat()){
+			Dato res (indiceN_.valoresYreg.Maximo());
+			return res;
+		}else if(hayIndiceString()){
+			Dato res (indiceS_.valoresYreg.Maximo());
+			return res;
+		}
+		Dato res (3);
+		return res;
 	}
 
-	dicT< Lista<tabla::estrAux> >& tabla::dameColumnaString(){
-		return indiceS_.valoresYreg;
+	Conj<Nat> tabla::dameColumnaNat(NombreCampo c){
+		Conj<Nat> res;
+		typename Lista<Registro>::Iterador itReg= registros_.CrearIt();
+		while(itReg.HaySiguiente()){
+			res.AgregarRapido(itReg.Siguiente().Significado(c).dameNat());
+			itReg.Avanzar();
+		}
+		return res;
 	}
-
+	
+	Conj<String> tabla::dameColumnaString(NombreCampo c){
+		Conj<String> res;
+		typename Lista<Registro>::Iterador itReg= registros_.CrearIt();
+		while(itReg.HaySiguiente()){
+			res.AgregarRapido(itReg.Siguiente().Significado(c).dameString());
+			itReg.Avanzar();
+		}
+		return res;
+	}
 	
 			
  

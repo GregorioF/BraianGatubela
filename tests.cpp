@@ -3,9 +3,13 @@
 
 #include "Driver.h"
 #include "mini_test.h"
+#include "tabla.h"
 
 #include <string>
 #include <iostream>
+
+using namespace aed2;
+using namespace std;
 
 void ejemplo_simple()
 {
@@ -45,11 +49,66 @@ void ejemplo_simple()
 
   // ...
 }
+void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  Dato ds [] ){
+  typename Conj<NombreCampo>::Iterador it = campos.CrearIt();
+  int i=0;
+  while(it.HaySiguiente())it.Avanzar();
+  while(it.HayAnterior()){
+   // cout << it.Anterior() << endl;
+    r1.Definir(it.Anterior(), ds[i]);
+    it.Retroceder();
+    i++;
+  }
+}
+
+void testTabla(){
+  Registro col;
+  col.Definir("nombre",Dato("perez"));
+  col.Definir("apellido",Dato("perez"));
+  col.Definir("LU",Dato(1));
+  col.Definir("Materia",Dato("perez"));
+  col.Definir("Nota",Dato(10));
+  col.Definir("eMail",Dato("perez"));
+  Conj<NombreCampo> claves;
+  claves.Agregar("LU");
+  claves.Agregar("eMail");
+  tabla t;
+  t.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
+  ASSERT(t.claves() == claves);
+  ASSERT(t.indices().Cardinal() == 0);
+  Conj<NombreCampo> campos = t.campos();
+  typename Conj<NombreCampo>::Iterador itCampos= campos.CrearIt();
+  /*while(itCampos.HaySiguiente()){
+    std::cout << itCampos.Siguiente() << std::endl;
+    itCampos.Avanzar();
+  }*/  //Andan bien pero no quiero que me los escriba siempre...
+  ASSERT(t.cantDeAccesos() ==  0);
+  ASSERT(t.registros().Longitud() == 0);
+
+  Registro r1;
+  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(00015), Dato("Aed2"), Dato(10), Dato("laTurraDeSaavedra@turra.com")};
+  DefinirRegistro(r1,campos, arregloDato);
+  Registro r2;
+  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(00115), Dato("Aed2"), Dato(10), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
+  DefinirRegistro(r2, campos, arregloDato2);
+  Registro r3;
+  Dato arregloDato3 [6] = {Dato("Gregorio"), Dato("Freidin"), Dato(43315), Dato("Aed2"), Dato(11), Dato("tuvieja@tuAbuelatamb.com")};
+  DefinirRegistro(r3, campos, arregloDato3);
+  t.agregarRegistro(r1);
+  t.agregarRegistro(r2);
+  t.agregarRegistro(r3);
+  ASSERT(t.cantDeAccesos()== 3);
+  ASSERT(t.registros().Longitud()==3);
+  Registro crit;
+  crit.Definir("LU", 43315);
+  t.borrarRegistro(crit);
+
+}
 
 int main(int argc, char **argv)
 {
-  RUN_TEST( ejemplo_simple );
-
+  //RUN_TEST( ejemplo_simple );
+  RUN_TEST(testTabla);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
    * las funcionalidades de cada módulo.                              *

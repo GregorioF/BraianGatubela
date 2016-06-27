@@ -6,7 +6,7 @@
 
 using namespace aed2;
 int main(){
-	Registro r;
+/*	Registro r;
 	Nat x= 3;
 	Dato a (43);
 	Dato s ("pachorro");
@@ -17,7 +17,7 @@ int main(){
 	Conj<NombreCampo> claves;
 	claves.AgregarRapido("hola");
 	claves.AgregarRapido("asterix");
-	t.nuevaTabla("t1",claves,r);
+	t.nuevaTabla("t1",r, claves);
 	t.agregarRegistro(r);
 	bool c= t.tipoCampo("hola")==STR;
 	std::cout<< c << std::endl;
@@ -29,18 +29,29 @@ int main(){
 		std::cout << it.Siguiente() << std::endl;
 		it.Avanzar();
 	}
-
+*/
 	//dicA<Nat, Lista<tabla::estrAux> > indiceNat = t.dameColumnaNat();
 	
-	Conj<Nat> claveDeINat= t.dameColumnaNat().claves();
-	typename Conj<Nat>::Iterador itINat= claveDeINat.CrearIt();
-	while(itINat.HaySiguiente()){
-		std::cout << itINat.Siguiente()<< std::endl;
-		itINat.Avanzar();
-	}
-
+	int arreglo [5]= {1,2,3,4,5};
 	//////////////////////////////////////
-	
+	Registro col;
+  	col.Definir("nombre",Dato("perez"));
+  	col.Definir("apellido",Dato("perez"));
+  	col.Definir("LU",Dato(1));
+  	col.Definir("Materia",Dato("perez"));
+  	col.Definir("Nota",Dato(10));
+  	col.Definir("eMail",Dato("perez"));
+  	Conj<NombreCampo> campos;
+  	typename Registro::Iterador it = col.CrearIt();
+	while(it.HaySiguiente()){
+		campos.AgregarRapido(it.SiguienteClave());
+		it.Avanzar();
+	}
+	typename Conj<NombreCampo>::Iterador it1= campos.CrearIt();
+	while(it1.HaySiguiente()){
+		std::cout<< it1.Siguiente() << std::endl;
+		it1.Avanzar();
+	}
 
 	return 0;
 }
