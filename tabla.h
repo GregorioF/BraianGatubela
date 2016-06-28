@@ -255,7 +255,9 @@ void tabla::agregarRegistro(Registro& r){
 		typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).dameNat()).CrearItUlt();
 		typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
 		estrAux yaMeMuero;
+		if(itRegistros.HayAnterior()){
 		itRegistros.Retroceder();
+		}
 		yaMeMuero.itReg = itRegistros;
 		it.AgregarComoSiguiente(yaMeMuero);
 		///actualizo maximo y minimo
@@ -273,7 +275,9 @@ void tabla::agregarRegistro(Registro& r){
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			if(itRegistros.HayAnterior()){
 			itRegistros.Retroceder();
+			}
 			yaMeMuero.itReg= itRegistros;
 			yaMeMuero.itEstr= it;
 			it1.AgregarComoSiguiente(yaMeMuero);
@@ -283,7 +287,9 @@ void tabla::agregarRegistro(Registro& r){
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			if(itRegistros.HayAnterior()){
 			itRegistros.Retroceder();
+			}
 			yaMeMuero.itReg= itRegistros;
 			it1.AgregarComoSiguiente(yaMeMuero);
 		}
