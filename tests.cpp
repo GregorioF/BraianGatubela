@@ -86,13 +86,13 @@ void testTabla(){
   ASSERT(t.registros().Longitud() == 0);
 
   Registro r1;
-  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(10), Dato("laTurraDeSaavedra@turra.com")};
+  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(5), Dato("laTurraDeSaavedra@turra.com")};
   DefinirRegistro(r1,campos, arregloDato);
   Registro r2;
-  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(11215), Dato("Aed2"), Dato(10), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
+  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(11215), Dato("Aed2"), Dato(6), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
   DefinirRegistro(r2, campos, arregloDato2);
   Registro r3;
-  Dato arregloDato3 [6] = {Dato("Gregorio"), Dato("Freidin"), Dato(43315), Dato("Aed2"), Dato(11), Dato("tuvieja@tuAbuelatamb.com")};
+  Dato arregloDato3 [6] = {Dato("Gregorio"), Dato("Freidin"), Dato(43315), Dato("Aed2"), Dato(5), Dato("tuvieja@tuAbuelatamb.com")};
   DefinirRegistro(r3, campos, arregloDato3);
   t.agregarRegistro(r1);
   t.agregarRegistro(r2);
@@ -107,11 +107,33 @@ void testTabla(){
   t.agregarRegistro(r3);
   t.indexar("LU");
   typename dicA<Nat, Lista<estrAux> >::Iterador itIndice = t.dameColumnaNatParaTest().CrearIt();
+  cout << "\nLos valores de LU son: "<<endl;
   while(itIndice.HaySiguiente()){
-    cout << itIndice.SiguienteClave() << endl;
+    cout << itIndice.SiguienteClave() << ", ";
     itIndice.Avanzar();
   }
-  t.borrarRegistro(crit);  
+  t.borrarRegistro(crit);
+  //y no funciona escribir itIndice= t.dameColumnaNatParaTest().CrearIt();  me hace crear otro iterador
+  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice2 = t.dameColumnaNatParaTest().CrearIt();
+  cout << "\nY despues de borrar uno son: "<<endl;
+  while(itIndice2.HaySiguiente()){
+    cout << itIndice2.SiguienteClave() << ", ";
+    itIndice2.Avanzar();
+  }   
+
+  /* DESOMENTANDO ESTO DEJA DE FUNCIONAR DESP DEL TEXTO QUE DICE  "DESPUES DE BORRAR UNO SON:...."
+
+  Registro r4;
+  Dato arregloDato4 [6]={Dato("Brian"), Dato("Gatubela"), Dato(11315), Dato("Orga2"), Dato(6), Dato("Braian.Gatubela@GroopieDeBatman.com")};
+  t.agregarRegistro(r4);
+  DefinirRegistro(r4, campos, arregloDato4);
+  t.agregarRegistro(r3);
+  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice3 = t.dameColumnaNatParaTest().CrearIt();
+  cout << "\nY despues de Agregar dos registros son: "<<endl;
+  while(itIndice3.HaySiguiente()){
+    cout << itIndice3.SiguienteClave() << ", ";
+    itIndice3.Avanzar();
+  } */ 
 }
 
 int main(int argc, char **argv)
