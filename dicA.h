@@ -72,6 +72,11 @@ public:
 		T& SiguienteSignificado();
 		///////////////////////////
 		void Avanzar();
+		void operator=(const Iterador& otro){
+			siguiente= otro.siguiente;
+			camino=otro.camino;
+			dic= otro.dic;
+		}
 	private:
 		Iterador(dicA<K,T>* d, Nodo* raiz): dic(d){
 			siguiente = raiz;

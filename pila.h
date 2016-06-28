@@ -18,6 +18,13 @@ public:
 	int size();
 	bool EsVacia()const;
 	void vaciar();
+	void operator =(const pila<T>& otra){
+		Nodo* actual = primero;
+		while(actual!=NULL){
+			apilar(*(actual->elem));
+			actual=actual->siguiente;
+		}
+	}
 
 private:
 	struct Nodo{
