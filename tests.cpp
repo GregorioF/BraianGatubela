@@ -114,11 +114,11 @@ void testTabla(){
   }
   t.borrarRegistro(crit);
   //y no funciona escribir itIndice= t.dameColumnaNatParaTest().CrearIt();  me hace crear otro iterador
-  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice2 = t.dameColumnaNatParaTest().CrearIt();
+  itIndice = t.dameColumnaNatParaTest().CrearIt();
   cout << "\nY despues de borrar uno son: "<<endl;
-  while(itIndice2.HaySiguiente()){
-    cout << itIndice2.SiguienteClave() << ", ";
-    itIndice2.Avanzar();
+  while(itIndice.HaySiguiente()){
+    cout << itIndice.SiguienteClave() << ", ";
+    itIndice.Avanzar();
   }   
 
   /* DESOMENTANDO ESTO DEJA DE FUNCIONAR DESP DEL TEXTO QUE DICE  "DESPUES DE BORRAR UNO SON:...."
@@ -133,7 +133,7 @@ void testTabla(){
   while(itIndice3.HaySiguiente()){
     cout << itIndice3.SiguienteClave() << ", ";
     itIndice3.Avanzar();
-  } */ 
+  }*/ 
 }
 
 int main(int argc, char **argv)
