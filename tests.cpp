@@ -86,10 +86,10 @@ void testTabla(){
   ASSERT(t.registros().Longitud() == 0);
 
   Registro r1;
-  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(00015), Dato("Aed2"), Dato(10), Dato("laTurraDeSaavedra@turra.com")};
+  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(10), Dato("laTurraDeSaavedra@turra.com")};
   DefinirRegistro(r1,campos, arregloDato);
   Registro r2;
-  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(00115), Dato("Aed2"), Dato(10), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
+  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(11215), Dato("Aed2"), Dato(10), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
   DefinirRegistro(r2, campos, arregloDato2);
   Registro r3;
   Dato arregloDato3 [6] = {Dato("Gregorio"), Dato("Freidin"), Dato(43315), Dato("Aed2"), Dato(11), Dato("tuvieja@tuAbuelatamb.com")};
@@ -104,7 +104,14 @@ void testTabla(){
   ASSERT(t.tipoCampo("LU")==NAT);
   t.borrarRegistro(crit);
   ASSERT(t.registros().Longitud() == 2);
-
+  t.agregarRegistro(r3);
+  t.indexar("LU");
+  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice = t.dameColumnaNatParaTest().CrearIt();
+  while(itIndice.HaySiguiente()){
+    cout << itIndice.SiguienteClave() << endl;
+    itIndice.Avanzar();
+  }
+  t.borrarRegistro(crit);  
 }
 
 int main(int argc, char **argv)

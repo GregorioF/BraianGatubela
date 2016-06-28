@@ -9,10 +9,7 @@
 
 using namespace aed2;
 
-class tabla
-{
-public:
-	struct estrAux
+struct estrAux
 	{
 		estrAux(){}
 		estrAux( const estrAux& otra){
@@ -22,6 +19,11 @@ public:
 		typename Lista<Registro>::Iterador itReg;
 		typename Lista<estrAux>::Iterador itEstr;		
 	};
+
+class tabla
+{
+public:
+	
 
 
 	tabla();
@@ -44,6 +46,7 @@ public:
 	//Conj<Registro> dameColumna(NombreCampo c);
 	Conj<Nat> dameColumnaNat(NombreCampo c);
 	Conj<String> dameColumnaString(NombreCampo c);
+	dicA<Nat, Lista<estrAux> > dameColumnaNatParaTest();
 	
 private:
 	struct indiceNat{
@@ -293,7 +296,7 @@ void tabla::borrarRegistro(Registro& crit){
 	NombreCampo claveCrit=itCrit.SiguienteClave();
 	Dato significadoCrit=itCrit.SiguienteSignificado();
 	if(pertenece(claveCrit,indices())){
-		if(tipoCampo(claveCrit)){
+		if(tipoCampo(claveCrit)==NAT){
 			if(indiceN_.valoresYreg.definido(significadoCrit.dameNat())){
 				typename Lista<estrAux>::Iterador it=indiceN_.valoresYreg.obtener(significadoCrit.dameNat()).CrearIt();
 				while(it.HaySiguiente()){
@@ -428,6 +431,9 @@ void tabla::borrarRegistro(Registro& crit){
 		return res;
 	}
 	
+	dicA<Nat, Lista<estrAux> > tabla::dameColumnaNatParaTest(){
+		return indiceN_.valoresYreg;
+	}
 			
  
 #endif

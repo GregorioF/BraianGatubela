@@ -47,6 +47,7 @@ public:
 	const_Iterador CrearIt2() const;
 	///////////////////////////
 	bool operator ==( const dicA<K,T> &otro) ;  //definida
+ 	//void operator =(const dicA<K,T>& otro);
 	///////////////////////////
 	K Minimo(); 		//definida
 	///////////////////////////
@@ -255,6 +256,7 @@ dicA<K,T>::dicA(): raiz(NULL)
 ///////////////////////////////////////////////////////////
 template<typename K, typename T> 
 dicA<K,T>::dicA (const dicA<K,T>& otro){
+	raiz=NULL;
 	typename dicA<K,T>::const_Iterador it= otro.CrearIt2();
 	while(it.HaySiguiente()){
 		definir(it.SiguienteClave(), it.SiguienteSignificado());
@@ -445,6 +447,15 @@ bool dicA<K,T>::operator==(const dicA<K,T>& otro){
 	}
 	return true;
 }
+
+/*template<typename K, typename T>
+void dicA<K,T>::operator =(const dicA<K,T>& otro){
+	typename dicA<K,T>::const_Iterador it= otro.CrearIt2();
+	while(it.HaySiguiente()){
+		definir(it.SiguienteClave(), it.SiguienteSignificado());
+		it.Avanzar();
+	}
+}*/
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>

@@ -2,7 +2,7 @@
 #define REGISTRO_H
 
 #include "Conj.h"
-#include "Driver.cpp"
+#include "Driver.h"
 
 using namespace aed2;
 

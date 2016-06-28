@@ -364,7 +364,7 @@ string dicT<T>::Minimo(){
 		actual = raiz->hijos[i];
 		i++;
 	}
-	while(tieneUnHijosMasChico(actual) || !esPalabraFunc(actual)){
+	while(!esPalabraFunc(actual)){
 		Nodo* aux=NULL;
 		i=0;
 		while(aux==NULL){
@@ -385,7 +385,7 @@ string dicT<T>::Maximo(){
 		actual = raiz->hijos[i];
 		i--;
 	}
-	while(tieneUnHijosMasGrande(actual) || !esPalabraFunc(actual)){
+	while(!esPalabraFunc(actual)){
 		Nodo* aux=NULL;
 		i=255;
 		while(aux==NULL){

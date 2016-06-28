@@ -15,6 +15,9 @@ void devolverBool(bool b){
 	if(b) cout << "True"<< endl;
 	else cout << "False"<< endl;
 }
+void f(dicA<string, int> p){
+
+}
 
 
 int main(){
@@ -69,7 +72,7 @@ int main(){
 		itDic_const.Avanzar();
 	}	
 
-
+	dicA<string, int>b = edades;
 
 	return 0;
 }	
