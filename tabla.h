@@ -44,8 +44,8 @@ public:
 	Dato minimo(NombreCampo c);
 	Dato maximo(NombreCampo c);
 	//Conj<Registro> dameColumna(NombreCampo c);
-	Conj<Nat> dameColumnaNat(NombreCampo c);
-	Conj<String> dameColumnaString(NombreCampo c);
+	dicA<Nat, Lista<estrAux> >* dameColumnaNat();
+	dicT< Lista<estrAux> >* dameColumnaString();
 	dicA<Nat, Lista<estrAux> > dameColumnaNatParaTest();
 	
 private:
@@ -255,6 +255,7 @@ void tabla::agregarRegistro(Registro& r){
 		typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).dameNat()).CrearItUlt();
 		typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
 		estrAux yaMeMuero;
+		itRegistros.Retroceder();
 		yaMeMuero.itReg = itRegistros;
 		it.AgregarComoSiguiente(yaMeMuero);
 		///actualizo maximo y minimo
@@ -272,6 +273,7 @@ void tabla::agregarRegistro(Registro& r){
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			itRegistros.Retroceder();
 			yaMeMuero.itReg= itRegistros;
 			yaMeMuero.itEstr= it;
 			it1.AgregarComoSiguiente(yaMeMuero);
@@ -281,6 +283,7 @@ void tabla::agregarRegistro(Registro& r){
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			itRegistros.Retroceder();
 			yaMeMuero.itReg= itRegistros;
 			it1.AgregarComoSiguiente(yaMeMuero);
 		}
@@ -411,23 +414,13 @@ void tabla::borrarRegistro(Registro& crit){
 		return res;
 	}
 
-	Conj<Nat> tabla::dameColumnaNat(NombreCampo c){
-		Conj<Nat> res;
-		typename Lista<Registro>::Iterador itReg= registros_.CrearIt();
-		while(itReg.HaySiguiente()){
-			res.AgregarRapido(itReg.Siguiente().Significado(c).dameNat());
-			itReg.Avanzar();
-		}
+	dicA<Nat, Lista<estrAux> >* tabla::dameColumnaNat(){
+		dicA<Nat, Lista<estrAux> >* res= &indiceN_.valoresYreg;
 		return res;
 	}
 	
-	Conj<String> tabla::dameColumnaString(NombreCampo c){
-		Conj<String> res;
-		typename Lista<Registro>::Iterador itReg= registros_.CrearIt();
-		while(itReg.HaySiguiente()){
-			res.AgregarRapido(itReg.Siguiente().Significado(c).dameString());
-			itReg.Avanzar();
-		}
+	dicT<Lista<estrAux> >* tabla::dameColumnaString(){
+		dicT<Lista<estrAux> >* res= &indiceS_.valoresYreg;
 		return res;
 	}
 	
