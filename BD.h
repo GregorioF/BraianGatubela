@@ -31,8 +31,8 @@ public:
 	
 	typename::Lista<NombreTabla>::Iterador tablas();
 	
-	tabla dameTabla(NombreTabla);
-	
+	tabla* dameTabla(NombreTabla);
+		
 	bool hayJoin(NombreTabla, NombreTabla);
 	
 	NombreCampo campoJoin(NombreTabla, NombreTabla); 
@@ -214,17 +214,17 @@ void BD::agregarTabla(tabla t){
 		tablaMax=t.nombre();
 		}
 	else{
-		if(t.cantDeAccesos()> dameTabla(tablaMaxima()).cantDeAccesos()){
+		if(t.cantDeAccesos()> dameTabla(tablaMaxima())->cantDeAccesos()){
 			tablaMax=t.nombre();
 			}
 		}	
 	}
 	
 void BD::insertarEntrada(Registro r, NombreTabla s){
-	tabla t=dameTabla(s);
-	t.agregarRegistro(r);
-	tabla maxima=dameTabla(tablaMaxima());
-	if( t.cantDeAccesos()> maxima.cantDeAccesos()){
+	tabla* t=dameTabla(s);
+	t->agregarRegistro(r);
+	tabla* maxima=dameTabla(tablaMaxima());
+	if( t->cantDeAccesos()> maxima->cantDeAccesos()){
 		tablaMax=s;
 		}
 	typename::Lista<NombreTabla>::Iterador it=tablas();
@@ -248,8 +248,8 @@ void BD::insertarEntrada(Registro r, NombreTabla s){
 	}	
 	
 void BD::borrar(Registro r, const NombreTabla s){
-	tabla t=dameTabla(s);
-	t.borrarRegistro(r);
+	tabla* t=dameTabla(s);
+	t->borrarRegistro(r);
 	typename::Lista<NombreTabla>::Iterador it=tablas();
 	while(it.HaySiguiente()){
 	if(hayJoin(s,it.Siguiente())){
@@ -269,7 +269,7 @@ void BD::borrar(Registro r, const NombreTabla s){
 		it.Avanzar();
 		}
 	if(tablaMaxima()!=s){
-		if(dameTabla(tablaMaxima()).cantDeAccesos() < dameTabla(s).cantDeAccesos()){
+		if(dameTabla(tablaMaxima())->cantDeAccesos() < dameTabla(s)->cantDeAccesos()){
 			tablaMax=s;
 		}
 	}	
@@ -277,11 +277,11 @@ void BD::borrar(Registro r, const NombreTabla s){
 	
 typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
 	String j="Join";
-	tabla t1=dameTabla(s1);
-	tabla t2=dameTabla(s2);
+	tabla* t1=dameTabla(s1);
+	tabla* t2=dameTabla(s2);
 	Registro columnas;
-	crearCamposTablaJoin(columnas,t1.campos(),t1);
-	crearCamposTablaJoin(columnas,t2.campos(),t2);
+	crearCamposTablaJoin(columnas,t1->campos(),*t1);
+	crearCamposTablaJoin(columnas,t2->campos(),*t2);
 	Conj<NombreCampo> clave;
 	clave.AgregarRapido(c);
 	tabla j1=tabla();
@@ -296,46 +296,56 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	
 	tabla* nuevojoin= &joins_.obtener(s1).obtener(s2).join_;
 	(*nuevojoin).indexar(c);
-	bool campoJoinIndexadoT1=pertenece(c,t1.indices());
-	bool campoJoinIndexadoT2=pertenece(c,t2.indices());
+	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
+	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
 	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-		if(t1.tipoCampo(c)){
-			dicA<Nat,Lista<estrAux> >* columnaT2=t2.dameColumnaNat();
-			typename Lista<Registro>::Iterador regis=t1.registros().CrearIt();
+		if(t1->tipoCampo(c)){
+			dicA<Nat,Lista<estrAux> >* columnaT2=t2->dameColumnaNat();
+			typename Lista<Registro>::Iterador regis=t1->registros().CrearIt();
 			Lista<Registro> registt;
 			while(regis.HaySiguiente()){
 				Registro r;
 				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
 				registt.AgregarAtras(r);
 			}
-			generarRegistrosJoin(registt,columnaT2,c,(*nuevojoin));
+			generarRegistrosJoinN(registt,*columnaT2,c,(*nuevojoin));
 		}
 		else{
-			dicT<Lista<estrAux> >* columnaT2=t2.dameColumnaString();
-			Lista<Registro> regis=Lista(t1.registros);
-			generarRegistrosJoin(regis,ColumnaT2,c,(*nuevojoin));
+			dicT<Lista<estrAux> >* columnaT2=t2->dameColumnaString();
+			typename Lista<Registro>::Iterador regis=t1->registros().CrearIt();
+			Lista<Registro> registt;
+			while(regis.HaySiguiente()){
+				Registro r;
+				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
+				registt.AgregarAtras(r);
+			}
+			generarRegistrosJoinT(registt, *columnaT2,c,(*nuevojoin));
+		}
 		}
 	else{
-		typename::Lista<Registro>::Iterador it=t1.registros().CrearIt();
+		typename::Lista<Registro>::Iterador it=t1->registros().CrearIt();
 		while(it.HaySiguiente()){
-			typename::Lista<Registro>::Iterador it2=t2.registros().CrearIt();
+			typename::Lista<Registro>::Iterador it2=t2->registros().CrearIt();
 			while(it2.HaySiguiente()){
 				if(it.Siguiente().Significado(c) == it2.Siguiente().Significado(c)){
 					Registro r1=Registro(it.Siguiente());
 					Registro r2=Registro(it2.Siguiente());
-					(*nuevojoin).agregarRegistro(merge(r1,r2));
+					Registro rMergeado=merge(r1,r2);
+					nuevojoin->agregarRegistro(rMergeado);
 				}
 				it2.Avanzar();
 			}
 			it.Avanzar();
 		}
 	}
+	typename Lista<Registro>::Iterador itRegistros=(*nuevojoin).registros().CrearIt();
+	return itRegistros;
 }	
 	
 void BD::borrarJoin(NombreTabla s1, NombreTabla s2){
-	dicT<NombreTabla,TuplaJoin> aux=joins_.obtener(s1);
+	dicT<tuplaJoin> aux=joins_.obtener(s1);
 	aux.borrar(s2);
-	if(aux.Vacio?()) joins_.borrar(s1);
+	if(aux.esVacio()) joins_.borrar(s1);
 	}	
 
 typename::Lista<NombreTabla>::Iterador BD::tablas(){
@@ -343,8 +353,8 @@ typename::Lista<NombreTabla>::Iterador BD::tablas(){
 	return res;
 	}
 	
-tabla& BD::dameTabla(NombreTabla s){
-	tabla res=tablasPuntero.Significado(s);
+tabla* BD::dameTabla(NombreTabla s){
+	tabla* res=&tablasPuntero.obtener(s);
 	return res;
 	}	
 	
@@ -356,15 +366,15 @@ bool BD::hayJoin(NombreTabla s1,NombreTabla s2){
 	return res;	
 	}	
 NombreCampo BD::campoJoin(NombreTabla s1,NombreTabla s2){
-	dicT<NombreTabla,TuplaJoin> aux=joins_.obtener(s1);
-	TuplaJoin tj=aux.obtener(s2);
-	NombreCampo res=tj.CampoJ_;
+	dicT<tuplaJoin> aux=joins_.obtener(s1);
+	tuplaJoin tj=aux.obtener(s2);
+	NombreCampo res=tj.campoJ_;
 	return res;
 	}	
 	
 typename::Lista<Registro>::Iterador BD::registros(NombreTabla s){
-	tabla &t = dameTabla(s);
-	typename::Lista<Registro>::Iterador res=(*t).registros.CrearIt() //fijarse si hay que desrefernciarlo o no
+	tabla* t = dameTabla(s);
+	typename::Lista<Registro>::Iterador res=t->registros().CrearIt();
 	return res;
 	}	
 /*	
@@ -388,13 +398,14 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 }
 */	
 Nat BD::cantDeAccesos(NombreTabla s){
-	tabla &t=dameTabla(s);
-	Nat res=(*t).cantDeAccesos();
+	tabla* t=dameTabla(s);
+	Nat res=t->cantDeAccesos();
 	return res;
 	}	
 	
 NombreTabla BD::tablaMaxima(){
 	NombreTabla res=tablaMax;
+	return res;
 	}	
 	
 //Lista<Registro> BD::buscar(NombreTabla s, Registro criterio){}	
