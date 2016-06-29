@@ -49,25 +49,19 @@ public:
 	
 		
 private:
-	struct modificaciones
-	{
-		modificaciones(bool b, Registro r): seAgrego_(b), reg_(r){}	
-		bool seAgrego_;
-		Registro reg_;	
-	
-	};
 	
 	
 	struct tuplaJoin
 	{
 		tuplaJoin(NombreCampo c, tabla j){
 		campoJ_=c;
-		mod_=Lista<modificaciones>();
+		mod_=Lista<pair<bool,Registro> >();
 		join_=j;			
-		}	
+		}
+		tuplaJoin(){}	
 		
 		NombreCampo campoJ_;
-		Lista<BD::modificaciones> mod_;
+		Lista<pair<bool, Registro> > mod_;
 		tabla join_;		
 		
 	};
@@ -111,7 +105,7 @@ private:
 		}				
 	}
 	
-	Registro dameRegistroT(dicT<Lista<estrAux> > d, String s){
+	Registro dameRegistroT(dicT<Lista<estrAux> >& d, String s){
 		Registro res;
 		Lista<estrAux> aux=d.obtener(s);
 		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
@@ -119,7 +113,7 @@ private:
 		res=eaux.itReg.Siguiente();
 		return res;
 		}
-	Registro dameRegistroN(dicA<Nat, Lista<estrAux> > d,Nat n){
+	Registro dameRegistroN(dicA<Nat, Lista<estrAux> >& d,Nat n){
 		Registro res;
 		Lista<estrAux> aux=d.obtener(n);
 		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
@@ -138,29 +132,30 @@ private:
 		return res;	
 		}
 		
-	void generarRegistrosJoinT(Lista<Registro> cr, dicT<Lista<estrAux> > cT2, NombreCampo campoJoin, tabla join){
+	void generarRegistrosJoinT(Lista<Registro> cr, dicT<Lista<estrAux> >* cT2, NombreCampo campoJoin, tabla* join){
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente();
 			String valorCampoJoin= rT1.Significado(campoJoin).dameString();
-			if(cT2.definido(valorCampoJoin)){
-				Registro rT2= dameRegistroT(cT2,valorCampoJoin);
+			if(cT2->definido(valorCampoJoin)){
+				
+				Registro rT2= dameRegistroT(*cT2,valorCampoJoin);
 				Registro rMergeado=merge(rT1,rT2); //X COPIA AMBOS!
-				join.agregarRegistro(rMergeado);
+				join->agregarRegistro(rMergeado);
 				}
 			it.Avanzar();	
 			}
 		}
 		
-	void generarRegistrosJoinN(Lista<Registro> cr, dicA<Nat,Lista<estrAux> > cT2, NombreCampo campoJoin, tabla join){
+	void generarRegistrosJoinN(Lista<Registro> cr, dicA<Nat,Lista<estrAux> >* cT2, NombreCampo campoJoin, tabla* join){
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente();
 			Nat valorCampoJoin= rT1.Significado(campoJoin).dameNat();
-			if(cT2.definido(valorCampoJoin)){
-				Registro rT2=dameRegistroN(cT2,valorCampoJoin);
+			if(cT2->definido(valorCampoJoin)){
+				Registro rT2=dameRegistroN(*cT2,valorCampoJoin);
 				Registro rMergeado=merge(rT1,rT2); //X COPIA AMBOS!
-				join.agregarRegistro(rMergeado);
+				join->agregarRegistro(rMergeado);
 				}
 			it.Avanzar();	
 			}
@@ -178,13 +173,13 @@ BD::~BD(){
 	typename Lista<NombreTabla>::Iterador itT1=tablas_.CrearIt();	
 		while(itT1.HaySiguiente()){
 			if(joins_.definido(itT1.Siguiente())){
-				dicT<tuplaJoin> dTJ=joins_.obtener(itT1.Siguiente());
+				dicT<tuplaJoin>* dTJ=&joins_.obtener(itT1.Siguiente());
 				typename Lista<NombreTabla>::Iterador itT2=tablas_.CrearIt();	
 				while(itT2.HaySiguiente()){
-				if(dTJ.definido(itT2.Siguiente())){
-					tuplaJoin tJ=dTJ.obtener(itT2.Siguiente());
+				if(dTJ->definido(itT2.Siguiente())){
+					tuplaJoin* tJ=&dTJ->obtener(itT2.Siguiente());
 				//	ELIMINAR(tJ);
-					dTJ.borrar(itT2.Siguiente());
+					dTJ->borrar(itT2.Siguiente());
 					}
 				itT2.Avanzar();	
 				}
@@ -195,8 +190,8 @@ BD::~BD(){
 		
 	typename Lista<NombreTabla>::Iterador itT=tablas_.CrearIt();
 	while(itT.HaySiguiente()){
-		tabla t=tablasPuntero.obtener(itT.Siguiente());
-	//	ELIMINAR(t);
+		tabla* t=&(tablasPuntero.obtener(itT.Siguiente()));
+	//	ELIMINAR(*t);
 		itT.Avanzar();
 		tablasPuntero.borrar(itT.Anterior());		
 		}
@@ -230,17 +225,17 @@ void BD::insertarEntrada(Registro r, NombreTabla s){
 	typename::Lista<NombreTabla>::Iterador it=tablas();
 	while(it.HaySiguiente()){
 		if(hayJoin(s,it.Siguiente())){
-			dicT<tuplaJoin> dT=joins_.obtener(s);
-			tuplaJoin tJ=dT.obtener(it.Siguiente());
-			typename::Lista<modificaciones>::Iterador modif= tJ.mod_.CrearIt();
-			modificaciones m=modificaciones(true,r);
+			dicT<tuplaJoin>* dT=&joins_.obtener(s);
+			tuplaJoin* tJ=&dT->obtener(it.Siguiente());
+			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			pair<bool,Registro> m=make_pair(true,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		if(hayJoin(it.Siguiente(),s)){
-			dicT<tuplaJoin> dT=joins_.obtener(it.Siguiente());
-			tuplaJoin tJ=dT.obtener(s);
-			typename::Lista<modificaciones>::Iterador modif= tJ.mod_.CrearIt();
-			modificaciones m=modificaciones(true,r);
+			dicT<tuplaJoin>* dT=&joins_.obtener(it.Siguiente());
+			tuplaJoin* tJ=&dT->obtener(s);
+			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			pair<bool,Registro>  m=make_pair(true,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		it.Avanzar();
@@ -253,17 +248,17 @@ void BD::borrar(Registro r, const NombreTabla s){
 	typename::Lista<NombreTabla>::Iterador it=tablas();
 	while(it.HaySiguiente()){
 	if(hayJoin(s,it.Siguiente())){
-			dicT<tuplaJoin> dT=joins_.obtener(s);
-			tuplaJoin tJ=dT.obtener(it.Siguiente());
-			typename::Lista<modificaciones>::Iterador modif= tJ.mod_.CrearIt();
-			modificaciones m=modificaciones(false,r);
+			dicT<tuplaJoin>* dT=&joins_.obtener(s);
+			tuplaJoin* tJ=&dT->obtener(it.Siguiente());
+			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			pair<bool,Registro>  m=make_pair(false,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		if(hayJoin(it.Siguiente(),s)){
-			dicT<tuplaJoin> dT=joins_.obtener(it.Siguiente());
-			tuplaJoin tJ=dT.obtener(s);
-			typename::Lista<modificaciones>::Iterador modif= tJ.mod_.CrearIt();
-			modificaciones m=modificaciones(false,r);
+			dicT<tuplaJoin>* dT=&joins_.obtener(it.Siguiente());
+			tuplaJoin* tJ=&dT->obtener(s);
+			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			pair<bool,Registro>  m=make_pair(false,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		it.Avanzar();
@@ -308,7 +303,7 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
 				registt.AgregarAtras(r);
 			}
-			generarRegistrosJoinN(registt,*columnaT2,c,(*nuevojoin));
+			generarRegistrosJoinN(registt,columnaT2,c,nuevojoin);
 		}
 		else{
 			dicT<Lista<estrAux> >* columnaT2=t2->dameColumnaString();
@@ -319,7 +314,7 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
 				registt.AgregarAtras(r);
 			}
-			generarRegistrosJoinT(registt, *columnaT2,c,(*nuevojoin));
+			generarRegistrosJoinT(registt, columnaT2,c,nuevojoin);
 		}
 		}
 	else{
@@ -343,9 +338,9 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 }	
 	
 void BD::borrarJoin(NombreTabla s1, NombreTabla s2){
-	dicT<tuplaJoin> aux=joins_.obtener(s1);
-	aux.borrar(s2);
-	if(aux.esVacio()) joins_.borrar(s1);
+	dicT<tuplaJoin>* aux=&joins_.obtener(s1);
+	aux->borrar(s2);
+	if(aux->esVacio()) joins_.borrar(s1);
 	}	
 
 typename::Lista<NombreTabla>::Iterador BD::tablas(){
@@ -383,12 +378,12 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	tabla &t2=dameTabla(s2);
 	bool campoJoinIndexadoT1=pertenece((*t1).indices(),c);
 	bool campoJoinIndexadoT2=pertenece((*t2).indices(),c);
-	Lista<modificaciones> modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+	Lista<pair<bool,Registro> > modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
 	tabla join=joins_.obtener(s1).obtener(s2).join_;
 	while(modif.HaySiguiente()){
-		bool seAgrego=modif.Siguiente().seAgrego_;
+		bool seAgrego=modif.Siguiente().first();
 		if(seAgrego){
-			Registro registroAgregado=modif.Siguiente().reg_;
+			Registro registroAgregado=modif.Siguiente().second();
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
 				AUXILIARES PARA NAT Y STRING
 			}
