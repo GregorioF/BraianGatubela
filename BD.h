@@ -183,7 +183,7 @@ BD::~BD(){
 				while(itT2.HaySiguiente()){
 				if(dTJ.definido(itT2.Siguiente())){
 					tuplaJoin tJ=dTJ.obtener(itT2.Siguiente());
-					ELIMINAR(tJ);
+				//	ELIMINAR(tJ);
 					dTJ.borrar(itT2.Siguiente());
 					}
 				itT2.Avanzar();	
@@ -196,7 +196,7 @@ BD::~BD(){
 	typename Lista<NombreTabla>::Iterador itT=tablas_.CrearIt();
 	while(itT.HaySiguiente()){
 		tabla t=tablasPuntero.obtener(itT.Siguiente());
-		ELIMINAR(t);
+	//	ELIMINAR(t);
 		itT.Avanzar();
 		tablasPuntero.borrar(itT.Anterior());		
 		}
