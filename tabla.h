@@ -47,6 +47,7 @@ public:
 	dicA<Nat, Lista<estrAux> >* dameColumnaNat();
 	dicT< Lista<estrAux> >* dameColumnaString();
 	dicA<Nat, Lista<estrAux> > dameColumnaNatParaTest();
+
 	
 private:
 	struct indiceNat{
@@ -433,6 +434,7 @@ void tabla::borrarRegistro(Registro& crit){
 	dicA<Nat, Lista<estrAux> > tabla::dameColumnaNatParaTest(){
 		return indiceN_.valoresYreg;
 	}
-			
+	
+	
  
 #endif
