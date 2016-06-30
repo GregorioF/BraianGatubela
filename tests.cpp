@@ -485,7 +485,8 @@ dato d3;
 d3.nuevoDatoString(t);
 r.Definir(c3,d3);
 
-Conj<NombreCampo> camp=r.campos();
+Conj<NombreCampo> camp;
+camp.Agregar(c);
 tabla n;
 String t1="TABLA";
 n.nuevaTabla(t1,r,camp);
@@ -592,6 +593,7 @@ ASSERT(n.registros().Longitud() == 0);
 
 BD b;
 b.agregarTabla(n);
+
   Registro col;
   dato d22;
   String s="perez";
@@ -614,6 +616,7 @@ b.agregarTabla(n);
   tabla t2;
   t2.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
   b.agregarTabla(t2);
+  
   b.insertarEntrada(r,"TABLA");
   ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
   ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
@@ -655,6 +658,21 @@ b.agregarTabla(n);
 	cout<< "Cantidad de accesos a 'TABLA': " << b.cantDeAccesos("TABLA")<<endl;
 	cout<< "Cant de registros tabla en BD: " <<b.dameTabla("TABLA")->registros().Longitud() <<endl;
 	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
+	
+	Registro r20;
+	r20.Definir(c,d);
+	r20.Definir(c1,d6);
+	r20.Definir("nombre",charo);
+	Conj<NombreCampo> clv;
+	clv.Agregar(c);
+	tabla t3;
+	t3.nuevaTabla("Tabla2", r20, clv);
+	b.agregarTabla(t3);
+	b.insertarEntrada(r20, "Tabla2");
+	b.dameTabla("TABLA")->indexar(c);
+	b.dameTabla("Tabla2")->indexar(c);
+	cout<<"HASTA ACA NO HAy ERROR"<< endl;
+	//b.generarVistaJoin("TABLA","Tabla2",c);
 }
 
 int main(int argc, char **argv)

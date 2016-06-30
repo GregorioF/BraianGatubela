@@ -91,12 +91,13 @@ private:
 		}
 	bool hayIndiceNat(){
 		bool res=false;
-		if(indiceN_.nombreC.size()!=0){res=true;}
+		if(indiceN_.nombreC.size()!= 0){res=true;}
 		return res;
 		}			
 	void indexarNatAux(){ //si no lo paso por referencia hay un error q no sabria bien como resolver
 		typename Lista<Registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
+			
 			Nat valorADefinir = it.Siguiente().Significado(indiceN_.nombreC).valorNat();
 			
 			// creo la base para lo que viene
@@ -107,7 +108,6 @@ private:
 			
 			if(hayIndiceString()){
 				String valorDelOtro = it.Siguiente().Significado(indiceS_.nombreC).valorString();
-				
 				typename Lista<estrAux>::Iterador itListEstr= indiceS_.valoresYreg.obtener(valorDelOtro).CrearIt();
 				//mientras no haya llegado a la estrAux que apuntan al mismo registro
 				while(itListEstr.HaySiguiente() && !(itListEstr.Siguiente().itReg.Siguiente() == it.Siguiente()) ){
@@ -130,7 +130,8 @@ private:
 			it.Avanzar();
 		}
 		///ACTUALIZAR MAXIMO Y MINIMO!!!
-	}	
+	}
+		
 	void indexarStringAux(){
 		typename Lista<Registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
@@ -230,7 +231,10 @@ private:
 
 
 tabla::tabla(): accesos_(0)
-{}//preguntar si esta bien que deje todos los valores por defecto
+{
+	indiceN_.nombreC= string();
+	indiceS_.nombreC=string();
+	}//preguntar si esta bien que deje todos los valores por defecto
 
 tabla::tabla( const tabla& otra){
 	accesos_=otra.accesos_;

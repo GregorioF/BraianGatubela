@@ -83,15 +83,18 @@ private:
 		return res;	
 	}
 	
-	void crearCamposTablaJoin(Registro r, Conj<NombreCampo> c, tabla t){
-		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
+	void crearCamposTablaJoin(Registro& r, Conj<NombreCampo> c, tabla* t){
+		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();	
+			
 		while(it.HaySiguiente()){
-			if(t.tipoCampo(it.Siguiente())){
+			
+			if(t->tipoCampo(it.Siguiente()) == NAT){
 				Nat n=0;
 				dato d;
 				d.nuevoDatoNat(n);
 				if(!r.Definido(it.Siguiente())){
 				r.DefinirRapido(it.Siguiente(),d);
+				
 				}
 			}
 			else{
@@ -100,9 +103,11 @@ private:
 				d.nuevoDatoString(s);
 				if(!r.Definido(it.Siguiente())){
 				r.DefinirRapido(it.Siguiente(),d);
+	
 				}
 			}
 			it.Avanzar();
+
 		}				
 	}
 	
@@ -231,9 +236,16 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	String j="Join";
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
+	
 	Registro columnas;
-	crearCamposTablaJoin(columnas,t1->campos(),*t1);
-	crearCamposTablaJoin(columnas,t2->campos(),*t2);
+	
+	Conj<NombreCampo> c1=t1->campos();
+	Conj<NombreCampo> c2=t2->campos();
+	
+	crearCamposTablaJoin(columnas,c1,t1);
+	
+	crearCamposTablaJoin(columnas,c2,t2);
+	
 	Conj<NombreCampo> clave;
 	clave.AgregarRapido(c);
 	tabla j1=tabla();
@@ -243,34 +255,50 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 		dicT<tuplaJoin> dicTJ;
 		joins_.definir(s1,dicTJ);
 	}
+	
 	tuplaJoin t=tuplaJoin(c,j1);
 	joins_.obtener(s1).definir(s2,t);
 	
 	tabla* nuevojoin= &joins_.obtener(s1).obtener(s2).join_;
-	(*nuevojoin).indexar(c);
+	
+	nuevojoin->indexar(c);
+	
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
+	
 	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
+		
 		t1->AuxiliarGVJ(*t2, *nuevojoin, c);
+		cout << nuevojoin->registros().Longitud()<<endl;
 		}
 	else{
-		typename::Lista<Registro>::Iterador it=t1->registros().CrearIt();
+		Lista<Registro> listReg=t1->registros();
+		typename::Lista<Registro>::Iterador it=listReg.CrearIt();
 		while(it.HaySiguiente()){
-			typename::Lista<Registro>::Iterador it2=t2->registros().CrearIt();
-			while(it2.HaySiguiente()){
+			
+			Lista<Registro> listReg2=t2->registros();
+					
+			typename::Lista<Registro>::Iterador it2=listReg2.CrearIt();
+					
+			while(it2.HaySiguiente()){				
 				if(it.Siguiente().Significado(c) == it2.Siguiente().Significado(c)){
 					Registro r1=Registro(it.Siguiente());
 					Registro r2=Registro(it2.Siguiente());
-					Registro rMergeado=merge(r1,r2);
-					nuevojoin->agregarRegistro(rMergeado);
+					r1.mergear(r2);
+					nuevojoin->agregarRegistro(r1);
 				}
 				it2.Avanzar();
 			}
+			
 			it.Avanzar();
 		}
+		
 	}
-	typename Lista<Registro>::Iterador itRegistros=(*nuevojoin).registros().CrearIt();
+	
+	typename Lista<Registro>::Iterador itRegistros=nuevojoin->registros().CrearIt();
+	cout<<"HASTA ACA NO HAy ERROR"<< endl;
 	return itRegistros;
+	
 }	
 	
 void BD::borrarJoin(NombreTabla s1, NombreTabla s2){
