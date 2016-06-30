@@ -184,7 +184,7 @@ public:
 	return res;	
 }
 
-bool borrar(Registro crit, Registro reg){
+	bool borrar(Registro crit, Registro reg){
 	bool res=true;
 	Conj<NombreCampo> c=crit.campos();
 	res=coincidenTodos(crit, c, reg);

@@ -41,8 +41,8 @@ public:
 	void agregarRegistro(Registro& r);
 	void borrarRegistro(Registro& crit);
 	void indexar(NombreCampo c);
-	Dato minimo(NombreCampo c);
-	Dato maximo(NombreCampo c);
+	dato minimo(NombreCampo c);
+	dato maximo(NombreCampo c);
 	void AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c);
 
 	
@@ -97,7 +97,7 @@ private:
 	void indexarNatAux(){ //si no lo paso por referencia hay un error q no sabria bien como resolver
 		typename Lista<Registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
-			Nat valorADefinir = it.Siguiente().Significado(indiceN_.nombreC).dameNat();
+			Nat valorADefinir = it.Siguiente().Significado(indiceN_.nombreC).valorNat();
 			
 			// creo la base para lo que viene
 			if(! indiceN_.valoresYreg.definido(valorADefinir)){
@@ -106,7 +106,7 @@ private:
 			}
 			
 			if(hayIndiceString()){
-				String valorDelOtro = it.Siguiente().Significado(indiceS_.nombreC).dameString();
+				String valorDelOtro = it.Siguiente().Significado(indiceS_.nombreC).valorString();
 				
 				typename Lista<estrAux>::Iterador itListEstr= indiceS_.valoresYreg.obtener(valorDelOtro).CrearIt();
 				//mientras no haya llegado a la estrAux que apuntan al mismo registro
@@ -134,7 +134,7 @@ private:
 	void indexarStringAux(){
 		typename Lista<Registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
-			String valorADefinir = it.Siguiente().Significado(indiceS_.nombreC).dameString();
+			String valorADefinir = it.Siguiente().Significado(indiceS_.nombreC).valorString();
 			
 			// creo la base para lo que viene
 			if(! indiceS_.valoresYreg.definido(valorADefinir)){
@@ -143,7 +143,7 @@ private:
 			}
 			
 			if(hayIndiceNat()){
-				Nat valorDelOtro = it.Siguiente().Significado(indiceN_.nombreC).dameNat();
+				Nat valorDelOtro = it.Siguiente().Significado(indiceN_.nombreC).valorNat();
 				
 				typename Lista<estrAux>::Iterador itListEstr= indiceN_.valoresYreg.obtener(valorDelOtro).CrearIt();
 				//mientras no haya llegado a la estrAux que apuntan al mismo registro
@@ -198,11 +198,11 @@ private:
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente();
-			String valor= rT1.Significado(c).dameString();
+			String valor= rT1.Significado(c).valorString();
 			if(d.definido(valor)){
-				
+				Registro rCopia=Registro(rT1);
 				Registro rT2= dameRegistroT(d,valor);
-				mergear(rT1,rT2); //X COPIA AMBOS!
+				rCopia.mergear(rT2); //X COPIA AMBOS!
 				join.agregarRegistro(rT1);
 				}
 			it.Avanzar();	
@@ -212,11 +212,11 @@ private:
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente(); //COPIA??
-			Nat valor= rT1.Significado(c).dameNat();
+			Nat valor= rT1.Significado(c).valorNat();
 			if(d.definido(valor)){
-				
+				Registro rCopia=Registro(rT1);
 				Registro rT2= dameRegistroN(d,valor);
-				mergear(rT1,rT2); //X COPIA AMBOS!
+				rCopia.mergear(rT2); //X COPIA AMBOS!
 				join.agregarRegistro(rT1);
 				}
 			it.Avanzar();	
@@ -259,7 +259,10 @@ void tabla::nuevaTabla(String n, Registro& col, Conj<NombreCampo>& c){
 	claves_=c;
 	typename ::Registro::Iterador it = col.CrearIt();
 	while(it.HaySiguiente()){
-			campos_.Definir(it.SiguienteClave(), it.SiguienteSignificado().tipo());
+			if(it.SiguienteSignificado().tipo()){
+			campos_.Definir(it.SiguienteClave(), NAT);
+		}
+		else{campos_.Definir(it.SiguienteClave(), STR);}
 			it.Avanzar();
 	}
 }
@@ -304,11 +307,11 @@ void tabla::agregarRegistro(Registro& r){
 	accesos_++;
 	registros_.AgregarAtras(r);
 	if(hayIndiceNat()){
-		if(!(indiceN_.valoresYreg.definido(r.Significado(indiceN_.nombreC).dameNat()))){
+		if(!(indiceN_.valoresYreg.definido(r.Significado(indiceN_.nombreC).valorNat()))){
 			Lista<estrAux> comelaFrancisco; // no se llama aux :DD
-			indiceN_.valoresYreg.definir(r.Significado(indiceN_.nombreC).dameNat(), comelaFrancisco);
+			indiceN_.valoresYreg.definir(r.Significado(indiceN_.nombreC).valorNat(), comelaFrancisco);
 		}
-		typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).dameNat()).CrearItUlt();
+		typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).valorNat()).CrearItUlt();
 		typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
 		estrAux yaMeMuero;
 		if(itRegistros.HayAnterior()){
@@ -317,18 +320,18 @@ void tabla::agregarRegistro(Registro& r){
 		yaMeMuero.itReg = itRegistros;
 		it.AgregarComoSiguiente(yaMeMuero);
 		///actualizo maximo y minimo
-		if(r.Significado(indiceN_.nombreC).dameNat()>indiceN_.maximo) indiceN_.maximo=r.Significado(indiceN_.nombreC).dameNat();
-		if(r.Significado(indiceN_.nombreC).dameNat()<indiceN_.minimo) indiceN_.minimo=r.Significado(indiceN_.nombreC).dameNat();
+		if(r.Significado(indiceN_.nombreC).valorNat()>indiceN_.maximo) indiceN_.maximo=r.Significado(indiceN_.nombreC).valorNat();
+		if(r.Significado(indiceN_.nombreC).valorNat()<indiceN_.minimo) indiceN_.minimo=r.Significado(indiceN_.nombreC).valorNat();
 	}//end if
 
 	if(hayIndiceString()){
-		if(!(indiceS_.valoresYreg.definido(r.Significado(indiceS_.nombreC).dameString()))){
+		if(!(indiceS_.valoresYreg.definido(r.Significado(indiceS_.nombreC).valorString()))){
 			Lista<estrAux> aux; 
-			indiceS_.valoresYreg.definir(r.Significado(indiceS_.nombreC).dameString(), aux);
+			indiceS_.valoresYreg.definir(r.Significado(indiceS_.nombreC).valorString(), aux);
 		}
 		if(esValidoIndiceNat(indiceN_)){
-			typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).dameNat()).CrearItUlt();
-			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
+			typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).valorNat()).CrearItUlt();
+			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).valorString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
 			if(itRegistros.HayAnterior()){
@@ -340,7 +343,7 @@ void tabla::agregarRegistro(Registro& r){
 			it.Anterior().itEstr= it1;  
 		}
 		else{
-			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();
+			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).valorString()).CrearItUlt();
 			estrAux yaMeMuero;
 			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
 			if(itRegistros.HayAnterior()){
@@ -350,26 +353,26 @@ void tabla::agregarRegistro(Registro& r){
 			it1.AgregarComoSiguiente(yaMeMuero);
 		}
 		//actualizo maximo y minimo
-		if(r.Significado(indiceS_.nombreC).dameString()>indiceS_.maximo) indiceS_.maximo=r.Significado(indiceS_.nombreC).dameString();
-		if(r.Significado(indiceS_.nombreC).dameString()<indiceS_.minimo) indiceS_.minimo=r.Significado(indiceS_.nombreC).dameString();
+		if(r.Significado(indiceS_.nombreC).valorString()>indiceS_.maximo) indiceS_.maximo=r.Significado(indiceS_.nombreC).valorString();
+		if(r.Significado(indiceS_.nombreC).valorString()<indiceS_.minimo) indiceS_.minimo=r.Significado(indiceS_.nombreC).valorString();
 	}
 }
 
 void tabla::borrarRegistro(Registro& crit){
 	accesos_++;
-	typename Dicc<NombreCampo, Dato>::Iterador itCrit=crit.CrearIt();
+	typename Registro::Iterador itCrit=crit.CrearIt();
 	NombreCampo claveCrit=itCrit.SiguienteClave();
-	Dato significadoCrit=itCrit.SiguienteSignificado();
+	dato significadoCrit=itCrit.SiguienteSignificado();
 	if(pertenece(claveCrit,indices())){
 		if(tipoCampo(claveCrit)==NAT){
-			if(indiceN_.valoresYreg.definido(significadoCrit.dameNat())){
-				typename Lista<estrAux>::Iterador it=indiceN_.valoresYreg.obtener(significadoCrit.dameNat()).CrearIt();
+			if(indiceN_.valoresYreg.definido(significadoCrit.valorNat())){
+				typename Lista<estrAux>::Iterador it=indiceN_.valoresYreg.obtener(significadoCrit.valorNat()).CrearIt();
 				while(it.HaySiguiente()){
 					if(indices().Cardinal()==2){
-						Dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceS_.nombreC);
+						dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceS_.nombreC);
 						it.Siguiente().itEstr.EliminarSiguiente();
-						if(indiceS_.valoresYreg.obtener(datoDelOtroIndice.dameString()).EsVacia()){
-							indiceS_.valoresYreg.borrar(datoDelOtroIndice.dameString());
+						if(indiceS_.valoresYreg.obtener(datoDelOtroIndice.valorString()).EsVacia()){
+							indiceS_.valoresYreg.borrar(datoDelOtroIndice.valorString());
 							indiceS_.maximo=indiceS_.valoresYreg.Maximo();
 							indiceS_.minimo=indiceS_.valoresYreg.Minimo();
 							}	
@@ -377,20 +380,20 @@ void tabla::borrarRegistro(Registro& crit){
 					it.Siguiente().itReg.EliminarSiguiente();
 					it.Avanzar();
 					}
-				indiceN_.valoresYreg.borrar(significadoCrit.dameNat());	
+				indiceN_.valoresYreg.borrar(significadoCrit.valorNat());	
 				indiceN_.maximo=indiceN_.valoresYreg.Maximo();
 				indiceN_.minimo=indiceN_.valoresYreg.Minimo();		
 			}
 		}
 		else{
-			if(indiceS_.valoresYreg.definido(significadoCrit.dameString())){
-				typename Lista<estrAux>::Iterador it=indiceS_.valoresYreg.obtener(significadoCrit.dameString()).CrearIt();
+			if(indiceS_.valoresYreg.definido(significadoCrit.valorString())){
+				typename Lista<estrAux>::Iterador it=indiceS_.valoresYreg.obtener(significadoCrit.valorString()).CrearIt();
 				while(it.HaySiguiente()){
 					if(indices().Cardinal()==2){
-						Dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceN_.nombreC);
+						dato datoDelOtroIndice= it.Siguiente().itReg.Siguiente().Significado(indiceN_.nombreC);
 						it.Siguiente().itEstr.EliminarSiguiente();
-						if(indiceN_.valoresYreg.obtener(datoDelOtroIndice.dameNat()).EsVacia()){
-							indiceN_.valoresYreg.borrar(datoDelOtroIndice.dameNat());
+						if(indiceN_.valoresYreg.obtener(datoDelOtroIndice.valorNat()).EsVacia()){
+							indiceN_.valoresYreg.borrar(datoDelOtroIndice.valorNat());
 							indiceN_.maximo=indiceN_.valoresYreg.Maximo();
 							indiceN_.minimo=indiceN_.valoresYreg.Minimo();
 							}	
@@ -398,7 +401,7 @@ void tabla::borrarRegistro(Registro& crit){
 					it.Siguiente().itReg.EliminarSiguiente();
 					it.Avanzar();
 					}
-				indiceS_.valoresYreg.borrar(significadoCrit.dameString());	
+				indiceS_.valoresYreg.borrar(significadoCrit.valorString());	
 				indiceS_.maximo=indiceS_.valoresYreg.Maximo();
 				indiceS_.minimo=indiceS_.valoresYreg.Minimo();		
 			}
@@ -409,16 +412,16 @@ void tabla::borrarRegistro(Registro& crit){
 		while(it.HaySiguiente()){
 			bool b=false;
 			if(tipoCampo(claveCrit) == NAT) {
-				if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameNat())	b=true;
+				if(it.Siguiente().Significado(claveCrit).valorNat() == significadoCrit.valorNat())	b=true;
 			}
 			else {
-				if(it.Siguiente().Significado(claveCrit) == significadoCrit.dameString()) b=true;
+				if(it.Siguiente().Significado(claveCrit).valorString() == significadoCrit.valorString()) b=true;
 			}
 						
 			if(b){
 				Registro registroABorrar=it.Siguiente();
 				if(hayIndiceNat()){
-					Nat valor=registroABorrar.Significado(indiceN_.nombreC).dameNat();
+					Nat valor=registroABorrar.Significado(indiceN_.nombreC).valorNat();
 					typename Lista<estrAux>::Iterador itN=indiceN_.valoresYreg.obtener(valor).CrearIt();
 					while(itN.HaySiguiente() && !(itN.Siguiente().itReg.Siguiente() == registroABorrar)){
 						itN.Avanzar();
@@ -426,7 +429,7 @@ void tabla::borrarRegistro(Registro& crit){
 					itN.EliminarSiguiente();	
 					}
 				if(hayIndiceString()){
-					String valor=registroABorrar.Significado(indiceS_.nombreC).dameString();
+					String valor=registroABorrar.Significado(indiceS_.nombreC).valorString();
 					typename Lista<estrAux>::Iterador itS=indiceS_.valoresYreg.obtener(valor).CrearIt();
 					while(itS.HaySiguiente() && !(itS.Siguiente().itReg.Siguiente() == registroABorrar)){
 						itS.Avanzar();
@@ -453,27 +456,28 @@ void tabla::borrarRegistro(Registro& crit){
 		}
 	}
 
-	Dato tabla::minimo(NombreCampo c){
+	dato tabla::minimo(NombreCampo c){
 		if(tipoCampo(c)==NAT && hayIndiceNat()){
-			Dato res (indiceN_.valoresYreg.Minimo());
+			dato res;
+			res.nuevoDatoNat(indiceN_.valoresYreg.Minimo());
 			return res;
 		}else if(hayIndiceString()){
-			Dato res (indiceS_.valoresYreg.Minimo());
+			dato res;
+			res.nuevoDatoString(indiceS_.valoresYreg.Minimo());
 			return res;
 		}
-		Dato res (3);
-		return res;
 	}
-	Dato tabla::maximo(NombreCampo c){
+	dato tabla::maximo(NombreCampo c){
 		if(tipoCampo(c)==NAT && hayIndiceNat()){
-			Dato res (indiceN_.valoresYreg.Maximo());
+			dato res;
+			res.nuevoDatoNat(indiceN_.valoresYreg.Maximo());
 			return res;
 		}else if(hayIndiceString()){
-			Dato res (indiceS_.valoresYreg.Maximo());
+			dato res;
+			res.nuevoDatoString(indiceS_.valoresYreg.Maximo());
 			return res;
 		}
-		Dato res (3);
-		return res;
+
 	}
 
 		
@@ -482,8 +486,8 @@ void tabla::borrarRegistro(Registro& crit){
 			Lista<Registro> registt;
 			while(regis.HaySiguiente()){
 				Registro r;
-				Conj<NombreCampo> camp=campos(regis.Siguiente());
-				copiarCampos(camp,r,regis.Siguiente());
+				Conj<NombreCampo> camp=regis.Siguiente().campos();
+				r.copiarCampos(camp,regis.Siguiente());
 				registt.AgregarAtras(r);
 			}
 			if(tipoCampo(c)==NAT){

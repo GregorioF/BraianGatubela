@@ -5,7 +5,6 @@
 #include "dicT.h"
 #include "dicA.h"
 #include "tabla.h"
-#include "registro.h"
 #include <iostream>
 
 using namespace aed2;
@@ -89,14 +88,16 @@ private:
 		while(it.HaySiguiente()){
 			if(t.tipoCampo(it.Siguiente())){
 				Nat n=0;
-				Dato d=Dato(n);
+				dato d;
+				d.nuevoDatoNat(n);
 				if(!r.Definido(it.Siguiente())){
 				r.DefinirRapido(it.Siguiente(),d);
 				}
 			}
 			else{
 				String s;
-				Dato d=Dato(s);
+				dato d;
+				d.nuevoDatoString(s);
 				if(!r.Definido(it.Siguiente())){
 				r.DefinirRapido(it.Siguiente(),d);
 				}
@@ -133,7 +134,7 @@ BD::~BD(){
 				typename Lista<NombreTabla>::Iterador itT2=tablas_.CrearIt();	
 				while(itT2.HaySiguiente()){
 				if(dTJ->definido(itT2.Siguiente())){
-					tuplaJoin* tJ=&dTJ->obtener(itT2.Siguiente());
+				//	tuplaJoin* tJ=&dTJ->obtener(itT2.Siguiente());
 				//	ELIMINAR(tJ);
 					dTJ->borrar(itT2.Siguiente());
 					}
@@ -146,7 +147,7 @@ BD::~BD(){
 		
 	typename Lista<NombreTabla>::Iterador itT=tablas_.CrearIt();
 	while(itT.HaySiguiente()){
-		tabla* t=&(tablasPuntero.obtener(itT.Siguiente()));
+	//	tabla* t=&(tablasPuntero.obtener(itT.Siguiente()));
 	//	ELIMINAR(*t);
 		itT.Avanzar();
 		tablasPuntero.borrar(itT.Anterior());		

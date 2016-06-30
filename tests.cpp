@@ -1,9 +1,7 @@
 // compilar usando:
 //   g++ -o tests tests.cpp Driver.cpp <lista de archivos *.cpp propios>
 
-#include "Driver.h"
 #include "mini_test.h"
-#include "tabla.h"
 #include "BD.h"
 
 #include <string>
@@ -12,7 +10,7 @@
 using namespace aed2;
 using namespace std;
 
-void ejemplo_simple()
+/*void ejemplo_simple()
 {
   aed2::Driver bd;
   ASSERT_EQ(bd.tablas().Cardinal(), 0);
@@ -50,7 +48,8 @@ void ejemplo_simple()
 
   // ...
 }
-void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  Dato ds [] ){
+*/
+void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
   typename Conj<NombreCampo>::Iterador it = campos.CrearIt();
   int i=0;
   while(it.HaySiguiente())it.Avanzar();
@@ -64,12 +63,21 @@ void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  Dato ds [] ){
 
 void testTabla(){
   Registro col;
-  col.Definir("nombre",Dato("perez"));
-  col.Definir("apellido",Dato("perez"));
-  col.Definir("LU",Dato(1));
-  col.Definir("Materia",Dato("perez"));
-  col.Definir("Nota",Dato(10));
-  col.Definir("eMail",Dato("perez"));
+  dato d;
+  String s="perez";
+  d.nuevoDatoString(s);
+  col.Definir("nombre",d);
+  col.Definir("apellido",d);
+  dato d1;
+  Nat n=1;
+  d1.nuevoDatoNat(n);
+  col.Definir("LU",d1);
+  col.Definir("Materia",d);
+  dato d2;
+  Nat n1=10;
+  d2.nuevoDatoNat(n1);
+  col.Definir("Nota",d2);
+  col.Definir("eMail",d);
   Conj<NombreCampo> claves;
   claves.Agregar("LU");
   claves.Agregar("eMail");
@@ -78,7 +86,7 @@ void testTabla(){
   ASSERT(t.claves() == claves);
   ASSERT(t.indices().Cardinal() == 0);
   Conj<NombreCampo> campos = t.campos();
-  typename Conj<NombreCampo>::Iterador itCampos= campos.CrearIt();
+  //typename Conj<NombreCampo>::Iterador itCampos= campos.CrearIt();
   /*while(itCampos.HaySiguiente()){
     std::cout << itCampos.Siguiente() << std::endl;
     itCampos.Avanzar();
@@ -87,13 +95,73 @@ void testTabla(){
   ASSERT(t.registros().Longitud() == 0);
 
   Registro r1;
-  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(5), Dato("laTurraDeSaavedra@turra.com")};
+  dato charo;
+  String s1="Charo";
+  charo.nuevoDatoString(s1);
+  dato olivera;
+  String s2="Olivera";
+  olivera.nuevoDatoString(s2);
+  dato lU;
+  Nat n3=11115;
+  lU.nuevoDatoNat(n3);
+  dato nota;
+  Nat n4=5;
+  nota.nuevoDatoNat(n4);
+  dato materia;
+  String s3="AED2";
+  materia.nuevoDatoString(s3);
+  dato email;
+  String s4="laTurraDeSaavedra@turra.com";
+  email.nuevoDatoString(s4);
+  
+  dato arregloDato [6]= {charo, olivera,  lU, materia, nota, email};
   DefinirRegistro(r1,campos, arregloDato);
+  
+  
   Registro r2;
-  Dato arregloDato2 [6]={Dato("lucia"), Dato("romero"), Dato(11215), Dato("Aed2"), Dato(6), Dato("siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com")};
+  dato lucia;
+  String s5="Lucia";
+  lucia.nuevoDatoString(s5);
+  dato romero;
+  String s6="Romero";
+  romero.nuevoDatoString(s6);
+  dato lU1;
+  Nat n5=27215;
+  lU1.nuevoDatoNat(n5);
+  dato nota1;
+  Nat n6=6;
+  nota1.nuevoDatoNat(n6);
+  dato materia1;
+  String s7="AED2";
+  materia1.nuevoDatoString(s7);
+  dato email1;
+  String s8="siLaVidaTeDaLimones_HaceteUnChurro@fumancha.com";
+  email1.nuevoDatoString(s8);
+  
+  dato arregloDato2 [6]={lucia,romero, lU1, materia1, nota1, email1};
   DefinirRegistro(r2, campos, arregloDato2);
   Registro r3;
-  Dato arregloDato3 [6] = {Dato("Gregorio"), Dato("Freidin"), Dato(43315), Dato("Aed2"), Dato(5), Dato("tuvieja@tuAbuelatamb.com")};
+  
+  dato gregorio;
+  String s9="Gregorio";
+  gregorio.nuevoDatoString(s9);
+  dato freidin;
+  String s10="Freidin";
+  freidin.nuevoDatoString(s10);
+  dato lU2;
+  Nat n7=43315;
+  lU2.nuevoDatoNat(n7);
+  dato nota2;
+  Nat n8=10;
+  nota2.nuevoDatoNat(n8);
+  dato materia2;
+  String s11="AED2";
+  materia2.nuevoDatoString(s11);
+  dato email2;
+  String s12="tuvieja@tuAbuelatamb.com";
+  email2.nuevoDatoString(s12);
+  
+  dato arregloDato3 [6] = {gregorio, freidin, lU2, materia2, nota2, email2};
   DefinirRegistro(r3, campos, arregloDato3);
   t.agregarRegistro(r1);
   t.agregarRegistro(r2);
@@ -101,64 +169,69 @@ void testTabla(){
   ASSERT(t.cantDeAccesos()== 3);
   ASSERT(t.registros().Longitud()==3);
   Registro crit;
-  crit.Definir("LU", 43315);
+  dato d3;
+  Nat num=43315;
+  d3.nuevoDatoNat(num);
+  NombreCampo cc="LU";
+  crit.Definir(cc, d3);
   ASSERT(t.tipoCampo("LU")==NAT);
   t.borrarRegistro(crit);
   ASSERT(t.registros().Longitud() == 2);
   t.agregarRegistro(r3);
   t.indexar("LU");
-  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice = t.dameColumnaNatParaTest().CrearIt();
-  cout << "\nLos valores de LU son: "<<endl;
-  while(itIndice.HaySiguiente()){
-    cout << itIndice.SiguienteClave() << ", ";
-    itIndice.Avanzar();
-  }
-  t.borrarRegistro(crit);
-  //y no funciona escribir itIndice= t.dameColumnaNatParaTest().CrearIt();  me hace crear otro iterador
-  itIndice = t.dameColumnaNatParaTest().CrearIt();
-  cout << "\nY despues de borrar uno son: "<<endl;
-  while(itIndice.HaySiguiente()){
-    cout << itIndice.SiguienteClave() << ", ";
-    itIndice.Avanzar();
-  }   
-
-  /* DESOMENTANDO ESTO DEJA DE FUNCIONAR DESP DEL TEXTO QUE DICE  "DESPUES DE BORRAR UNO SON:...."
-*/
+  
   Registro r4;
-  Dato arregloDato4 [6]={Dato("Brian"), Dato("Gatubela"), Dato(11315), Dato("Orga2"), Dato(6), Dato("Braian.Gatubela@GroopieDeBatman.com")};
+   dato brian;
+  String s13="Braian";
+  brian.nuevoDatoString(s13);
+  dato gatubela;
+  String s14="Gatubela";
+  gatubela.nuevoDatoString(s14);
+  dato lU3;
+  Nat n9=43315;
+  lU3.nuevoDatoNat(n9);
+  dato nota3;
+  Nat n10=6;
+  nota3.nuevoDatoNat(n10);
+  dato materia3;
+  String s15="Orga2";
+  materia3.nuevoDatoString(s15);
+  dato email3;
+  String s16="Braian.Gatubela@GroopieDeBatman.com";
+  email3.nuevoDatoString(s16);
+  dato arregloDato4 [6]={brian,gatubela,lU3,materia3,nota3,email3};
   DefinirRegistro(r4, campos, arregloDato4);
   t.agregarRegistro(r4);
   t.agregarRegistro(r3);
-  typename dicA<Nat, Lista<estrAux> >::Iterador itIndice3 = t.dameColumnaNatParaTest().CrearIt();
-  cout << "\nY despues de Agregar dos registros son: "<<endl;
-  while(itIndice3.HaySiguiente()){
-    cout << itIndice3.SiguienteClave() << ", ";
-    itIndice3.Avanzar();
-  } 
+  
 }
 void agregarRegistroSinIndices(){
 Registro r;
 NombreCampo c="hi";
 Nat x=5;
-Dato d=Dato(x);
+dato d;
+d.nuevoDatoNat(x);
 r.Definir(c,d);
 
 NombreCampo c1="lala";
 String u="lolo";
-Dato d1=Dato(u);
+dato d1;
+d1.nuevoDatoString(u);
 r.Definir(c1,d1);
 
 NombreCampo c2="d";
 Nat y=8;
-Dato d2=Dato(y);
+dato d2;
+d2.nuevoDatoNat(y);
 r.Definir(c2,d2);
 
 NombreCampo c3="mmm";
 String t="toto";
-Dato d3=Dato(t);
+dato d3;
+d3.nuevoDatoString(t);
 r.Definir(c3,d3);
 
-Conj<NombreCampo> camp=campos(r);
+Conj<NombreCampo> camp=r.campos();
 tabla n=tabla();
 String t1="TABLA";
 n.nuevaTabla(t1,r,camp);
@@ -181,19 +254,23 @@ n.agregarRegistro(r1);
 
 Registro r2;
 Nat x1=1;
-Dato d5=Dato(x1);
+dato d5;
+d5.nuevoDatoNat(x1);
 r2.Definir(c,d5);
 
 String u1="lalo";
-Dato d6=Dato(u1);
+dato d6;
+d6.nuevoDatoString(u1);
 r2.Definir(c1,d6);
 
 Nat y1=2;
-Dato d7=Dato(y1);
+dato d7;
+d7.nuevoDatoNat(y1);
 r2.Definir(c2,d7);
 
 String t4="tato";
-Dato d8=Dato(t4);
+dato d8;
+d8.nuevoDatoString(t4);
 r2.Definir(c3,d8);
 
 n.agregarRegistro(r2);
@@ -202,19 +279,23 @@ ASSERT(n.cantDeAccesos() ==  3);
 
 Registro r3;
 Nat x2=1;
-Dato d9=Dato(x2);
+dato d9;
+d9.nuevoDatoNat(x2);
 r3.Definir(c,d9);
 
 String u2="lalo";
-Dato d10=Dato(u2);
+dato d10;
+d10.nuevoDatoString(u2);
 r3.Definir(c1,d10);
 
 Nat y2=2;
-Dato d11=Dato(y2);
+dato d11;
+d11.nuevoDatoNat(y2);
 r3.Definir(c2,d11);
 
 String t5="tato";
-Dato d12=Dato(t5);
+dato d12;
+d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
 n.agregarRegistro(r3);
@@ -224,25 +305,29 @@ void agregarRegConInd(){
 Registro r;
 NombreCampo c="hi";
 Nat x=5;
-Dato d=Dato(x);
+dato d;
+d.nuevoDatoNat(x);
 r.Definir(c,d);
 
 NombreCampo c1="lala";
 String u="lolo";
-Dato d1=Dato(u);
+dato d1;
+d1.nuevoDatoString(u);
 r.Definir(c1,d1);
 
 NombreCampo c2="d";
 Nat y=8;
-Dato d2=Dato(y);
+dato d2;
+d2.nuevoDatoNat(y);
 r.Definir(c2,d2);
 
 NombreCampo c3="mmm";
 String t="toto";
-Dato d3=Dato(t);
+dato d3;
+d3.nuevoDatoString(t);
 r.Definir(c3,d3);
 
-Conj<NombreCampo> camp=campos(r);
+Conj<NombreCampo> camp=r.campos();
 tabla n=tabla();
 String t1="TABLA";
 n.nuevaTabla(t1,r,camp);
@@ -261,19 +346,23 @@ n.agregarRegistro(r1);
 
 Registro r2;
 Nat x1=1;
-Dato d5=Dato(x1);
+dato d5;
+d5.nuevoDatoNat(x1);
 r2.Definir(c,d5);
 
 String u1="lalo";
-Dato d6=Dato(u1);
+dato d6;
+d6.nuevoDatoString(u1);
 r2.Definir(c1,d6);
 
 Nat y1=2;
-Dato d7=Dato(y1);
+dato d7;
+d7.nuevoDatoNat(y1);
 r2.Definir(c2,d7);
 
 String t4="tato";
-Dato d8=Dato(t4);
+dato d8;
+d8.nuevoDatoString(t4);
 r2.Definir(c3,d8);
 
 n.agregarRegistro(r2);
@@ -282,19 +371,23 @@ ASSERT(n.cantDeAccesos() ==  3);
 
 Registro r3;
 Nat x2=1;
-Dato d9=Dato(x2);
+dato d9;
+d9.nuevoDatoNat(x2);
 r3.Definir(c,d9);
 
 String u2="lalo";
-Dato d10=Dato(u2);
+dato d10;
+d10.nuevoDatoString(u2);
 r3.Definir(c1,d10);
 
 Nat y2=2;
-Dato d11=Dato(y2);
+dato d11;
+d11.nuevoDatoNat(y2);
 r3.Definir(c2,d11);
 
 String t5="tato";
-Dato d12=Dato(t5);
+dato d12;
+d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
 Registro crit;
@@ -310,19 +403,23 @@ n.indexar(c1);
 
 Registro r4;
 Nat x4=78;
-Dato d13=Dato(x4);
+dato d13;
+d13.nuevoDatoNat(x4);
 r4.Definir(c,d13);
 
 String u4="Hola";
-Dato d14=Dato(u4);
+dato d14;
+d14.nuevoDatoString(u4);
 r4.Definir(c1,d14);
 
 Nat y4=24;
-Dato d15=Dato(y4);
+dato d15;
+d15.nuevoDatoNat(y4);
 r4.Definir(c2,d15);
 
 String t6="Mato";
-Dato d16=Dato(t6);
+dato d16;
+d16.nuevoDatoString(t6);
 r4.Definir(c3,d16);
 
 n.agregarRegistro(r4);
@@ -331,19 +428,23 @@ n.agregarRegistro(r4);
 
 Registro r5;
 Nat x5=75;
-Dato d17=Dato(x5);
+dato d17;
+d17.nuevoDatoNat(x5);
 r5.Definir(c,d17);
 
 String u5="Holita";
-Dato d18=Dato(u5);
+dato d18;
+d18.nuevoDatoString(u5);
 r5.Definir(c1,d18);
 
 Nat y5=25;
-Dato d19=Dato(y5);
+dato d19;
+d19.nuevoDatoNat(y5);
 r5.Definir(c2,d19);
 
 String t7="Mateo";
-Dato d20=Dato(t7);
+dato d20;
+d20.nuevoDatoString(t7);
 r5.Definir(c3,d20);
 
 n.indexar(c);
@@ -352,193 +453,46 @@ ind.AgregarRapido(c);
 ind.AgregarRapido(c1);
 ASSERT(n.indices()==ind);
 
-n.agregarRegistro(r5); //SALTA SEG FAULT CDO AGREGAS REGISTRO Y TENES LOS DOS INDICES
+n.agregarRegistro(r5); 
 
 }
 
 
-void dameColumnas(){
-Registro r;
-NombreCampo c="hi";
-Nat x=5;
-Dato d=Dato(x);
-r.Definir(c,d);
-
-NombreCampo c1="lala";
-String u="lolo";
-Dato d1=Dato(u);
-r.Definir(c1,d1);
-
-NombreCampo c2="d";
-Nat y=8;
-Dato d2=Dato(y);
-r.Definir(c2,d2);
-
-NombreCampo c3="mmm";
-String t="toto";
-Dato d3=Dato(t);
-r.Definir(c3,d3);
-
-Conj<NombreCampo> camp=campos(r);
-tabla n=tabla();
-String t1="TABLA";
-n.nuevaTabla(t1,r,camp);
-String nombre=n.nombre();
-cout<< nombre<<endl;
-
-ASSERT(n.cantDeAccesos()==0);
-n.agregarRegistro(r);
-ASSERT(n.cantDeAccesos()==1);
-Registro r1;
-
-r1.Definir(c,d);
-r1.Definir(c1,d3);
-r1.Definir(c2,d2);
-r1.Definir(c3,d1);
-
-n.agregarRegistro(r1);
-ASSERT(n.cantDeAccesos()==2);
-Registro r2;
-Nat x1=1;
-Dato d5=Dato(x1);
-r2.Definir(c,d5);
-
-String u1="lalo";
-Dato d6=Dato(u1);
-r2.Definir(c1,d6);
-
-Nat y1=2;
-Dato d7=Dato(y1);
-r2.Definir(c2,d7);
-
-String t4="tato";
-Dato d8=Dato(t4);
-r2.Definir(c3,d8);
-
-n.agregarRegistro(r2);
-ASSERT(n.cantDeAccesos()==3);
-Registro r3;
-Nat x2=6;
-Dato d9=Dato(x2);
-r3.Definir(c,d9);
-
-String u2="lo";
-Dato d10=Dato(u2);
-r3.Definir(c1,d10);
-
-Nat y2=65;
-Dato d11=Dato(y2);
-r3.Definir(c2,d11);
-
-String t5="tito";
-Dato d12=Dato(t5);
-r3.Definir(c3,d12);
-
-n.agregarRegistro(r3);
-ASSERT(n.cantDeAccesos()==4);
-Registro r4;
-Nat x4=78;
-Dato d13=Dato(x4);
-r4.Definir(c,d13);
-
-String u4="Hola";
-Dato d14=Dato(u4);
-r4.Definir(c1,d14);
-
-Nat y4=24;
-Dato d15=Dato(y4);
-r4.Definir(c2,d15);
-
-String t6="Mato";
-Dato d16=Dato(t6);
-r4.Definir(c3,d16);
-
-n.agregarRegistro(r4);
-
-Registro r5;
-Nat x5=75;
-Dato d17=Dato(x5);
-r5.Definir(c,d17);
-
-String u5="Holita";
-Dato d18=Dato(u5);
-r5.Definir(c1,d18);
-
-Nat y5=25;
-Dato d19=Dato(y5);
-r5.Definir(c2,d19);
-
-String t7="Mateo";
-Dato d20=Dato(t7);
-r5.Definir(c3,d20);
-
-n.agregarRegistro(r5);
-	
-
-n.indexar(c1);
-n.indexar(c);
-	
-dicT<Lista<estrAux> >* it=n.dameColumnaString();
-Lista<estrAux> listAux=(*it).obtener(t);
-typename Lista<estrAux>::Iterador itL=listAux.CrearIt();
-estrAux ext=itL.Siguiente();
-typename Lista<Registro>::Iterador iR=ext.itReg;
-
-Registro r8=iR.Siguiente();
-Dato dat=r8.Significado(c1);
-ASSERT(dat.dameString()== "toto");
-
-dicA<Nat, Lista<estrAux> >* iN=n.dameColumnaNat();
-Lista<estrAux> listA=(*iN).obtener(x);
-typename Lista<estrAux>::Iterador itLis=listA.CrearIt();
-estrAux ext2=itLis.Siguiente();
-typename Lista<Registro>::Iterador iR2=ext2.itReg;
-
-Registro r9=iR2.Siguiente();
-Dato dat2=r9.Significado(c);
-ASSERT(dat2.dameNat()== 5);
-
-iR2.EliminarSiguiente();
-
-ASSERT(n.registros().Longitud() == 5);
-
-Registro crit;
-crit.Definir(c,d5);
-n.borrarRegistro(crit);
-
-ASSERT(n.registros().Longitud() == 4);
-
-}
 
 void BaseDeDatos(){
 Registro r;
 NombreCampo c="hi";
 Nat x=5;
-Dato d=Dato(x);
+dato d;
+d.nuevoDatoNat(x);
 r.Definir(c,d);
 
 NombreCampo c1="lala";
 String u="lolo";
-Dato d1=Dato(u);
+dato d1;
+d1.nuevoDatoString(u);
 r.Definir(c1,d1);
 
 NombreCampo c2="d";
 Nat y=8;
-Dato d2=Dato(y);
+dato d2;
+d2.nuevoDatoNat(y);
 r.Definir(c2,d2);
 
 NombreCampo c3="mmm";
 String t="toto";
-Dato d3=Dato(t);
+dato d3;
+d3.nuevoDatoString(t);
 r.Definir(c3,d3);
 
-Conj<NombreCampo> camp=campos(r);
+Conj<NombreCampo> camp=r.campos();
 tabla n;
 String t1="TABLA";
 n.nuevaTabla(t1,r,camp);
 String nombre=n.nombre();
 cout<< nombre<<endl;
 
+
 Registro r1;
 
 r1.Definir(c,d);
@@ -546,101 +500,123 @@ r1.Definir(c1,d3);
 r1.Definir(c2,d2);
 r1.Definir(c3,d1);
 
+
 Registro r2;
 Nat x1=1;
-Dato d5=Dato(x1);
+dato d5;
+d5.nuevoDatoNat(x1);
 r2.Definir(c,d5);
 
 String u1="lalo";
-Dato d6=Dato(u1);
+dato d6;
+d6.nuevoDatoString(u1);
 r2.Definir(c1,d6);
 
 Nat y1=2;
-Dato d7=Dato(y1);
+dato d7;
+d7.nuevoDatoNat(y1);
 r2.Definir(c2,d7);
 
 String t4="tato";
-Dato d8=Dato(t4);
+dato d8;
+d8.nuevoDatoString(t4);
 r2.Definir(c3,d8);
 
 
 Registro r3;
-Nat x2=6;
-Dato d9=Dato(x2);
+Nat x2=1;
+dato d9;
+d9.nuevoDatoNat(x2);
 r3.Definir(c,d9);
 
-String u2="lo";
-Dato d10=Dato(u2);
+String u2="lalo";
+dato d10;
+d10.nuevoDatoString(u2);
 r3.Definir(c1,d10);
 
-Nat y2=65;
-Dato d11=Dato(y2);
+Nat y2=2;
+dato d11;
+d11.nuevoDatoNat(y2);
 r3.Definir(c2,d11);
 
-String t5="tito";
-Dato d12=Dato(t5);
+String t5="tato";
+dato d12;
+d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
 Registro r4;
 Nat x4=78;
-Dato d13=Dato(x4);
+dato d13;
+d13.nuevoDatoNat(x4);
 r4.Definir(c,d13);
 
 String u4="Hola";
-Dato d14=Dato(u4);
+dato d14;
+d14.nuevoDatoString(u4);
 r4.Definir(c1,d14);
 
 Nat y4=24;
-Dato d15=Dato(y4);
+dato d15;
+d15.nuevoDatoNat(y4);
 r4.Definir(c2,d15);
 
 String t6="Mato";
-Dato d16=Dato(t6);
+dato d16;
+d16.nuevoDatoString(t6);
 r4.Definir(c3,d16);
+
 
 Registro r5;
 Nat x5=75;
-Dato d17=Dato(x5);
+dato d17;
+d17.nuevoDatoNat(x5);
 r5.Definir(c,d17);
 
 String u5="Holita";
-Dato d18=Dato(u5);
+dato d18;
+d18.nuevoDatoString(u5);
 r5.Definir(c1,d18);
 
 Nat y5=25;
-Dato d19=Dato(y5);
+dato d19;
+d19.nuevoDatoNat(y5);
 r5.Definir(c2,d19);
 
 String t7="Mateo";
-Dato d20=Dato(t7);
+dato d20;
+d20.nuevoDatoString(t7);
 r5.Definir(c3,d20);
+
 
 ASSERT(n.registros().Longitud() == 0);
 
 BD b;
 b.agregarTabla(n);
-Registro col;
-col.Definir("nombre",Dato("perez"));
-col.Definir("apellido",Dato("perez"));
-col.Definir("LU",Dato(1));
-col.Definir("Materia",Dato("perez"));
-col.Definir("Nota",Dato(10));
-col.Definir("eMail",Dato("perez"));
-Conj<NombreCampo> claves;
-claves.Agregar("LU");
-claves.Agregar("eMail");
-tabla t2;
-t2.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
-b.agregarTabla(t2);
-b.insertarEntrada(r,"TABLA");
-ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
-ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
-
-
-  Registro r23;
-  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(5), Dato("laTurraDeSaavedra@turra.com")};
-  DefinirRegistro(r23,campos(col), arregloDato);
-
+  Registro col;
+  dato d22;
+  String s="perez";
+  d.nuevoDatoString(s);
+  col.Definir("nombre",d22);
+  col.Definir("apellido",d22);
+  dato d23;
+  Nat n23=1;
+  d23.nuevoDatoNat(n23);
+  col.Definir("LU",d23);
+  col.Definir("Materia",d22);
+  dato d24;
+  Nat n24=10;
+  d24.nuevoDatoNat(n24);
+  col.Definir("Nota",d24);
+  col.Definir("eMail",d22);
+  Conj<NombreCampo> claves;
+  claves.Agregar("LU");
+  claves.Agregar("eMail");
+  tabla t2;
+  t2.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
+  b.agregarTabla(t2);
+  b.insertarEntrada(r,"TABLA");
+  ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
+  ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
 
 }
 
@@ -650,7 +626,6 @@ int main(int argc, char **argv)
  // RUN_TEST(testTabla);
   RUN_TEST(agregarRegistroSinIndices);
   RUN_TEST(agregarRegConInd);
-  RUN_TEST(dameColumnas);
   RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *

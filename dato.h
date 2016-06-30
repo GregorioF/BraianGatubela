@@ -3,6 +3,7 @@
 
 #include "Conj.h"
 #include <iostream>
+#include "Tipos.h"
 
 using namespace std;
 using namespace aed2;
@@ -15,21 +16,21 @@ public:
 	///////////////////////////////////
 	~dato();
 	///////////////////////////////////
-	void nuevoDatoNat( int nat);
+	void nuevoDatoNat( Nat nat);
 	///////////////////////////////////
-	void nuevoDatoString(string palabra);
+	void nuevoDatoString(String palabra);
 	///////////////////////////////////
 	bool tipo();
 	///////////////////////////////////
 	bool sonMismoTipo(const dato& otro);
 	///////////////////////////////////
-	int valorNat();
+	Nat valorNat();
 	///////////////////////////////////
-	const int valorNat_const() const;
+	const Nat valorNat_const() const;
 	///////////////////////////////////
-	string valorString();	
+	String valorString();	
 	///////////////////////////////////
-	const string valorString_const() const;	
+	const String valorString_const() const;	
 	///////////////////////////////////
 	bool esMenor(const dato& d);
 	///////////////////////////////////
@@ -37,8 +38,8 @@ public:
 	bool operator==(const dato d) const;
 
 private:
-	int n;
-	string s;
+	Nat n;
+	String s;
 	bool t;
 
 };
@@ -56,12 +57,12 @@ dato::dato(const dato& otro){
 ///////////////////////////////////
 dato::~dato(){}
 //pre: t = true;
-void dato::nuevoDatoNat(int nat){
+void dato::nuevoDatoNat(Nat nat){
 	n=nat;
-	t=1;
+	t=true;
 } 
 ///////////////////////////////////
-void dato::nuevoDatoString(string palabra){
+void dato::nuevoDatoString(String palabra){
 	s=palabra;
 	t=false;
 }
@@ -74,19 +75,19 @@ bool dato::sonMismoTipo(const dato& otro){
 	return (t==otro.t);
 }
 ///////////////////////////////////
-int dato::valorNat(){
+Nat dato::valorNat(){
 	return n;
 }
 ///////////////////////////////////
-const int dato::valorNat_const() const{
+const Nat dato::valorNat_const() const{
 	return n;
 }
 ///////////////////////////////////
-string dato::valorString(){
+String dato::valorString(){
 	return s;
 }
 ///////////////////////////////////
-const string dato::valorString_const() const{
+const String dato::valorString_const() const{
 	return s;
 }
 ///////////////////////////////////
