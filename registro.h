@@ -153,21 +153,21 @@ public:
 std::ostream& operator << (std::ostream &os, const Dicc<NombreCampo,S>& d);
 
 
-bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2);
+bool operator == (const Registro& d1, const Registro& d2);
 
   // Implementacion Dicc
 
 
-Dicc<K,S>::Dicc()
+Registro::Dicc()
 {}
 
 
-Dicc<K,S>::Dicc(const Dicc<K,S>& otro)
+Registro::Dicc(const Registro& otro)
   : claves_(otro.claves_), significados_(otro.significados_)
 {}
 
 
-Dicc<K,S>& Dicc<K,S>::operator = (const Dicc<K,S>& otro)
+Registro& Registro::operator = (const Registro& otro)
 {
   claves_ = otro.claves_;
   significados_ = otro.significados_;
@@ -176,7 +176,7 @@ Dicc<K,S>& Dicc<K,S>::operator = (const Dicc<K,S>& otro)
 }
 
 
-typename Dicc<K,S>::Iterador Dicc<K,S>::Definir(const NombreCampo& clave, const dato& significado)
+typename Registro::Iterador Registro::Definir(const NombreCampo& clave, const dato& significado)
 {
   Iterador it = Buscar(clave);
 
@@ -190,7 +190,7 @@ typename Dicc<K,S>::Iterador Dicc<K,S>::Definir(const NombreCampo& clave, const 
 }
 
 
-typename Dicc<K,S>::Iterador Dicc<K,S>::DefinirRapido(const K& clave, const S& significado)
+typename Registro::Iterador Registro::DefinirRapido(const NombreCampo& clave, const S& significado)
 {
   #ifdef DEBUG
   assert( not Definido(clave) );
@@ -203,13 +203,13 @@ typename Dicc<K,S>::Iterador Dicc<K,S>::DefinirRapido(const K& clave, const S& s
 }
 
 
-bool Dicc<K,S>::Definido(const K& clave) const
+bool Registro::Definido(const NombreCampo& clave) const
 {
   return Buscar(clave).HaySiguiente();
 }
 
 
-const S& Dicc<K,S>::Significado(const K& clave)const
+const S& Registro::Significado(const NombreCampo& clave)const
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -218,8 +218,8 @@ const S& Dicc<K,S>::Significado(const K& clave)const
   return Buscar(clave).SiguienteSignificado();
 }
 
-template<class K, class S>
-S& Dicc<K,S>::Significado(const K& clave)
+
+S& Registro::Significado(const NombreCampo& clave)
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -228,8 +228,8 @@ S& Dicc<K,S>::Significado(const K& clave)
   return Buscar(clave).SiguienteSignificado();
 }
 
-template<class K, class S>
-void Dicc<K,S>::Borrar(const K& clave)
+
+void Registro::Borrar(const NombreCampo& clave)
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -238,37 +238,37 @@ void Dicc<K,S>::Borrar(const K& clave)
   Buscar(clave).EliminarSiguiente();
 }
 
-template<class K, class S>
-Nat Dicc<K,S>::CantClaves() const
+
+Nat Registro::CantClaves() const
 {
   return claves_.Longitud();
 }
 
-template<class K, class S>
-typename Dicc<K,S>::Iterador Dicc<K,S>::CrearIt()
+
+typename Registro::Iterador Registro::CrearIt()
 {
   return Iterador(this);
 }
 
-template<class K, class S>
-typename Dicc<K,S>::const_Iterador Dicc<K,S>::CrearIt() const
+
+typename Registro::const_Iterador Registro::CrearIt() const
 {
   return const_Iterador(this);
 }
 
   // Implementacion Iterador
 
-template<class K, class S>
-Dicc<K,S>::Iterador::Iterador()
+
+Registro::Iterador::Iterador()
 {}
 
-template<class K, class S>
-Dicc<K,S>::Iterador::Iterador(const typename Dicc<K, S>::Iterador& otro)
+
+Registro::Iterador::Iterador(const typename Dicc<NombreCampo, S>::Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
-template<class K, class S>
-typename Dicc<K,S>::Iterador& Dicc<K,S>::Iterador::operator = (const typename Dicc<K, S>::Iterador& otro)
+
+typename Registro::Iterador& Registro::Iterador::operator = (const typename Dicc<NombreCampo, S>::Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -276,20 +276,20 @@ typename Dicc<K,S>::Iterador& Dicc<K,S>::Iterador::operator = (const typename Di
   return *this;
 }
 
-template<class K, class S>
-bool Dicc<K,S>::Iterador::HaySiguiente() const
+
+bool Registro::Iterador::HaySiguiente() const
 {
   return it_claves_.HaySiguiente();
 }
 
-template<class K, class S>
-bool Dicc<K,S>::Iterador::HayAnterior() const
+
+bool Registro::Iterador::HayAnterior() const
 {
   return it_claves_.HayAnterior();
 }
 
-template<class K, class S>
-const K& Dicc<K,S>::Iterador::SiguienteClave() const
+
+const NombreCampo& Registro::Iterador::SiguienteClave() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -298,8 +298,8 @@ const K& Dicc<K,S>::Iterador::SiguienteClave() const
   return it_claves_.Siguiente();
 }
 
-template<class K, class S>
-S& Dicc<K,S>::Iterador::SiguienteSignificado()
+
+S& Registro::Iterador::SiguienteSignificado()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -308,8 +308,8 @@ S& Dicc<K,S>::Iterador::SiguienteSignificado()
   return it_significados_.Siguiente();
 }
 
-template<class K, class S>
-typename Dicc<K,S>::Elem Dicc<K,S>::Iterador::Siguiente()
+
+typename Registro::Elem Registro::Iterador::Siguiente()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -318,8 +318,8 @@ typename Dicc<K,S>::Elem Dicc<K,S>::Iterador::Siguiente()
   return Elem(SiguienteClave(), SiguienteSignificado());
 }
 
-template<class K, class S>
-const K& Dicc<K,S>::Iterador::AnteriorClave() const
+
+const NombreCampo& Registro::Iterador::AnteriorClave() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -328,8 +328,8 @@ const K& Dicc<K,S>::Iterador::AnteriorClave() const
   return it_claves_.Anterior();
 }
 
-template<class K, class S>
-S& Dicc<K,S>::Iterador::AnteriorSignificado()
+
+S& Registro::Iterador::AnteriorSignificado()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -338,8 +338,8 @@ S& Dicc<K,S>::Iterador::AnteriorSignificado()
   return it_significados_.Anterior();
 }
 
-template<class K, class S>
-typename Dicc<K,S>::Elem Dicc<K,S>::Iterador::Anterior()
+
+typename Registro::Elem Registro::Iterador::Anterior()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -348,8 +348,8 @@ typename Dicc<K,S>::Elem Dicc<K,S>::Iterador::Anterior()
   return Elem(AnteriorClave(), AnteriorSignificado());
 }
 
-template<class K, class S>
-void Dicc<K,S>::Iterador::Avanzar()
+
+void Registro::Iterador::Avanzar()
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -359,8 +359,8 @@ void Dicc<K,S>::Iterador::Avanzar()
   it_significados_.Avanzar();
 }
 
-template<class K, class S>
-void Dicc<K,S>::Iterador::Retroceder()
+
+void Registro::Iterador::Retroceder()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -370,13 +370,13 @@ void Dicc<K,S>::Iterador::Retroceder()
   it_significados_.Retroceder();
 }
 
-template<class K, class S>
-Dicc<K,S>::Iterador::Iterador(Dicc<K,S>* d)
+
+Registro::Iterador::Iterador(Registro* d)
   : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
-template<class K, class S>
-void Dicc<K,S>::Iterador::EliminarSiguiente()
+
+void Registro::Iterador::EliminarSiguiente()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -386,8 +386,8 @@ void Dicc<K,S>::Iterador::EliminarSiguiente()
   it_significados_.EliminarSiguiente();
 }
 
-template<class K, class S>
-void Dicc<K,S>::Iterador::EliminarAnterior()
+
+void Registro::Iterador::EliminarAnterior()
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -399,22 +399,22 @@ void Dicc<K,S>::Iterador::EliminarAnterior()
 
   // Implementacion const_Iterador
 
-template<class K, class S>
-Dicc<K,S>::const_Iterador::const_Iterador()
+
+Registro::const_Iterador::const_Iterador()
 {}
 
-template<class K, class S>
-Dicc<K,S>::const_Iterador::const_Iterador(const typename Dicc<K,S>::Iterador& otro)
+
+Registro::const_Iterador::const_Iterador(const typename Registro::Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
-template<class K, class S>
-Dicc<K,S>::const_Iterador::const_Iterador(const typename Dicc<K, S>::const_Iterador& otro)
+
+Registro::const_Iterador::const_Iterador(const typename Dicc<NombreCampo, S>::const_Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
-template<class K, class S>
-typename Dicc<K,S>::const_Iterador& Dicc<K,S>::const_Iterador::operator=(const typename Dicc<K, S>::const_Iterador& otro)
+
+typename Registro::const_Iterador& Registro::const_Iterador::operator=(const typename Dicc<NombreCampo, S>::const_Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -422,20 +422,20 @@ typename Dicc<K,S>::const_Iterador& Dicc<K,S>::const_Iterador::operator=(const t
   return *this;
 }
 
-template<class K, class S>
-bool Dicc<K,S>::const_Iterador::HaySiguiente() const
+
+bool Registro::const_Iterador::HaySiguiente() const
 {
   return it_claves_.HaySiguiente();
 }
 
-template<class K, class S>
-bool Dicc<K,S>::const_Iterador::HayAnterior() const
+
+bool Registro::const_Iterador::HayAnterior() const
 {
   return it_claves_.HayAnterior();
 }
 
-template<class K, class S>
-const K& Dicc<K,S>::const_Iterador::SiguienteClave() const
+
+const NombreCampo& Registro::const_Iterador::SiguienteClave() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -444,8 +444,8 @@ const K& Dicc<K,S>::const_Iterador::SiguienteClave() const
   return it_claves_.Siguiente();
 }
 
-template<class K, class S>
-const S& Dicc<K,S>::const_Iterador::SiguienteSignificado() const
+
+const S& Registro::const_Iterador::SiguienteSignificado() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -454,8 +454,8 @@ const S& Dicc<K,S>::const_Iterador::SiguienteSignificado() const
   return it_significados_.Siguiente();
 }
 
-template<class K, class S>
-typename Dicc<K,S>::const_Elem Dicc<K,S>::const_Iterador::Siguiente() const
+
+typename Registro::const_Elem Registro::const_Iterador::Siguiente() const
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -464,8 +464,8 @@ typename Dicc<K,S>::const_Elem Dicc<K,S>::const_Iterador::Siguiente() const
   return const_Elem(SiguienteClave(), SiguienteSignificado());
 }
 
-template<class K, class S>
-const K& Dicc<K,S>::const_Iterador::AnteriorClave() const
+
+const NombreCampo& Registro::const_Iterador::AnteriorClave() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -474,8 +474,8 @@ const K& Dicc<K,S>::const_Iterador::AnteriorClave() const
   return it_claves_.Anterior();
 }
 
-template<class K, class S>
-const S& Dicc<K,S>::const_Iterador::AnteriorSignificado() const
+
+const S& Registro::const_Iterador::AnteriorSignificado() const
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -484,8 +484,8 @@ const S& Dicc<K,S>::const_Iterador::AnteriorSignificado() const
   return it_significados_.Anterior();
 }
 
-template<class K, class S>
-typename Dicc<K,S>::const_Elem Dicc<K,S>::const_Iterador::Anterior() const
+
+typename Registro::const_Elem Registro::const_Iterador::Anterior() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -494,8 +494,8 @@ typename Dicc<K,S>::const_Elem Dicc<K,S>::const_Iterador::Anterior() const
   return const_Elem(AnteriorClave(), AnteriorSignificado());
 }
 
-template<class K, class S>
-void Dicc<K,S>::const_Iterador::Avanzar()
+
+void Registro::const_Iterador::Avanzar()
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -505,8 +505,8 @@ void Dicc<K,S>::const_Iterador::Avanzar()
   it_significados_.Avanzar();
 }
 
-template<class K, class S>
-void Dicc<K,S>::const_Iterador::Retroceder()
+
+void Registro::const_Iterador::Retroceder()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -516,58 +516,58 @@ void Dicc<K,S>::const_Iterador::Retroceder()
   it_significados_.Retroceder();
 }
 
-template<class K, class S>
-Dicc<K,S>::const_Iterador::const_Iterador(const Dicc<K,S>* d)
+
+Registro::const_Iterador::const_Iterador(const Registro* d)
   : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
-template<class K, class S>
-bool Dicc<K,S>::const_Iterador::operator == (const typename Dicc<K,S>::const_Iterador& otro) const
+
+bool Registro::const_Iterador::operator == (const typename Registro::const_Iterador& otro) const
 {
   return it_claves_ == otro.it_claves_ && it_significados_ == otro.it_significados_;
 }
 
-template<class K, class S>
-bool Dicc<K,S>::Iterador::operator == (const typename Dicc<K,S>::Iterador& otro) const
+
+bool Registro::Iterador::operator == (const typename Registro::Iterador& otro) const
 {
   return it_claves_ == otro.it_claves_ && it_significados_ == otro.it_significados_;
 }
 
   ///Funciones auxiliares
 
-template<class K, class S>
-typename Dicc<K,S>::Iterador Dicc<K,S>::Buscar(const K& clave)
+
+typename Registro::Iterador Registro::Buscar(const NombreCampo& clave)
 {
-  typename Dicc<K,S>::Iterador it = CrearIt();
+  typename Registro::Iterador it = CrearIt();
   while(it.HaySiguiente() && !(it.SiguienteClave() == clave)){
     it.Avanzar();
   }
   return it;
 }
 
-template<class K, class S>
-typename Dicc<K,S>::const_Iterador Dicc<K,S>::Buscar(const K& clave) const
+
+typename Registro::const_Iterador Registro::Buscar(const NombreCampo& clave) const
 {
-  typename Dicc<K,S>::const_Iterador it = CrearIt();
+  typename Registro::const_Iterador it = CrearIt();
   while(it.HaySiguiente() && !(it.SiguienteClave() == clave)){
       it.Avanzar();
   }
   return it;
 }
 
-template<class K, class S>
-std::ostream& operator << (std::ostream& os, const Dicc<K,S>& d)
+
+std::ostream& operator << (std::ostream& os, const Registro& d)
 {
   return Mostrar(os, d, '{', '}');
 }
 
-template<class K, class S>
-bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
+
+bool operator == (const Registro& d1, const Registro& d2)
 {
   bool retval = d1.CantClaves() == d2.CantClaves();
-  typename Dicc<K,S>::const_Iterador it1 = d1.CrearIt();
+  typename Registro::const_Iterador it1 = d1.CrearIt();
   while(retval and it1.HaySiguiente()){
-    typename Dicc<K,S>::const_Iterador it2 = d2.Buscar(it1.SiguienteClave());
+    typename Registro::const_Iterador it2 = d2.Buscar(it1.SiguienteClave());
     retval = it2.HaySiguiente() and it1.SiguienteSignificado() == it2.SiguienteSignificado();
     it1.Avanzar();
   }
