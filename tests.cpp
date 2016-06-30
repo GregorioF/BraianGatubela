@@ -617,13 +617,50 @@ b.agregarTabla(n);
   b.insertarEntrada(r,"TABLA");
   ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
   ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
-
+  
+  Registro r18;
+  dato charo;
+  String s1="Charo";
+  charo.nuevoDatoString(s1);
+  dato olivera;
+  String s2="Olivera";
+  olivera.nuevoDatoString(s2);
+  dato lU;
+  Nat n3=11115;
+  lU.nuevoDatoNat(n3);
+  dato nota;
+  Nat n4=5;
+  nota.nuevoDatoNat(n4);
+  dato materia;
+  String s3="AED2";
+  materia.nuevoDatoString(s3);
+  dato email;
+  String s4="laTurraDeSaavedra@turra.com";
+  email.nuevoDatoString(s4);
+  
+  dato arregloDato [6]= {charo, olivera,  lU, materia, nota, email};
+   Conj<NombreCampo> campos = t2.campos();
+  DefinirRegistro(r18,campos, arregloDato);
+  
+  b.insertarEntrada(r18,"candidatos_Para_Calesita_Pab2");
+	b.insertarEntrada(r2,"TABLA");
+	ASSERT(b.tablaMaxima() == "TABLA");
+	cout<< "Cant de accesos a 'candidatos_Para_Calesita_Pab2': " << b.cantDeAccesos("candidatos_Para_Calesita_Pab2")<<endl;	
+	cout<< "Cant de accesos a 'TABLA': " <<b.cantDeAccesos("TABLA")<<endl;	
+	Registro r19;
+	r19.Definir(c1,d6);
+	cout<< "Cant de registros tabla en BD: " << b.dameTabla("TABLA")->registros().Longitud() <<endl;
+	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
+	b.borrar(r19, "TABLA");
+	cout<< "Cantidad de accesos a 'TABLA': " << b.cantDeAccesos("TABLA")<<endl;
+	cout<< "Cant de registros tabla en BD: " <<b.dameTabla("TABLA")->registros().Longitud() <<endl;
+	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
 }
 
 int main(int argc, char **argv)
 {
  // RUN_TEST( ejemplo_simple );
- // RUN_TEST(testTabla);
+  RUN_TEST(testTabla);
   RUN_TEST(agregarRegistroSinIndices);
   RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);
