@@ -34,6 +34,7 @@ public:
 	bool esMenor(const dato& d);
 	///////////////////////////////////
 	bool operator==(dato d);
+	bool operator==(const dato d) const;
 
 private:
 	int n;
@@ -94,7 +95,21 @@ bool dato::esMenor(const dato& otro){
 	else return (otro.s < s);
 }
 
-
+bool dato::operator==(dato d){
+	if(sonMismoTipo(d)){
+		if(tipo()){return valorNat()==d.valorNat();}
+		else{return valorString()==d.valorString();}
+		}
+	else{return false;}	
+	}
+	
+bool dato::operator==(const dato d) const{
+	if(t==d.t){
+		if(t){return valorNat_const()==d.valorNat_const();}
+		else{return valorString_const()==d.valorString_const();}
+		}
+	else{return false;}	
+	}	
 
 namespace Dato{
 	dato maximo(Conj<dato>& cd){

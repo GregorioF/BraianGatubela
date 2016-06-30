@@ -3,13 +3,22 @@
 
 #include "Conj.h"
 #include "dato.h"
+#include "Tipos.h"
+
+
+#include <string>
+#include <iostream>
 
 using namespace aed2;
-
+using namespace std;
 
 class Registro{
 public:
-		class Iterador;
+
+	 struct Elem;
+    struct const_Elem;
+
+	class Iterador;
     class const_Iterador;
 
     Registro();
@@ -33,6 +42,7 @@ public:
     const_Iterador Buscar(const NombreCampo&) const;
     Conj<NombreCampo> campos();
 	void copiarCampos(Conj<NombreCampo> c, Registro r2);
+	void mergear(Registro&);
 
     class Iterador
     {
@@ -62,7 +72,7 @@ public:
       private:
 
         typename Lista<NombreCampo>::Iterador it_claves_;
-        typename Lista<S>::Iterador it_significados_;
+        typename Lista<dato>::Iterador it_significados_;
 
         Iterador(Registro* d);
 
@@ -116,9 +126,9 @@ public:
         //Para sacar esto de aca, necesitariamos definir rasgos y otras yerbas
         //Lamentablemente, sino C++ no reconoce bien los tipos
 
-        friend std::ostream& operator<<(std::ostream& os, const Registro::Elem& e) {
-          return os << e.clave << ":" << e.significado;
-        }
+       // friend std::ostream& operator<<(std::ostream& os, const Registro::Elem& e) {
+        //  return os << e.clave << ":" << e.significado;
+        
 
       private:
 
@@ -136,18 +146,19 @@ public:
 
         //Para sacar esto de aca, necesitariamos definir rasgos y otras yerbas
         //Lamentablemente, sino C++ no reconoce bien los tipos
-        friend std::ostream& operator << (std::ostream& os, const Registro::const_Elem& e) {
-          return os << e.clave << ":" << e.significado;
-        }
+       // friend std::ostream& operator << (std::ostream& os, const Registro::const_Elem& e) {
+         // return os << e.clave << ":" << e.significado;
+        
 
       private:
 
         typename Registro::const_Elem& operator = (const Registro::const_Elem&);
     };
 
-  private:
+	private:
 
-    Dicc<NombreCampo, dato> dic;
+   Lista<NombreCampo> claves_;
+    Lista<dato> significados_;
 	//AUXILIARES
 	
 	bool coincidenTodos(Registro& r1, Conj<NombreCampo>& c, Registro& r2){
@@ -159,11 +170,11 @@ public:
 				res=false;
 				}
 			else{
-				if(r1.Significado(it.Siguiente()).esNat()){
-					if(r1.Significado(it.Siguiente()).dameNat() != r2.Significado(it.Siguiente()).dameNat()){res=false;}
+				if(r1.Significado(it.Siguiente()).tipo()){
+					if(r1.Significado(it.Siguiente()).valorNat() != r2.Significado(it.Siguiente()).valorNat()){res=false;}
 					}
 				else{
-					if(r1.Significado(it.Siguiente()).dameString() != r2.Significado(it.Siguiente()).dameString()){res=false;}
+					if(r1.Significado(it.Siguiente()).valorString() != r2.Significado(it.Siguiente()).valorString()){res=false;}
 					}	
 				}
 		
@@ -175,7 +186,7 @@ public:
 
 bool borrar(Registro crit, Registro reg){
 	bool res=true;
-	Conj<NombreCampo> c=campos(crit);
+	Conj<NombreCampo> c=crit.campos();
 	res=coincidenTodos(crit, c, reg);
 	return res;
 }
@@ -183,7 +194,7 @@ bool borrar(Registro crit, Registro reg){
 };
 
 
-std::ostream& operator << (std::ostream &os, const Dicc<NombreCampo,S>& d);
+//std::ostream& operator << (std::ostream &os, const Dicc<NombreCampo,S>& d);
 
 
 bool operator == (const Registro& d1, const Registro& d2);
@@ -242,6 +253,7 @@ bool Registro::Definido(const NombreCampo& clave) const
 }
 
 
+
 const dato& Registro::Significado(const NombreCampo& clave)const
 {
   #ifdef DEBUG
@@ -297,7 +309,7 @@ Registro::Iterador::Iterador()
 
 
 Registro::Iterador::Iterador(const typename Registro::Iterador& otro)
-  : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
+: it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
@@ -405,7 +417,7 @@ void Registro::Iterador::Retroceder()
 
 
 Registro::Iterador::Iterador(Registro* d)
-  : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
+: it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
 
@@ -478,7 +490,7 @@ const NombreCampo& Registro::const_Iterador::SiguienteClave() const
 }
 
 
-const S& Registro::const_Iterador::SiguienteSignificado() const
+const dato& Registro::const_Iterador::SiguienteSignificado() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -551,7 +563,7 @@ void Registro::const_Iterador::Retroceder()
 
 
 Registro::const_Iterador::const_Iterador(const Registro* d)
-  : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
+: it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
 
@@ -589,11 +601,6 @@ typename Registro::const_Iterador Registro::Buscar(const NombreCampo& clave) con
 }
 
 
-std::ostream& operator << (std::ostream& os, const Registro& d)
-{
-  return Mostrar(os, d, '{', '}');
-}
-
 
 bool operator == (const Registro& d1, const Registro& d2)
 {
@@ -612,7 +619,7 @@ bool operator == (const Registro& d1, const Registro& d2)
 
 
 void Registro::mergear(Registro& r2){
-	typename Dicc<NombreCampo, Dato>::Iterador itR2= r2.CrearIt();
+	typename Registro::Iterador itR2= r2.CrearIt();
 
 	while(itR2.HaySiguiente()){
 		if(!(Definido(itR2.SiguienteClave()))) 
@@ -623,7 +630,7 @@ void Registro::mergear(Registro& r2){
 
 Conj<NombreCampo> Registro::campos(){
 	Conj<NombreCampo> res;
-	typename Dicc<NombreCampo, Dato>::Iterador itR1= CrearIt();
+	typename Registro::Iterador itR1= CrearIt();
 	while(itR1.HaySiguiente()){
 		res.AgregarRapido(itR1.SiguienteClave());
 		itR1.Avanzar();
