@@ -31,6 +31,8 @@ public:
     //y ver cual es su signficado, sin recorrer dos veces.
     Iterador Buscar(const NombreCampo&);
     const_Iterador Buscar(const NombreCampo&) const;
+    Conj<NombreCampo> campos();
+	void copiarCampos(Conj<NombreCampo> c, Registro r2);
 
     class Iterador
     {
@@ -146,6 +148,37 @@ public:
   private:
 
     Dicc<NombreCampo, dato> dic;
+	//AUXILIARES
+	
+	bool coincidenTodos(Registro& r1, Conj<NombreCampo>& c, Registro& r2){
+	bool res=true;
+	if(!c.EsVacio()){
+		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
+		while(it.HaySiguiente() && res==true){
+			if(r1.Significado(it.Siguiente()).tipo() != r2.Significado(it.Siguiente()).tipo()){
+				res=false;
+				}
+			else{
+				if(r1.Significado(it.Siguiente()).esNat()){
+					if(r1.Significado(it.Siguiente()).dameNat() != r2.Significado(it.Siguiente()).dameNat()){res=false;}
+					}
+				else{
+					if(r1.Significado(it.Siguiente()).dameString() != r2.Significado(it.Siguiente()).dameString()){res=false;}
+					}	
+				}
+		
+			it.Avanzar();	
+			}		
+		}
+	return res;	
+}
+
+bool borrar(Registro crit, Registro reg){
+	bool res=true;
+	Conj<NombreCampo> c=campos(crit);
+	res=coincidenTodos(crit, c, reg);
+	return res;
+}
 
 };
 
@@ -158,11 +191,11 @@ bool operator == (const Registro& d1, const Registro& d2);
   // Implementacion Dicc
 
 
-Registro::Dicc()
+Registro::Registro()
 {}
 
 
-Registro::Dicc(const Registro& otro)
+Registro::Registro(const Registro& otro)
   : claves_(otro.claves_), significados_(otro.significados_)
 {}
 
@@ -190,7 +223,7 @@ typename Registro::Iterador Registro::Definir(const NombreCampo& clave, const da
 }
 
 
-typename Registro::Iterador Registro::DefinirRapido(const NombreCampo& clave, const S& significado)
+typename Registro::Iterador Registro::DefinirRapido(const NombreCampo& clave, const dato& significado)
 {
   #ifdef DEBUG
   assert( not Definido(clave) );
@@ -209,7 +242,7 @@ bool Registro::Definido(const NombreCampo& clave) const
 }
 
 
-const S& Registro::Significado(const NombreCampo& clave)const
+const dato& Registro::Significado(const NombreCampo& clave)const
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -219,7 +252,7 @@ const S& Registro::Significado(const NombreCampo& clave)const
 }
 
 
-S& Registro::Significado(const NombreCampo& clave)
+dato& Registro::Significado(const NombreCampo& clave)
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -263,12 +296,12 @@ Registro::Iterador::Iterador()
 {}
 
 
-Registro::Iterador::Iterador(const typename Dicc<NombreCampo, S>::Iterador& otro)
+Registro::Iterador::Iterador(const typename Registro::Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
-typename Registro::Iterador& Registro::Iterador::operator = (const typename Dicc<NombreCampo, S>::Iterador& otro)
+typename Registro::Iterador& Registro::Iterador::operator = (const typename Registro::Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -299,7 +332,7 @@ const NombreCampo& Registro::Iterador::SiguienteClave() const
 }
 
 
-S& Registro::Iterador::SiguienteSignificado()
+dato& Registro::Iterador::SiguienteSignificado()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -329,7 +362,7 @@ const NombreCampo& Registro::Iterador::AnteriorClave() const
 }
 
 
-S& Registro::Iterador::AnteriorSignificado()
+dato& Registro::Iterador::AnteriorSignificado()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -409,12 +442,12 @@ Registro::const_Iterador::const_Iterador(const typename Registro::Iterador& otro
 {}
 
 
-Registro::const_Iterador::const_Iterador(const typename Dicc<NombreCampo, S>::const_Iterador& otro)
+Registro::const_Iterador::const_Iterador(const typename Registro::const_Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
-typename Registro::const_Iterador& Registro::const_Iterador::operator=(const typename Dicc<NombreCampo, S>::const_Iterador& otro)
+typename Registro::const_Iterador& Registro::const_Iterador::operator=(const typename Registro::const_Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -475,7 +508,7 @@ const NombreCampo& Registro::const_Iterador::AnteriorClave() const
 }
 
 
-const S& Registro::const_Iterador::AnteriorSignificado() const
+const dato& Registro::const_Iterador::AnteriorSignificado() const
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -574,69 +607,35 @@ bool operator == (const Registro& d1, const Registro& d2)
   return retval;
 }
 
-}
 
 
 
 
-
-
-void mergear(Registro& r1, Registro& r2){
+void Registro::mergear(Registro& r2){
 	typename Dicc<NombreCampo, Dato>::Iterador itR2= r2.CrearIt();
 
 	while(itR2.HaySiguiente()){
-		if(!(r1.Definido(itR2.SiguienteClave()))) 
-			r1.Definir(itR2.SiguienteClave(), itR2.SiguienteSignificado());
+		if(!(Definido(itR2.SiguienteClave()))) 
+			Definir(itR2.SiguienteClave(), itR2.SiguienteSignificado());
 		itR2.Avanzar();
 	}	
 }
 
-Conj<NombreCampo> campos(Registro& r1){
+Conj<NombreCampo> Registro::campos(){
 	Conj<NombreCampo> res;
-	typename Dicc<NombreCampo, Dato>::Iterador itR1= r1.CrearIt();
+	typename Dicc<NombreCampo, Dato>::Iterador itR1= CrearIt();
 	while(itR1.HaySiguiente()){
 		res.AgregarRapido(itR1.SiguienteClave());
 		itR1.Avanzar();
 	}
 	return res;
 }
-
-bool coincidenTodos(Registro& r1, Conj<NombreCampo>& c, Registro& r2){
-	bool res=true;
-	if(!c.EsVacio()){
-		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
-		while(it.HaySiguiente() && res==true){
-			if(r1.Significado(it.Siguiente()).tipo() != r2.Significado(it.Siguiente()).tipo()){
-				res=false;
-				}
-			else{
-				if(r1.Significado(it.Siguiente()).esNat()){
-					if(r1.Significado(it.Siguiente()).dameNat() != r2.Significado(it.Siguiente()).dameNat()){res=false;}
-					}
-				else{
-					if(r1.Significado(it.Siguiente()).dameString() != r2.Significado(it.Siguiente()).dameString()){res=false;}
-					}	
-				}
-		
-			it.Avanzar();	
-			}		
-		}
-	return res;	
-}
-
-bool borrar(Registro crit, Registro reg){
-	bool res=true;
-	Conj<NombreCampo> c=campos(crit);
-	res=coincidenTodos(crit, c, reg);
-	return res;
-}
 	
-
-void copiarCampos(Conj<NombreCampo> c, Registro& r1, Registro r2){
+void Registro::copiarCampos(Conj<NombreCampo> c, Registro r2){
 	typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
 	while(it.HaySiguiente()){
-		if(!r1.Definido(it.Siguiente())){
-			r1.Definir(it.Siguiente(), r2.Significado(it.Siguiente()));
+		if(!Definido(it.Siguiente())){
+			Definir(it.Siguiente(), r2.Significado(it.Siguiente()));
 			}
 		it.Avanzar();	
 		} 
