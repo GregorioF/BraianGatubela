@@ -190,26 +190,21 @@ tabla::tabla(): accesos_(0)
 tabla::tabla( const tabla& otra){
 	accesos_=otra.accesos_;
 	
-	String nombre_=otra.nombre_;
+	nombre_=otra.nombre_;
 	registros_=Lista<Registro>(otra.registros_);
 	campos_=Dicc<NombreCampo, TipoCampo>(otra.campos_);
 	claves_=Conj<NombreCampo>(otra.claves_);
-	indiceN_=indiceNat();
-	indiceS_=indiceString();
+	
 	indiceN_.nombreC=otra.indiceN_.nombreC;
 	indiceN_.maximo=otra.indiceN_.maximo;
 	indiceN_.minimo=otra.indiceN_.minimo;
-	if(!(otra.indiceN_.valoresYreg.esVacio())){
-	indiceN_.valoresYreg=dicA<Nat,Lista<estrAux> >(otra.indiceN_.valoresYreg);
-	}
+	indiceN_.valoresYreg = dicA<Nat,Lista<estrAux> >(otra.indiceN_.valoresYreg);
+	
 	indiceS_.nombreC=otra.indiceS_.nombreC;
 	indiceS_.maximo=otra.indiceS_.maximo;
 	indiceS_.minimo=otra.indiceS_.minimo;
-	if(!(otra.indiceS_.valoresYreg.esVacio())){
-	indiceS_.valoresYreg=dicT<Lista<estrAux> >(otra.indiceS_.valoresYreg);
-	}
-	
-	}
+	indiceS_.valoresYreg = dicT<Lista<estrAux> >(otra.indiceS_.valoresYreg);
+}
 
 tabla::~tabla()
 {}
@@ -297,7 +292,7 @@ void tabla::agregarRegistro(Registro& r){
 			yaMeMuero.itReg= itRegistros;
 			yaMeMuero.itEstr= it;
 			it1.AgregarComoSiguiente(yaMeMuero);
-			it.Siguiente().itEstr= it1;  
+			it.Anterior().itEstr= it1;  
 		}
 		else{
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).dameString()).CrearItUlt();

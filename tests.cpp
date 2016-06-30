@@ -4,6 +4,7 @@
 #include "Driver.h"
 #include "mini_test.h"
 #include "tabla.h"
+#include "BD.h"
 
 #include <string>
 #include <iostream>
@@ -122,18 +123,18 @@ void testTabla(){
   }   
 
   /* DESOMENTANDO ESTO DEJA DE FUNCIONAR DESP DEL TEXTO QUE DICE  "DESPUES DE BORRAR UNO SON:...."
-
+*/
   Registro r4;
   Dato arregloDato4 [6]={Dato("Brian"), Dato("Gatubela"), Dato(11315), Dato("Orga2"), Dato(6), Dato("Braian.Gatubela@GroopieDeBatman.com")};
-  t.agregarRegistro(r4);
   DefinirRegistro(r4, campos, arregloDato4);
+  t.agregarRegistro(r4);
   t.agregarRegistro(r3);
   typename dicA<Nat, Lista<estrAux> >::Iterador itIndice3 = t.dameColumnaNatParaTest().CrearIt();
   cout << "\nY despues de Agregar dos registros son: "<<endl;
   while(itIndice3.HaySiguiente()){
     cout << itIndice3.SiguienteClave() << ", ";
     itIndice3.Avanzar();
-  }*/ 
+  } 
 }
 void agregarRegistroSinIndices(){
 Registro r;
@@ -351,7 +352,7 @@ ind.AgregarRapido(c);
 ind.AgregarRapido(c1);
 ASSERT(n.indices()==ind);
 
-// n.agregarRegistro(r5); SALTA SEG FAULT CDO AGREGAS REGISTRO Y TENES LOS DOS INDICES
+n.agregarRegistro(r5); //SALTA SEG FAULT CDO AGREGAS REGISTRO Y TENES LOS DOS INDICES
 
 }
 
@@ -509,13 +510,148 @@ ASSERT(n.registros().Longitud() == 4);
 
 }
 
+void BaseDeDatos(){
+Registro r;
+NombreCampo c="hi";
+Nat x=5;
+Dato d=Dato(x);
+r.Definir(c,d);
+
+NombreCampo c1="lala";
+String u="lolo";
+Dato d1=Dato(u);
+r.Definir(c1,d1);
+
+NombreCampo c2="d";
+Nat y=8;
+Dato d2=Dato(y);
+r.Definir(c2,d2);
+
+NombreCampo c3="mmm";
+String t="toto";
+Dato d3=Dato(t);
+r.Definir(c3,d3);
+
+Conj<NombreCampo> camp=campos(r);
+tabla n;
+String t1="TABLA";
+n.nuevaTabla(t1,r,camp);
+String nombre=n.nombre();
+cout<< nombre<<endl;
+
+Registro r1;
+
+r1.Definir(c,d);
+r1.Definir(c1,d3);
+r1.Definir(c2,d2);
+r1.Definir(c3,d1);
+
+Registro r2;
+Nat x1=1;
+Dato d5=Dato(x1);
+r2.Definir(c,d5);
+
+String u1="lalo";
+Dato d6=Dato(u1);
+r2.Definir(c1,d6);
+
+Nat y1=2;
+Dato d7=Dato(y1);
+r2.Definir(c2,d7);
+
+String t4="tato";
+Dato d8=Dato(t4);
+r2.Definir(c3,d8);
+
+
+Registro r3;
+Nat x2=6;
+Dato d9=Dato(x2);
+r3.Definir(c,d9);
+
+String u2="lo";
+Dato d10=Dato(u2);
+r3.Definir(c1,d10);
+
+Nat y2=65;
+Dato d11=Dato(y2);
+r3.Definir(c2,d11);
+
+String t5="tito";
+Dato d12=Dato(t5);
+r3.Definir(c3,d12);
+
+Registro r4;
+Nat x4=78;
+Dato d13=Dato(x4);
+r4.Definir(c,d13);
+
+String u4="Hola";
+Dato d14=Dato(u4);
+r4.Definir(c1,d14);
+
+Nat y4=24;
+Dato d15=Dato(y4);
+r4.Definir(c2,d15);
+
+String t6="Mato";
+Dato d16=Dato(t6);
+r4.Definir(c3,d16);
+
+Registro r5;
+Nat x5=75;
+Dato d17=Dato(x5);
+r5.Definir(c,d17);
+
+String u5="Holita";
+Dato d18=Dato(u5);
+r5.Definir(c1,d18);
+
+Nat y5=25;
+Dato d19=Dato(y5);
+r5.Definir(c2,d19);
+
+String t7="Mateo";
+Dato d20=Dato(t7);
+r5.Definir(c3,d20);
+
+ASSERT(n.registros().Longitud() == 0);
+
+BD b;
+b.agregarTabla(n);
+Registro col;
+col.Definir("nombre",Dato("perez"));
+col.Definir("apellido",Dato("perez"));
+col.Definir("LU",Dato(1));
+col.Definir("Materia",Dato("perez"));
+col.Definir("Nota",Dato(10));
+col.Definir("eMail",Dato("perez"));
+Conj<NombreCampo> claves;
+claves.Agregar("LU");
+claves.Agregar("eMail");
+tabla t2;
+t2.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
+b.agregarTabla(t2);
+b.insertarEntrada(r,"TABLA");
+ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
+ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
+
+
+  Registro r23;
+  Dato arregloDato [6]= {Dato("charo"), Dato("olivera"),  Dato(11115), Dato("Aed2"), Dato(5), Dato("laTurraDeSaavedra@turra.com")};
+  DefinirRegistro(r23,campos(col), arregloDato);
+
+
+}
+
 int main(int argc, char **argv)
 {
-  //RUN_TEST( ejemplo_simple );
-  RUN_TEST(testTabla);
+ // RUN_TEST( ejemplo_simple );
+ // RUN_TEST(testTabla);
   RUN_TEST(agregarRegistroSinIndices);
   RUN_TEST(agregarRegConInd);
   RUN_TEST(dameColumnas);
+  RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
    * las funcionalidades de cada módulo.                              *

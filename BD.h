@@ -17,7 +17,7 @@ public:
 
 	BD();
 	
-	void agregarTabla(const tabla);	
+	void agregarTabla(tabla);	
 	
 	~BD();  
 	

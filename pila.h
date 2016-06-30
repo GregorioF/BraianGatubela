@@ -19,13 +19,15 @@ public:
 	bool EsVacia()const;
 	void vaciar();
 	void operator =(const pila<T>& otra){
-		Nodo* actual = primero;
+		Nodo* actual = otra.primero;
 		while(actual!=NULL){
 			apilar(*(actual->elem));
 			actual=actual->siguiente;
 		}
 	}
-
+	void Ultimo(){
+		cout << *(ultimo->elem)<<endl;
+	}
 private:
 	struct Nodo{
 		Nodo(T& valor, Nodo* ant): elem(&valor), anterior(ant), siguiente(NULL) {}
@@ -43,22 +45,25 @@ pila<T>::pila(): cantidad(0), ultimo(NULL){}
 
 template<typename T>
 pila<T>::pila(const pila<T>& otra){
-	Nodo* actual = primero;
+	primero = NULL;
+	ultimo =NULL;
+	Nodo* actual = otra.primero;
 	while(actual!=NULL){
-		apilar(actual->elem);
+		apilar(*(actual->elem));
 		actual=actual->siguiente;
 	}
+	cantidad --;    //WHY?!!!!!!!!!!!!!!!!!!!?!?!??!??!?!?!!!!!!!!!!!!!!!!!!!
 }
 
 template<typename T>
 pila<T>::~pila(){
+	primero=NULL;
 	Nodo* actual=ultimo;
 	while(actual!=NULL){
 		Nodo* aux=actual;
 		actual= actual->anterior;
 		delete(aux);
 	}
-	primero=NULL;
 }
 
 template<typename T>
@@ -104,7 +109,7 @@ template<typename T>
 bool pila<T>::EsVacia()const{
 	return (ultimo==NULL);
 }
-
+ 
 template<typename T>
 void pila<T>::vaciar(){
 	if(!EsVacia()){

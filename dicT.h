@@ -233,7 +233,7 @@ dicT<T>::dicT(){
 template<typename T>
 dicT<T>::dicT(const dicT<T>& otro){
 	raiz=NULL;
-	typename Conj<string>::Iterador it=otro.claves().CrearIt();
+	typename Conj<string>::const_Iterador it=otro.claves().CrearIt();
 	while(it.HaySiguiente()){
 		T elem=otro.obtener(it.Siguiente()); //FIJARSE SI ES X COPIA O REFERENCIA !!
 		definir(it.Siguiente(), elem);
