@@ -5,7 +5,7 @@
 #include "Conj.h"
 #include "dicA.h"
 #include "dicT.h"
-
+#include "registro.h"
 
 using namespace aed2;
 
@@ -43,10 +43,7 @@ public:
 	void indexar(NombreCampo c);
 	Dato minimo(NombreCampo c);
 	Dato maximo(NombreCampo c);
-	//Conj<Registro> dameColumna(NombreCampo c);
-	dicA<Nat, Lista<estrAux> >* dameColumnaNat();
-	dicT< Lista<estrAux> >* dameColumnaString();
-	dicA<Nat, Lista<estrAux> > dameColumnaNatParaTest();
+	void AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c);
 
 	
 private:
@@ -178,6 +175,54 @@ private:
 	bool esValidoIndiceString(indiceString i){
 		return i.nombreC.size()!=0;
 	}
+	
+	Registro dameRegistroT(dicT<Lista<estrAux> >& d, String s){
+		Registro res;
+		Lista<estrAux> aux=d.obtener(s);
+		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
+		estrAux eaux=itA.Siguiente();
+		res=eaux.itReg.Siguiente();
+		return res;
+	}
+	
+	Registro dameRegistroN(dicA<Nat, Lista<estrAux> >& d,Nat n){
+		Registro res;
+		Lista<estrAux> aux=d.obtener(n);
+		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
+		estrAux eaux=itA.Siguiente();
+		res=eaux.itReg.Siguiente();
+		return res;
+	}		
+	
+	void generarRegistroYAgregarS(Lista<Registro>& cr, dicT<Lista<estrAux> >& d,NombreCampo c, tabla& join){
+		typename::Lista<Registro>::Iterador it=cr.CrearIt();
+		while(it.HaySiguiente()){
+			Registro rT1=it.Siguiente();
+			String valor= rT1.Significado(c).dameString();
+			if(d.definido(valor)){
+				
+				Registro rT2= dameRegistroT(d,valor);
+				mergear(rT1,rT2); //X COPIA AMBOS!
+				join.agregarRegistro(rT1);
+				}
+			it.Avanzar();	
+			}
+		}
+	void generarRegistroYAgregarN(Lista<Registro>& cr, dicA<Nat, Lista<estrAux> >& d,NombreCampo c, tabla& join){
+		typename::Lista<Registro>::Iterador it=cr.CrearIt();
+		while(it.HaySiguiente()){
+			Registro rT1=it.Siguiente(); //COPIA??
+			Nat valor= rT1.Significado(c).dameNat();
+			if(d.definido(valor)){
+				
+				Registro rT2= dameRegistroN(d,valor);
+				mergear(rT1,rT2); //X COPIA AMBOS!
+				join.agregarRegistro(rT1);
+				}
+			it.Avanzar();	
+			}
+		}
+		
 	
 	
 };
@@ -431,20 +476,23 @@ void tabla::borrarRegistro(Registro& crit){
 		return res;
 	}
 
-	dicA<Nat, Lista<estrAux> >* tabla::dameColumnaNat(){
-		dicA<Nat, Lista<estrAux> >* res= &indiceN_.valoresYreg;
-		return res;
-	}
-	
-	dicT<Lista<estrAux> >* tabla::dameColumnaString(){
-		dicT<Lista<estrAux> >* res= &indiceS_.valoresYreg;
-		return res;
-	}
-	
-	dicA<Nat, Lista<estrAux> > tabla::dameColumnaNatParaTest(){
-		return indiceN_.valoresYreg;
-	}
-	
-	
+		
+	void tabla::AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c){ 
+			typename Lista<Registro>::Iterador regis=otra.registros().CrearIt();
+			Lista<Registro> registt;
+			while(regis.HaySiguiente()){
+				Registro r;
+				Conj<NombreCampo> camp=campos(regis.Siguiente());
+				copiarCampos(camp,r,regis.Siguiente());
+				registt.AgregarAtras(r);
+			}
+			if(tipoCampo(c)==NAT){
+			generarRegistroYAgregarN(registt, indiceN_.valoresYreg,c,join);
+			}
+		else{
+			generarRegistroYAgregarS(registt, indiceS_.valoresYreg,c,join);
+			}
+		}		
+		
  
 #endif

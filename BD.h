@@ -105,22 +105,6 @@ private:
 		}				
 	}
 	
-	Registro dameRegistroT(dicT<Lista<estrAux> >& d, String s){
-		Registro res;
-		Lista<estrAux> aux=d.obtener(s);
-		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
-		estrAux eaux=itA.Siguiente();
-		res=eaux.itReg.Siguiente();
-		return res;
-		}
-	Registro dameRegistroN(dicA<Nat, Lista<estrAux> >& d,Nat n){
-		Registro res;
-		Lista<estrAux> aux=d.obtener(n);
-		typename Lista<estrAux>::Iterador itA=aux.CrearIt();
-		estrAux eaux=itA.Siguiente();
-		res=eaux.itReg.Siguiente();
-		return res;
-		}		
 	
 	bool pertenece(NombreCampo c, Conj<NombreCampo> cc){
 		typename::Conj<NombreCampo>::Iterador it=cc.CrearIt();
@@ -132,34 +116,6 @@ private:
 		return res;	
 		}
 		
-	void generarRegistrosJoinT(Lista<Registro> cr, dicT<Lista<estrAux> >* cT2, NombreCampo campoJoin, tabla* join){
-		typename::Lista<Registro>::Iterador it=cr.CrearIt();
-		while(it.HaySiguiente()){
-			Registro rT1=it.Siguiente();
-			String valorCampoJoin= rT1.Significado(campoJoin).dameString();
-			if(cT2->definido(valorCampoJoin)){
-				
-				Registro rT2= dameRegistroT(*cT2,valorCampoJoin);
-				Registro rMergeado=merge(rT1,rT2); //X COPIA AMBOS!
-				join->agregarRegistro(rMergeado);
-				}
-			it.Avanzar();	
-			}
-		}
-		
-	void generarRegistrosJoinN(Lista<Registro> cr, dicA<Nat,Lista<estrAux> >* cT2, NombreCampo campoJoin, tabla* join){
-		typename::Lista<Registro>::Iterador it=cr.CrearIt();
-		while(it.HaySiguiente()){
-			Registro rT1=it.Siguiente();
-			Nat valorCampoJoin= rT1.Significado(campoJoin).dameNat();
-			if(cT2->definido(valorCampoJoin)){
-				Registro rT2=dameRegistroN(*cT2,valorCampoJoin);
-				Registro rMergeado=merge(rT1,rT2); //X COPIA AMBOS!
-				join->agregarRegistro(rMergeado);
-				}
-			it.Avanzar();	
-			}
-		}	
 		
 };
 
@@ -294,28 +250,7 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
 	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-		if(t1->tipoCampo(c)){
-			dicA<Nat,Lista<estrAux> >* columnaT2=t2->dameColumnaNat();
-			typename Lista<Registro>::Iterador regis=t1->registros().CrearIt();
-			Lista<Registro> registt;
-			while(regis.HaySiguiente()){
-				Registro r;
-				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
-				registt.AgregarAtras(r);
-			}
-			generarRegistrosJoinN(registt,columnaT2,c,nuevojoin);
-		}
-		else{
-			dicT<Lista<estrAux> >* columnaT2=t2->dameColumnaString();
-			typename Lista<Registro>::Iterador regis=t1->registros().CrearIt();
-			Lista<Registro> registt;
-			while(regis.HaySiguiente()){
-				Registro r;
-				copiarCampos(campos(regis.Siguiente()),r,regis.Siguiente());
-				registt.AgregarAtras(r);
-			}
-			generarRegistrosJoinT(registt, columnaT2,c,nuevojoin);
-		}
+		t1->AuxiliarGVJ(*t2, *nuevojoin, c);
 		}
 	else{
 		typename::Lista<Registro>::Iterador it=t1->registros().CrearIt();

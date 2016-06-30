@@ -1,36 +1,50 @@
-#ifndef REGISTRO_H
-#define REGISTRO_H
+/*
+ * Diccionario implementado sobre dos listas enlazadas (Lista.h),
+ * una de claves_ y una de significados_.
+ * 
+ * Created on 30 de octubre de 2010
+ */
 
-#include "Conj.h"
-#include "dato.h"
+#ifndef AED2_DICC_H_
+#define	AED2_DICC_H_
 
-using namespace aed2;
+#include <ostream>
+#include "Lista.h"
 
+namespace aed2
+{
 
-class Registro{
-public:
-		class Iterador;
+template<class K,class S>
+class Dicc
+{
+  public:
+
+    //para iterar las tuplas vamos a usar los siguientes tipos
+    struct Elem;
+    struct const_Elem;
+
+    class Iterador;
     class const_Iterador;
 
-    Registro();
-    Registro(const Registro& otro);
-    Registro& operator=(const Registro& otro);
+    Dicc();
+    Dicc(const Dicc<K,S>& otro);
+    Dicc<K,S>& operator=(const Dicc<K,S>& otro);
 
-    Iterador Definir(const NombreCampo& clave, const dato& significado);
-    Iterador DefinirRapido(const NombreCampo& clave, const dato& significado);
+    Iterador Definir(const K& clave, const S& significado);
+    Iterador DefinirRapido(const K& clave, const S& significado);
 
-    bool Definido(const NombreCampo& clave) const;
-    const dato& Significado(const NombreCampo& clave) const;
-    dato& Significado(const NombreCampo& clave);
-    void Borrar(const NombreCampo& clave);
+    bool Definido(const K& clave) const;
+    const S& Significado(const K& clave) const;
+    S& Significado(const K& clave);
+    void Borrar(const K& clave);
     Nat CantClaves() const;
     Iterador CrearIt();
     const_Iterador CrearIt() const;
 
     //Estas funciones son utiles para saber si algo esta definido
     //y ver cual es su signficado, sin recorrer dos veces.
-    Iterador Buscar(const NombreCampo&);
-    const_Iterador Buscar(const NombreCampo&) const;
+    Iterador Buscar(const K&);
+    const_Iterador Buscar(const K&) const;
 
     class Iterador
     {
@@ -38,18 +52,18 @@ public:
 
         Iterador();
 
-        Iterador(const typename Registro::Iterador& otro);
+        Iterador(const typename Dicc<K, S>::Iterador& otro);
 
-        Iterador& operator = (const typename Registro::Iterador& otro);
+        Iterador& operator = (const typename Dicc<K, S>::Iterador& otro);
 
-        bool operator == (const typename Registro::Iterador&) const;
+        bool operator == (const typename Dicc<K,S>::Iterador&) const;
 
         bool HaySiguiente() const;
         bool HayAnterior() const;
-        const NombreCampo& SiguienteClave() const;
-        dato& SiguienteSignificado();
-        const NombreCampo& AnteriorClave() const;
-        dato& AnteriorSignificado();
+        const K& SiguienteClave() const;
+        S& SiguienteSignificado();
+        const K& AnteriorClave() const;
+        S& AnteriorSignificado();
         Elem Siguiente();
         Elem Anterior();
         void Avanzar();
@@ -59,13 +73,13 @@ public:
 
       private:
 
-        typename Lista<NombreCampo>::Iterador it_claves_;
+        typename Lista<K>::Iterador it_claves_;
         typename Lista<S>::Iterador it_significados_;
 
-        Iterador(Registro* d);
+        Iterador(Dicc<K,S>* d);
 
-        friend typename Registro::Iterador Registro::CrearIt();
-        friend class Registro::const_Iterador;
+        friend typename Dicc<K,S>::Iterador Dicc<K,S>::CrearIt();
+        friend class Dicc<K, S>::const_Iterador;
     };
 
     class const_Iterador
@@ -74,20 +88,20 @@ public:
 
         const_Iterador();
 
-        const_Iterador(const typename Registro::Iterador& otro);
+        const_Iterador(const typename Dicc<K,S>::Iterador& otro);
 
-        const_Iterador(const typename Registro::const_Iterador& otro);
+        const_Iterador(const typename Dicc<K, S>::const_Iterador& otro);
 
-        const_Iterador& operator = (const typename Registro::const_Iterador& otro);
+        const_Iterador& operator = (const typename Dicc<K, S>::const_Iterador& otro);
 
-        bool operator==(const typename Registro::const_Iterador&) const;
+        bool operator==(const typename Dicc<K,S>::const_Iterador&) const;
 
         bool HaySiguiente() const;
         bool HayAnterior() const;
-        const NombreCampo& SiguienteClave() const;
-        const dato& SiguienteSignificado() const;
-        const NombreCampo& AnteriorClave() const;
-        const dato& AnteriorSignificado() const;
+        const K& SiguienteClave() const;
+        const S& SiguienteSignificado() const;
+        const K& AnteriorClave() const;
+        const S& AnteriorSignificado() const;
         const_Elem Siguiente() const;
         const_Elem Anterior() const;
         void Avanzar();
@@ -95,78 +109,79 @@ public:
 
     private:
 
-        typename Lista<NombreCampo>::const_Iterador it_claves_;
-        typename Lista<dato>::const_Iterador it_significados_;
+        typename Lista<K>::const_Iterador it_claves_;
+        typename Lista<S>::const_Iterador it_significados_;
 
-        const_Iterador(const Registro* d);
+        const_Iterador(const Dicc<K,S>* d);
 
-        friend typename Registro::const_Iterador Registro::CrearIt() const;
+        friend typename Dicc<K,S>::const_Iterador Dicc<K,S>::CrearIt() const;
     };
 
     struct Elem
     {
       public:
 
-        const NombreCampo& clave;
-        dato& significado;
+        const K& clave;
+        S& significado;
 
-        Elem(const NombreCampo& c, dato& s) : clave(c), significado(s) {}
+        Elem(const K& c, S& s) : clave(c), significado(s) {}
         //Para sacar esto de aca, necesitariamos definir rasgos y otras yerbas
         //Lamentablemente, sino C++ no reconoce bien los tipos
 
-        friend std::ostream& operator<<(std::ostream& os, const Registro::Elem& e) {
+        friend std::ostream& operator<<(std::ostream& os, const Dicc<K,S>::Elem& e) {
           return os << e.clave << ":" << e.significado;
         }
 
       private:
 
-        typename Registro::Elem& operator=(const Registro::Elem&);
+        typename Dicc<K,S>::Elem& operator=(const Dicc<K,S>::Elem&);
     };
 
     struct const_Elem
     {
       public:
 
-        const NombreCampo& clave;
-        const dato& significado;
+        const K& clave;
+        const S& significado;
 
-        const_Elem(const NombreCampo& c, const dato& s) : clave(c), significado(s) {}
+        const_Elem(const K& c, const S& s) : clave(c), significado(s) {}
 
         //Para sacar esto de aca, necesitariamos definir rasgos y otras yerbas
         //Lamentablemente, sino C++ no reconoce bien los tipos
-        friend std::ostream& operator << (std::ostream& os, const Registro::const_Elem& e) {
+        friend std::ostream& operator << (std::ostream& os, const Dicc<K,S>::const_Elem& e) {
           return os << e.clave << ":" << e.significado;
         }
 
       private:
 
-        typename Registro::const_Elem& operator = (const Registro::const_Elem&);
+        typename Dicc<K,S>::const_Elem& operator = (const Dicc<K,S>::const_Elem&);
     };
 
   private:
 
-    Dicc<NombreCampo, dato> dic;
+    Lista<K> claves_;
+    Lista<S> significados_;
 
 };
 
+template<class K, class S>
+std::ostream& operator << (std::ostream &os, const Dicc<K,S>& d);
 
-std::ostream& operator << (std::ostream &os, const Dicc<NombreCampo,S>& d);
-
-
+template<class K, class S>
 bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2);
 
   // Implementacion Dicc
 
-
+template<class K, class S>
 Dicc<K,S>::Dicc()
 {}
 
-
+template<class K, class S>
 Dicc<K,S>::Dicc(const Dicc<K,S>& otro)
   : claves_(otro.claves_), significados_(otro.significados_)
 {}
 
-
+template<class K, class S>
 Dicc<K,S>& Dicc<K,S>::operator = (const Dicc<K,S>& otro)
 {
   claves_ = otro.claves_;
@@ -175,8 +190,8 @@ Dicc<K,S>& Dicc<K,S>::operator = (const Dicc<K,S>& otro)
   return *this;
 }
 
-
-typename Dicc<K,S>::Iterador Dicc<K,S>::Definir(const NombreCampo& clave, const dato& significado)
+template<class K, class S>
+typename Dicc<K,S>::Iterador Dicc<K,S>::Definir(const K& clave, const S& significado)
 {
   Iterador it = Buscar(clave);
 
@@ -189,7 +204,7 @@ typename Dicc<K,S>::Iterador Dicc<K,S>::Definir(const NombreCampo& clave, const 
   return it;
 }
 
-
+template<class K, class S>
 typename Dicc<K,S>::Iterador Dicc<K,S>::DefinirRapido(const K& clave, const S& significado)
 {
   #ifdef DEBUG
@@ -202,13 +217,13 @@ typename Dicc<K,S>::Iterador Dicc<K,S>::DefinirRapido(const K& clave, const S& s
   return CrearIt();
 }
 
-
+template<class K, class S>
 bool Dicc<K,S>::Definido(const K& clave) const
 {
   return Buscar(clave).HaySiguiente();
 }
 
-
+template<class K, class S>
 const S& Dicc<K,S>::Significado(const K& clave)const
 {
   #ifdef DEBUG
@@ -576,70 +591,4 @@ bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
 
 }
 
-
-
-
-
-
-void mergear(Registro& r1, Registro& r2){
-	typename Dicc<NombreCampo, Dato>::Iterador itR2= r2.CrearIt();
-
-	while(itR2.HaySiguiente()){
-		if(!(r1.Definido(itR2.SiguienteClave()))) 
-			r1.Definir(itR2.SiguienteClave(), itR2.SiguienteSignificado());
-		itR2.Avanzar();
-	}	
-}
-
-Conj<NombreCampo> campos(Registro& r1){
-	Conj<NombreCampo> res;
-	typename Dicc<NombreCampo, Dato>::Iterador itR1= r1.CrearIt();
-	while(itR1.HaySiguiente()){
-		res.AgregarRapido(itR1.SiguienteClave());
-		itR1.Avanzar();
-	}
-	return res;
-}
-
-bool coincidenTodos(Registro& r1, Conj<NombreCampo>& c, Registro& r2){
-	bool res=true;
-	if(!c.EsVacio()){
-		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
-		while(it.HaySiguiente() && res==true){
-			if(r1.Significado(it.Siguiente()).tipo() != r2.Significado(it.Siguiente()).tipo()){
-				res=false;
-				}
-			else{
-				if(r1.Significado(it.Siguiente()).esNat()){
-					if(r1.Significado(it.Siguiente()).dameNat() != r2.Significado(it.Siguiente()).dameNat()){res=false;}
-					}
-				else{
-					if(r1.Significado(it.Siguiente()).dameString() != r2.Significado(it.Siguiente()).dameString()){res=false;}
-					}	
-				}
-		
-			it.Avanzar();	
-			}		
-		}
-	return res;	
-}
-
-bool borrar(Registro crit, Registro reg){
-	bool res=true;
-	Conj<NombreCampo> c=campos(crit);
-	res=coincidenTodos(crit, c, reg);
-	return res;
-}
-	
-
-void copiarCampos(Conj<NombreCampo> c, Registro& r1, Registro r2){
-	typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
-	while(it.HaySiguiente()){
-		if(!r1.Definido(it.Siguiente())){
-			r1.Definir(it.Siguiente(), r2.Significado(it.Siguiente()));
-			}
-		it.Avanzar();	
-		} 
-	}
-	
-#endif
+#endif	//AED2_DICC_H_
