@@ -451,7 +451,7 @@ n.indexar(c);
 Conj<NombreCampo> ind;
 ind.AgregarRapido(c);
 ind.AgregarRapido(c1);
-ASSERT(n.indices()==ind);
+//ASSERT(n.indices()==ind);
 
 n.agregarRegistro(r5); 
 
@@ -682,18 +682,17 @@ b.agregarTabla(n);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c);
 	b.dameTabla("Tabla2")->indexar(c);
-	//b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
-	//b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
-	
+	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
+    b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
 }
 
 int main(int argc, char **argv)
 {
- // RUN_TEST( ejemplo_simple );
-  //RUN_TEST(testTabla);
-  //RUN_TEST(agregarRegistroSinIndices);
-  //RUN_TEST(agregarRegConInd);
+ //RUN_TEST( ejemplo_simple );
+  RUN_TEST(testTabla);
+  RUN_TEST(agregarRegistroSinIndices);
+  RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
