@@ -35,14 +35,15 @@ public:
     Nat CantClaves() const;
     Iterador CrearIt();
     const_Iterador CrearIt() const;
-
+    void Mostrar(ostream& out) const;
+    
     //Estas funciones son utiles para saber si algo esta definido
     //y ver cual es su signficado, sin recorrer dos veces.
     Iterador Buscar(const NombreCampo&);
     const_Iterador Buscar(const NombreCampo&) const;
     Conj<NombreCampo> campos();
-	void copiarCampos(Conj<NombreCampo> c, Registro r2);
-	void mergear(Registro&);
+	  void copiarCampos(Conj<NombreCampo> c, Registro r2);
+	  void mergear(Registro&);
 
     class Iterador
     {
@@ -194,7 +195,32 @@ public:
 };
 
 
-//std::ostream& operator << (std::ostream &os, const Dicc<NombreCampo,S>& d);
+
+
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+ostream& operator << (std::ostream& out, Registro r){
+  r.Mostrar(out);
+  return out;
+}
+void Registro::Mostrar(ostream& out)const{
+    typename Registro::const_Iterador it = CrearIt();
+    while(it.HaySiguiente()){
+      if(it.SiguienteSignificado().tipo()){
+          out <<"(" << it.SiguienteClave() << ", ";
+          out << it.SiguienteSignificado().valorNat_const()<< ") ";
+      }
+      else{
+        out << "("<<it.SiguienteClave() << ", ";
+        out << it.SiguienteSignificado().valorString_const()<< ") ";
+      }
+      it.Avanzar();
+    }
+    out << "\n";
+      
+}
 
 
 bool operator == (const Registro& d1, const Registro& d2);

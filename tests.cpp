@@ -593,11 +593,12 @@ ASSERT(n.registros().Longitud() == 0);
 
 BD b;
 b.agregarTabla(n);
-
+	//HAGO LA COLUMNA DE REFERENCIA
   Registro col;
+  
   dato d22;
-  String s="perez";
-  d.nuevoDatoString(s);
+  d.nuevoDatoString("perez");
+  
   col.Definir("nombre",d22);
   col.Definir("apellido",d22);
   dato d23;
@@ -606,17 +607,21 @@ b.agregarTabla(n);
   col.Definir("LU",d23);
   col.Definir("Materia",d22);
   dato d24;
-  Nat n24=10;
-  d24.nuevoDatoNat(n24);
+  d24.nuevoDatoNat(10);
   col.Definir("Nota",d24);
   col.Definir("eMail",d22);
   Conj<NombreCampo> claves;
+  //DEFINO CAMPOS CLAVE
   claves.Agregar("LU");
   claves.Agregar("eMail");
+  
+  cout << "col: "<< col << endl;
+
+  //CREO TABLA 
   tabla t2;
   t2.nuevaTabla("candidatos_Para_Calesita_Pab2", col, claves);
-  b.agregarTabla(t2);
   
+  b.agregarTabla(t2);
   b.insertarEntrada(r,"TABLA");
   ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
   ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
@@ -642,10 +647,10 @@ b.agregarTabla(n);
   email.nuevoDatoString(s4);
   
   dato arregloDato [6]= {charo, olivera,  lU, materia, nota, email};
-   Conj<NombreCampo> campos = t2.campos();
+  Conj<NombreCampo> campos = t2.campos();
   DefinirRegistro(r18,campos, arregloDato);
   
-  b.insertarEntrada(r18,"candidatos_Para_Calesita_Pab2");
+  	b.insertarEntrada(r18,"candidatos_Para_Calesita_Pab2");
 	b.insertarEntrada(r2,"TABLA");
 	ASSERT(b.tablaMaxima() == "TABLA");
 	cout<< "Cant de accesos a 'candidatos_Para_Calesita_Pab2': " << b.cantDeAccesos("candidatos_Para_Calesita_Pab2")<<endl;	
@@ -665,12 +670,16 @@ b.agregarTabla(n);
 	r20.Definir("nombre",charo);
 	Conj<NombreCampo> clv;
 	clv.Agregar(c);
+	
+
 	tabla t3;
 	t3.nuevaTabla("Tabla2", r20, clv);
+
 	b.agregarTabla(t3);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c);
-	b.dameTabla("Tabla2")->indexar(c);
+	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
+	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	cout<<"HASTA ACA NO HAy ERROR"<< endl;
 	//b.generarVistaJoin("TABLA","Tabla2",c);
 }
@@ -678,9 +687,9 @@ b.agregarTabla(n);
 int main(int argc, char **argv)
 {
  // RUN_TEST( ejemplo_simple );
-  RUN_TEST(testTabla);
-  RUN_TEST(agregarRegistroSinIndices);
-  RUN_TEST(agregarRegConInd);
+  //RUN_TEST(testTabla);
+  //RUN_TEST(agregarRegistroSinIndices);
+  //RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
