@@ -202,6 +202,7 @@ void BD::borrar(Registro r, const NombreTabla s){
 }
 	
 typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
+	
 	String j="Join";
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
@@ -219,6 +220,7 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	clave.AgregarRapido(c);
 	tabla j1=tabla();
 	j1.nuevaTabla(j,columnas,clave);
+	cout << " \nllego el momento : \n\n";
 	
 	if(!joins_.definido(s1)){
 		dicT<tuplaJoin> dicTJ;

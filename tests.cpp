@@ -653,16 +653,16 @@ b.agregarTabla(n);
   	b.insertarEntrada(r18,"candidatos_Para_Calesita_Pab2");
 	b.insertarEntrada(r2,"TABLA");
 	ASSERT(b.tablaMaxima() == "TABLA");
-	cout<< "Cant de accesos a 'candidatos_Para_Calesita_Pab2': " << b.cantDeAccesos("candidatos_Para_Calesita_Pab2")<<endl;	
-	cout<< "Cant de accesos a 'TABLA': " <<b.cantDeAccesos("TABLA")<<endl;	
+	//cout<< "Cant de accesos a 'candidatos_Para_Calesita_Pab2': " << b.cantDeAccesos("candidatos_Para_Calesita_Pab2")<<endl;	
+	//cout<< "Cant de accesos a 'TABLA': " <<b.cantDeAccesos("TABLA")<<endl;	
 	Registro r19;
 	r19.Definir(c1,d6);
-	cout<< "Cant de registros tabla en BD: " << b.dameTabla("TABLA")->registros().Longitud() <<endl;
-	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
+	//cout<< "Cant de registros tabla en BD: " << b.dameTabla("TABLA")->registros().Longitud() <<endl;
+	//cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
 	b.borrar(r19, "TABLA");
-	cout<< "Cantidad de accesos a 'TABLA': " << b.cantDeAccesos("TABLA")<<endl;
-	cout<< "Cant de registros tabla en BD: " <<b.dameTabla("TABLA")->registros().Longitud() <<endl;
-	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
+	//cout<< "Cantidad de accesos a 'TABLA': " << b.cantDeAccesos("TABLA")<<endl;
+	//cout<< "Cant de registros tabla en BD: " <<b.dameTabla("TABLA")->registros().Longitud() <<endl;
+	//cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
 	
 	Registro r20;
 	dato d45;
@@ -690,9 +690,9 @@ b.agregarTabla(n);
 int main(int argc, char **argv)
 {
  //RUN_TEST( ejemplo_simple );
-  RUN_TEST(testTabla);
-  RUN_TEST(agregarRegistroSinIndices);
-  RUN_TEST(agregarRegConInd);
+ // RUN_TEST(testTabla);
+  //RUN_TEST(agregarRegistroSinIndices);
+  //RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *

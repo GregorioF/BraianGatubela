@@ -232,11 +232,17 @@ dicT<T>::dicT(){
 ///////////////////////////////////////////////////////////
 template<typename T>
 dicT<T>::dicT(const dicT<T>& otro){
-	raiz=NULL;
-	typename Conj<string>::const_Iterador it=otro.claves().CrearIt();
+	raiz= NULL;
+	raiz= new Nodo();
+	Conj<string> claves = otro.claves();
+	typename Conj<string>::const_Iterador it=claves.CrearIt();
+
 	while(it.HaySiguiente()){
-		T elem=otro.obtener(it.Siguiente()); //FIJARSE SI ES X COPIA O REFERENCIA !!
+		T elem=T(otro.obtener(it.Siguiente())); //FIJARSE SI ES X COPIA O REFERENCIA !!
+		//cout <<"\n\nHASTA ACA ALM ENOS LLEGAL A RE CONCHA DE TU REMIL PUTA MADRE \n\n\n\n";
+	
 		definir(it.Siguiente(), elem);
+	
 		it.Avanzar();
 	}
 }
