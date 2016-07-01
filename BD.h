@@ -58,6 +58,7 @@ private:
 		join_=j;			
 		}
 		tuplaJoin(){}	
+		~tuplaJoin(){}
 		
 		NombreCampo campoJ_;
 		Lista<pair<bool, Registro> > mod_;
@@ -130,39 +131,7 @@ private:
 
 BD::BD(){}
 	
-BD::~BD(){
-	
-	typename Lista<NombreTabla>::Iterador itT1=tablas_.CrearIt();	
-		while(itT1.HaySiguiente()){
-			if(joins_.definido(itT1.Siguiente())){
-				dicT<tuplaJoin>* dTJ=&joins_.obtener(itT1.Siguiente());
-				typename Lista<NombreTabla>::Iterador itT2=tablas_.CrearIt();	
-				while(itT2.HaySiguiente()){
-				if(dTJ->definido(itT2.Siguiente())){
-				//	tuplaJoin* tJ=&dTJ->obtener(itT2.Siguiente());
-				//	ELIMINAR(tJ);
-					dTJ->borrar(itT2.Siguiente());
-					}
-				itT2.Avanzar();	
-				}
-			joins_.borrar(itT1.Siguiente());		
-			}
-			itT1.Avanzar();
-		}
-		
-	typename Lista<NombreTabla>::Iterador itT=tablas_.CrearIt();
-	while(itT.HaySiguiente()){
-	//	tabla* t=&(tablasPuntero.obtener(itT.Siguiente()));
-	//	ELIMINAR(*t);
-		itT.Avanzar();
-		tablasPuntero.borrar(itT.Anterior());		
-		}
-	typename Lista<NombreTabla>::Iterador it=tablas_.CrearIt();
-	while(it.HaySiguiente()){
-		it.Avanzar();
-		it.EliminarAnterior();
-		}
-}
+BD::~BD(){}
 	
 void BD::agregarTabla(tabla t){
 	tablas_.AgregarAtras(t.nombre());
@@ -254,6 +223,7 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	if(!joins_.definido(s1)){
 		dicT<tuplaJoin> dicTJ;
 		joins_.definir(s1,dicTJ);
+		
 	}
 	
 	tuplaJoin t=tuplaJoin(c,j1);
@@ -266,10 +236,8 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
 	
-	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-		
-		t1->AuxiliarGVJ(*t2, *nuevojoin, c);
-		cout << nuevojoin->registros().Longitud()<<endl;
+	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){		
+		t1->AuxiliarGVJ(t2, nuevojoin, c);
 		}
 	else{
 		Lista<Registro> listReg=t1->registros();
@@ -294,7 +262,6 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 		}
 		
 	}
-	
 	typename Lista<Registro>::Iterador itRegistros=nuevojoin->registros().CrearIt();
 	cout<<"HASTA ACA NO HAy ERROR"<< endl;
 	return itRegistros;

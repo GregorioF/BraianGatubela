@@ -282,14 +282,14 @@ template <typename T>
 bool dicT<T>::definido(string clave) const{
 	Nodo* actual = raiz;
 	int i=0;
-	while(actual->hijos[clave[i]] != NULL){
+	while(i<clave.size() && actual->hijos[clave[i]] != NULL){
 		actual = actual->hijos[clave[i]];
 		i++;
 	}
 	if(i==clave.size() && actual->esPalabra){
 		return true;
 	}
-	else return false;
+	else{return false;}
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

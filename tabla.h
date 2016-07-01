@@ -43,7 +43,7 @@ public:
 	void indexar(NombreCampo c);
 	dato minimo(NombreCampo c);
 	dato maximo(NombreCampo c);
-	void AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c);
+	void AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c);
 
 	
 private:
@@ -195,7 +195,7 @@ private:
 		return res;
 	}		
 	
-	void generarRegistroYAgregarS(Lista<Registro>& cr, dicT<Lista<estrAux> >& d,NombreCampo c, tabla& join){
+	void generarRegistroYAgregarS(Lista<Registro>& cr, dicT<Lista<estrAux> >& d,NombreCampo c, tabla* join){
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente();
@@ -204,12 +204,12 @@ private:
 				Registro rCopia=Registro(rT1);
 				Registro rT2= dameRegistroT(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
-				join.agregarRegistro(rT1);
+				join->agregarRegistro(rT1);
 				}
 			it.Avanzar();	
 			}
 		}
-	void generarRegistroYAgregarN(Lista<Registro>& cr, dicA<Nat, Lista<estrAux> >& d,NombreCampo c, tabla& join){
+	void generarRegistroYAgregarN(Lista<Registro>& cr, dicA<Nat, Lista<estrAux> >& d,NombreCampo c, tabla* join){
 		typename::Lista<Registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			Registro rT1=it.Siguiente(); //COPIA??
@@ -218,7 +218,7 @@ private:
 				Registro rCopia=Registro(rT1);
 				Registro rT2= dameRegistroN(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
-				join.agregarRegistro(rT1);
+				join->agregarRegistro(rT1);
 				}
 			it.Avanzar();	
 			}
@@ -450,14 +450,15 @@ void tabla::borrarRegistro(Registro& crit){
 	}
 
 	void tabla::indexar(NombreCampo c){
-		if(tipoCampo(c)==NAT){
+		if(tipoCampo(c)== NAT){
 			indiceN_.nombreC=c;
 			indexarNatAux();
-		}
+			}
 		else{
 			indiceS_.nombreC=c;
 			indexarStringAux();
 		}
+		
 	}
 
 	dato tabla::minimo(NombreCampo c){
@@ -485,16 +486,21 @@ void tabla::borrarRegistro(Registro& crit){
 	}
 
 		
-	void tabla::AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c){ 
-			typename Lista<Registro>::Iterador regis=otra.registros().CrearIt();
+	void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){ 
+		
+			Lista<Registro> registrosDeOtraCopy=otra->registros();
+			typename Lista<Registro>::Iterador regis=registrosDeOtraCopy.CrearIt();
 			Lista<Registro> registt;
+			
 			while(regis.HaySiguiente()){
 				Registro r;
 				Conj<NombreCampo> camp=regis.Siguiente().campos();
 				r.copiarCampos(camp,regis.Siguiente());
 				registt.AgregarAtras(r);
+				regis.Avanzar();
 			}
-			if(tipoCampo(c)==NAT){
+			
+			if(tipoCampo(c)==NAT){				
 			generarRegistroYAgregarN(registt, indiceN_.valoresYreg,c,join);
 			}
 		else{

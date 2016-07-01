@@ -665,7 +665,10 @@ b.agregarTabla(n);
 	cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
 	
 	Registro r20;
-	r20.Definir(c,d);
+	dato d45;
+	Nat n56=5;
+	d45.nuevoDatoNat(n56);
+	r20.Definir(c,d45);
 	r20.Definir(c1,d6);
 	r20.Definir("nombre",charo);
 	Conj<NombreCampo> clv;
@@ -678,10 +681,11 @@ b.agregarTabla(n);
 	b.agregarTabla(t3);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c);
-	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
-	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
-	cout<<"HASTA ACA NO HAy ERROR"<< endl;
-	//b.generarVistaJoin("TABLA","Tabla2",c);
+	b.dameTabla("Tabla2")->indexar(c);
+	//b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
+	//b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
+	
+	b.generarVistaJoin("TABLA","Tabla2",c);
 }
 
 int main(int argc, char **argv)
