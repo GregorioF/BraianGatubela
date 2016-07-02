@@ -136,15 +136,16 @@ BD::~BD(){}
 void BD::agregarTabla(tabla t){
 	tablas_.AgregarAtras(t.nombre());
 	tablasPuntero.definir(t.nombre(),t);
+	
 	if(tablas_.Longitud()==1){
 		tablaMax=t.nombre();
-		}
+	}
 	else{
 		if(t.cantDeAccesos()> dameTabla(tablaMaxima())->cantDeAccesos()){
 			tablaMax=t.nombre();
 			}
-		}	
-	}
+	}	
+}
 	
 void BD::insertarEntrada(Registro r, NombreTabla s){
 	tabla* t=dameTabla(s);

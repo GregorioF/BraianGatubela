@@ -49,6 +49,7 @@ public:
 private:
 	struct indiceNat{
 		indiceNat(): maximo(0), minimo(0){}
+		~indiceNat(){}
 		NombreCampo nombreC;
 		Nat maximo;
 		Nat minimo;
@@ -56,6 +57,7 @@ private:
 
 	};
 	struct indiceString{
+		~indiceString(){}
 		NombreCampo nombreC;
 		String maximo;
 		String minimo;
@@ -233,7 +235,9 @@ private:
 tabla::tabla(): accesos_(0)
 {
 	indiceN_.nombreC= string();
+	indiceN_.valoresYreg.Vacio();
 	indiceS_.nombreC=string();
+	indiceS_.valoresYreg.Vacio();
 	}//preguntar si esta bien que deje todos los valores por defecto
 
 tabla::tabla( const tabla& otra){
@@ -256,7 +260,7 @@ tabla::tabla( const tabla& otra){
 }
 
 tabla::~tabla()
-{}
+{cout<< "\n\n a partir de aca es lo que cuenta: \n\n";}
 
 void tabla::nuevaTabla(String n, Registro& col, Conj<NombreCampo>& c){
 	nombre_= n;

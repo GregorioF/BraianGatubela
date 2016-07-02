@@ -53,6 +53,9 @@ public:
 	///////////////////////////
 	K Maximo(); 		//definida
 	///////////////////////////
+	void Vacio(){
+		raiz=NULL;
+	}
 	
 
 

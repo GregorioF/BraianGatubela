@@ -44,6 +44,10 @@ public:
 	///////////////////////////
 	string Maximo();        //definida
 	///////////////////////////
+	void Vacio(){
+		raiz=NULL;
+		raiz=new Nodo();
+	}
 
 
 
@@ -122,6 +126,7 @@ private:
 		Nodo(char c, Nodo* p, T& elem ): significado(&elem), letra(c), padre(p), esPalabra(false){
 			ponerTodoEnNull(hijos);
 		} 
+
 		T significado;
 		bool esPalabra;
 		char letra;
@@ -346,6 +351,7 @@ aed2::Conj<string> dicT<T>::claves() const{
 	while(!(recorridos.EsVacia())){
 		actual = &recorridos.tope();
 		recorridos.desapilar();
+
 		if(! EsVaciaHijos(actual)) apilarHijos(actual, recorridos);
 		if(esPalabraFunc(actual)){
 			string aux= DameNombre(actual); ///ANDA DAME NOMBRE ! :D

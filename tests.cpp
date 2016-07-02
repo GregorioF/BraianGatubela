@@ -592,7 +592,10 @@ r5.Definir(c3,d20);
 ASSERT(n.registros().Longitud() == 0);
 
 BD b;
+
 b.agregarTabla(n);
+cout << "\n ACA TERMIA LA PRIMER COPIA Y DESTRUCCION DE UNA TABLA VACIA\n"<< endl;
+
 	//HAGO LA COLUMNA DE REFERENCIA
   Registro col;
   
@@ -686,7 +689,6 @@ b.agregarTabla(n);
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
 }
-
 int main(int argc, char **argv)
 {
  //RUN_TEST( ejemplo_simple );
