@@ -76,7 +76,7 @@ private:
 	///////////////////////////////////////////////
 	//FUNCIONES AUXILIARES
 	///////////////////////////////////////////////
-	Registro merge(Registro r1, Registro r2){
+/*	Registro merge(Registro r1, Registro r2){
 		Registro res=Registro(r1);
 		typename::Registro::Iterador it=r2.CrearIt();
 		while(it.HaySiguiente()){
@@ -84,7 +84,7 @@ private:
 			it.Avanzar();
 			}
 		return res;	
-	}
+	}*/
 	
 	void crearCamposTablaJoin(Registro& r, Conj<NombreCampo> c, tabla* t){
 		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();	
@@ -330,7 +330,7 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		if(seAgrego){
 			Registro registroAgregado=modif.Siguiente().second;
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-				//AUXILIARES PARA NAT Y STRING
+					join->auxVJ(c, t1, t2, registroAgregado.Significado(c));
 			}
 			else{
 				Lista<Registro> regT1=t1->registros();
