@@ -36,6 +36,8 @@ public:
 	///////////////////////////////////
 	bool operator==(dato d);
 	bool operator==(const dato d) const;
+	void operator= (Nat n);
+	void operator=(String s);
 
 private:
 	Nat n;
@@ -111,6 +113,12 @@ bool dato::operator==(const dato d) const{
 		}
 	else{return false;}	
 	}	
+void dato::operator=(Nat n){
+	nuevoDatoNat(n);
+}
+void dato::operator=(String s){
+	nuevoDatoString(s);
+}
 
 namespace Dato{
 	dato maximo(Conj<dato>& cd){
