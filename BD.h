@@ -76,7 +76,7 @@ private:
 	///////////////////////////////////////////////
 	//FUNCIONES AUXILIARES
 	///////////////////////////////////////////////
-	Registro merge(Registro r1, Registro r2){
+/*	Registro merge(Registro r1, Registro r2){
 		Registro res=Registro(r1);
 		typename::Registro::Iterador it=r2.CrearIt();
 		while(it.HaySiguiente()){
@@ -84,7 +84,7 @@ private:
 			it.Avanzar();
 			}
 		return res;	
-	}
+	}*/
 	
 	void crearCamposTablaJoin(Registro& r, Conj<NombreCampo> c, tabla* t){
 		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();	
@@ -315,22 +315,24 @@ typename::Lista<Registro>::Iterador BD::registros(NombreTabla s){
 	typename::Lista<Registro>::Iterador res=t->registros().CrearIt();
 	return res;
 	}	
-/*
+//cout << "HASTA ACA NO HAY ERROR"<< endl;
 typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
 	NombreCampo c=campoJoin(s1,s2);
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
-	typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+	Lista<pair<bool, Registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
 	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
-	while(modif.HaySiguiente()){
+	Nat i= modificaciones.Longitud();
+	while(i>0){
+		typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
 		pair<bool,Registro> pairBR=modif.Siguiente();
 		bool seAgrego = pairBR.first;
 		if(seAgrego){
 			Registro registroAgregado=modif.Siguiente().second;
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-				//AUXILIARES PARA NAT Y STRING
+					join->auxVJ(c, t1, t2, registroAgregado.Significado(c));
 			}
 			else{
 				Lista<Registro> regT1=t1->registros();
@@ -355,18 +357,22 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		}
 		else{
 				Registro registroABorrar=modif.Siguiente().second;
-				if(join->definido(registroABorrar.Significado(c))){
+				if(join->estaValor(registroABorrar.Significado(c))){
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
+					cout << "HASTA ACA NO HAY ERROR"<< endl;
 				}
 		 }
-		modif.Avanzar();
-		modif.EliminarAnterior();
+		modif.EliminarSiguiente();
+		i--;
+		
 	}
+	Nat n=joins_.obtener(s1).obtener(s2).mod_.Longitud();
+	cout << "Longitud de mod_: "<< n << endl;
 	return join->registros().CrearIt();
 	}
-*/	
+	
 	
 Nat BD::cantDeAccesos(NombreTabla s){
 	tabla* t=dameTabla(s);
