@@ -365,7 +365,6 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
-					cout << "HASTA ACA NO HAY ERROR"<< endl;
 				}
 		 }
 		modif.EliminarSiguiente();
@@ -408,7 +407,7 @@ Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
 		return res;
 	}
 	else{
-		Lista<Registro> regT=t->registros();
+		Lista<Registro> regT(t->registros());
 		return criterio.coincidencias(regT);
 	}
   

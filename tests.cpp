@@ -692,8 +692,11 @@ b.agregarTabla(n);
 	b.insertarEntrada(r3,"TABLA");
 	b.borrar(r1,"TABLA");
 	b.vistaJoin("TABLA","Tabla2");
-	cout << "HASTA ACA NO HAY ERROR"<< endl;
-	
+	Lista<Registro> cr=b.buscar(r20,"Tabla2");
+	cout<< cr<<endl;
+	//cout << "HASTA ACA NO HAY ERROR"<< endl;
+	cr=b.buscar(r,"TABLA");
+	cout<< cr<<endl;
 }
 int main(int argc, char **argv)
 {

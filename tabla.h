@@ -518,20 +518,30 @@ void tabla::borrarRegistro(Registro& crit){
 				
 	void tabla::AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr){
 	if(tipoCampo(criterioClave)){
+			if(hayIndiceNat()){
 			dicA<Nat, Lista<estrAux> >* d= &indiceN_.valoresYreg;
 			Nat n=criterio.Significado(criterioClave).valorNat();
+			if(d->definido(n)){
 			typename Lista<estrAux>::Iterador itLista= d->obtener(n).CrearIt();
 			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
- 
+			
 			Conj<NombreCampo> claves=criterio.campos();
 			if(criterio.coincidenTodos(claves, regCriterioClave)){
 				Registro regCoincide(regCriterioClave);
 				lr.AgregarAdelante(regCoincide);
 			}
+			}
 		}
 		else{
+			Lista<Registro> regT(registros());
+			lr=criterio.coincidencias(regT);
+			}
+		}
+		else{
+			if(hayIndiceString()){
 			dicT< Lista<estrAux> >* d= &indiceS_.valoresYreg;
 			String s=criterio.Significado(criterioClave).valorString();
+			if(d->definido(s)){
 			typename Lista<estrAux>::Iterador itLista= d->obtener(s).CrearIt();
 			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
 			Conj<NombreCampo> claves=criterio.campos();
@@ -540,8 +550,13 @@ void tabla::borrarRegistro(Registro& crit){
 				lr.AgregarAdelante(regCoincide);
 			}
 		}
+		}
+		else{
+			Lista<Registro> regT(registros());
+			lr=criterio.coincidencias(regT);
+			}
 	}
-	
+}	
 	bool tabla::estaValor(dato d){
 		if(d.tipo()){
 			return indiceN_.valoresYreg.definido(d.valorNat());
