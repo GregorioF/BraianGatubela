@@ -44,6 +44,9 @@ public:
     Conj<NombreCampo> campos();
 	  void copiarCampos(Conj<NombreCampo> c, Registro r2);
 	  void mergear(Registro&);
+	  bool coincidenTodos(Conj<NombreCampo>& c, Registro& r2);
+	  bool borrar(Registro crit);
+	  Lista<Registro> coincidencias(Lista<Registro> cr);
 
     class Iterador
     {
@@ -160,37 +163,6 @@ public:
 
    Lista<NombreCampo> claves_;
     Lista<dato> significados_;
-	//AUXILIARES
-	
-	bool coincidenTodos(Registro& r1, Conj<NombreCampo>& c, Registro& r2){
-	bool res=true;
-	if(!c.EsVacio()){
-		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
-		while(it.HaySiguiente() && res==true){
-			if(r1.Significado(it.Siguiente()).tipo() != r2.Significado(it.Siguiente()).tipo()){
-				res=false;
-				}
-			else{
-				if(r1.Significado(it.Siguiente()).tipo()){
-					if(r1.Significado(it.Siguiente()).valorNat() != r2.Significado(it.Siguiente()).valorNat()){res=false;}
-					}
-				else{
-					if(r1.Significado(it.Siguiente()).valorString() != r2.Significado(it.Siguiente()).valorString()){res=false;}
-					}	
-				}
-		
-			it.Avanzar();	
-			}		
-		}
-	return res;	
-}
-
-	bool borrar(Registro crit, Registro reg){
-	bool res=true;
-	Conj<NombreCampo> c=crit.campos();
-	res=coincidenTodos(crit, c, reg);
-	return res;
-}
 
 };
 
@@ -672,6 +644,49 @@ void Registro::copiarCampos(Conj<NombreCampo> c, Registro r2){
 			}
 		it.Avanzar();	
 		} 
+	}
+	
+bool Registro::coincidenTodos(Conj<NombreCampo>& c, Registro& r2){
+	bool res=true;
+	if(!c.EsVacio()){
+		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
+		while(it.HaySiguiente() && res==true){
+			if(Significado(it.Siguiente()).tipo() != r2.Significado(it.Siguiente()).tipo()){
+				res=false;
+				}
+			else{
+				if(Significado(it.Siguiente()).tipo()){
+					if(Significado(it.Siguiente()).valorNat() != r2.Significado(it.Siguiente()).valorNat()){res=false;}
+					}
+				else{
+					if(Significado(it.Siguiente()).valorString() != r2.Significado(it.Siguiente()).valorString()){res=false;}
+					}	
+				}
+		
+			it.Avanzar();	
+			}		
+		}
+	return res;	
+}
+
+bool Registro::borrar(Registro crit){
+	bool res=true;
+	Conj<NombreCampo> c=crit.campos();
+	res=coincidenTodos(c,crit);
+	return res;
+}	
+
+Lista<Registro> Registro::coincidencias(Lista<Registro> cr){
+	Lista<Registro> res;
+	typename Lista<Registro>::Iterador it=cr.CrearIt();
+	while(it.HaySiguiente()){
+		Registro r(it.Siguiente());
+		Conj<NombreCampo> camp=campos();
+		if(coincidenTodos(camp,r)){
+			res.AgregarAdelante(r);
+			}
+		it.Avanzar();	
+		}
 	}
 	
 #endif

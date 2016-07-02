@@ -44,7 +44,7 @@ public:
 	dato minimo(NombreCampo c);
 	dato maximo(NombreCampo c);
 	void AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c);
-
+	void AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr);
 	
 private:
 	struct indiceNat{
@@ -510,7 +510,32 @@ void tabla::borrarRegistro(Registro& crit){
 		else{
 			generarRegistroYAgregarS(registt, indiceS_.valoresYreg,c,join);
 			}
-		}		
-		
+		}
+				
+	void tabla::AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr){
+	if(tipoCampo(criterioClave)){
+			dicA<Nat, Lista<estrAux> >* d= &indiceN_.valoresYreg;
+			Nat n=criterio.Significado(criterioClave).valorNat();
+			typename Lista<estrAux>::Iterador itLista= d->obtener(n).CrearIt();
+			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
  
+			Conj<NombreCampo> claves=criterio.campos();
+			if(criterio.coincidenTodos(claves, regCriterioClave)){
+				Registro regCoincide(regCriterioClave);
+				lr.AgregarAdelante(regCoincide);
+			}
+		}
+		else{
+			dicT< Lista<estrAux> >* d= &indiceS_.valoresYreg;
+			String s=criterio.Significado(criterioClave).valorString();
+			typename Lista<estrAux>::Iterador itLista= d->obtener(s).CrearIt();
+			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
+			Conj<NombreCampo> claves=criterio.campos();
+			if(criterio.coincidenTodos(claves, regCriterioClave)){
+				Registro regCoincide(regCriterioClave);
+				lr.AgregarAdelante(regCoincide);
+			}
+		}
+	}
+	
 #endif

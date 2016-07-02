@@ -687,13 +687,16 @@ b.agregarTabla(n);
 	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
+	ASSERT(b.hayJoin("TABLA","Tabla2"));
+	
+	
 }
 int main(int argc, char **argv)
 {
  //RUN_TEST( ejemplo_simple );
- // RUN_TEST(testTabla);
-  //RUN_TEST(agregarRegistroSinIndices);
-  //RUN_TEST(agregarRegConInd);
+ RUN_TEST(testTabla);
+  RUN_TEST(agregarRegistroSinIndices);
+  RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *

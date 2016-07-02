@@ -6,6 +6,8 @@
 #include "dicA.h"
 #include "tabla.h"
 #include <iostream>
+//#include "pair.h"
+
 
 using namespace aed2;
 using namespace std;
@@ -54,14 +56,14 @@ private:
 	{
 		tuplaJoin(NombreCampo c, tabla j){
 		campoJ_=c;
-		mod_=Lista<pair<bool,Registro> >();
+		mod_=Lista< pair<bool,Registro> >();
 		join_=j;			
 		}
 		tuplaJoin(){}	
 		~tuplaJoin(){}
 		
 		NombreCampo campoJ_;
-		Lista<pair<bool, Registro> > mod_;
+		Lista< pair<bool, Registro> > mod_;
 		tabla join_;		
 		
 	};
@@ -122,6 +124,15 @@ private:
 			}
 		return res;	
 		}
+	bool perteneceR(Registro r, Lista<Registro> cr){
+		typename::Lista<Registro>::Iterador it=cr.CrearIt();
+		bool res=false;
+		while(it.HaySiguiente()){
+			if(it.Siguiente()==r) res=true;
+			it.Avanzar();
+			}
+		return res;	
+		}	
 		
 		
 };
@@ -304,26 +315,59 @@ typename::Lista<Registro>::Iterador BD::registros(NombreTabla s){
 	typename::Lista<Registro>::Iterador res=t->registros().CrearIt();
 	return res;
 	}	
-/*	
+/*
 typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
-	tabla &t1=dameTabla(s1);
-	tabla &t2=dameTabla(s2);
-	bool campoJoinIndexadoT1=pertenece((*t1).indices(),c);
-	bool campoJoinIndexadoT2=pertenece((*t2).indices(),c);
-	Lista<pair<bool,Registro> > modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
-	tabla join=joins_.obtener(s1).obtener(s2).join_;
+	tabla* t1=dameTabla(s1);
+	tabla* t2=dameTabla(s2);
+	NombreCampo c=campoJoin(s1,s2);
+	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
+	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
+	typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
 	while(modif.HaySiguiente()){
-		bool seAgrego=modif.Siguiente().first();
+		pair<bool,Registro> pairBR=modif.Siguiente();
+		bool seAgrego = pairBR.first;
 		if(seAgrego){
-			Registro registroAgregado=modif.Siguiente().second();
+			Registro registroAgregado=modif.Siguiente().second;
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-				AUXILIARES PARA NAT Y STRING
+				//AUXILIARES PARA NAT Y STRING
 			}
+			else{
+				Lista<Registro> regT1=t1->registros();
+				typename Lista<Registro>::Iterador it=regT1.CrearIt();
+				while(it.HaySiguiente()){
+					if(it.Siguiente().Significado(c) == registroAgregado.Significado(c)){
+						Lista<Registro> regT2=t2->registros();
+						typename Lista<Registro>::Iterador it2=regT2.CrearIt();
+						while(it2.HaySiguiente()){
+							if(it2.Siguiente().Significado(c) == registroAgregado.Significado(c)){
+								Registro rT1(it.Siguiente());
+								Registro rT2(it2.Siguiente());
+								rT1.mergear(rT2);
+								join->agregarRegistro(rT1);
+								}
+							it2.Avanzar();
+							}
+						}
+					it.Avanzar();
+					}
+				}
 		}
+		else{
+				Registro registroABorrar=modif.Siguiente().second;
+				if(join->definido(registroABorrar.Significado(c))){
+					Registro crit;
+					crit.Definir(c, registroABorrar.Significado(c));
+					join->borrarRegistro(crit);
+				}
+		 }
+		modif.Avanzar();
+		modif.EliminarAnterior();
 	}
-	
-}
+	return join->registros().CrearIt();
+	}
 */	
+	
 Nat BD::cantDeAccesos(NombreTabla s){
 	tabla* t=dameTabla(s);
 	Nat res=t->cantDeAccesos();
@@ -335,5 +379,30 @@ NombreTabla BD::tablaMaxima(){
 	return res;
 	}	
 	
-//Lista<Registro> BD::buscar(NombreTabla s, Registro criterio){}	
+Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
+	Lista<Registro> res;
+	tabla* t=dameTabla(s);
+	typename Registro::Iterador itCrit=criterio.CrearIt();
+	bool esClave=false;
+	NombreCampo criterioClave;
+	while(itCrit.HaySiguiente()){
+		NombreCampo critActual=itCrit.SiguienteClave();
+		if(pertenece(critActual,t->indices()) && pertenece(critActual, t->claves())){
+			esClave=true;
+			criterioClave=itCrit.SiguienteClave();
+		}
+		itCrit.Avanzar();
+	}
+	if(esClave){
+		t->AuxBuscar(criterioClave, criterio, res);
+		return res;
+	}
+	else{
+		Lista<Registro> regT=t->registros();
+		return criterio.coincidencias(regT);
+	}
+  
+ }
+  
+	
 #endif
