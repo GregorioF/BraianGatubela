@@ -361,6 +361,7 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
+					cout << "HASTA ACA NO HAY ERROR"<< endl;
 				}
 		 }
 		modif.EliminarSiguiente();

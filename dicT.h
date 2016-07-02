@@ -395,6 +395,7 @@ bool dicT<T>::operator ==(dicT<T> &otro) {
 ///////////////////////////////////////////////////////////
 template <typename T>
 string dicT<T>::Minimo(){
+	if(raiz!=NULL){
 	Nodo* actual=NULL; // para q entre en el primer while
 	int i=0;
 	while(actual==NULL){
@@ -411,11 +412,17 @@ string dicT<T>::Minimo(){
 		actual=aux;
 	}
 	return DameNombre(actual);
+	}
+	else{
+		String s;
+		return s;
+		}
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template <typename T>
 string dicT<T>::Maximo(){
+	if(raiz!=NULL){
 	Nodo* actual=NULL; // para q entre en el primer while
 	int i=255;
 	while(actual==NULL){
@@ -432,6 +439,11 @@ string dicT<T>::Maximo(){
 		actual=aux;
 	}
 	return DameNombre(actual);
+	}
+	else{
+		String s;
+		return s;
+		}
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

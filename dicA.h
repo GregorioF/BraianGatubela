@@ -441,17 +441,30 @@ Conj<K> dicA<K,T>::claves(){
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
 K dicA<K,T>::Minimo(){
+	if(raiz!=NULL){
 	Nodo* actual=raiz;
 	while(actual->izq!=NULL) actual=actual->izq;
 	return (actual->clave);
+	}
+	else{
+		K k;
+		return k;
+		}
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 template<typename K, typename T>
 K dicA<K,T>::Maximo(){
+	if(raiz!=NULL){
 	Nodo*actual = raiz;
 	while(actual->der!=NULL)actual=actual->der;
 	return (actual->clave);
+	}
+	else{
+		K k;
+		return k;
+		}
+	
 }
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////

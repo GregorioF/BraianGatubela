@@ -689,10 +689,10 @@ b.agregarTabla(n);
 	b.generarVistaJoin("TABLA","Tabla2",c);
 	ASSERT(b.hayJoin("TABLA","Tabla2"));
 	b.insertarEntrada(r1,"TABLA");
-   b.insertarEntrada(r3,"TABLA");
+	b.insertarEntrada(r3,"TABLA");
+	b.borrar(r1,"TABLA");
 	b.vistaJoin("TABLA","Tabla2");
-	
-	
+	cout << "HASTA ACA NO HAY ERROR"<< endl;
 }
 int main(int argc, char **argv)
 {
