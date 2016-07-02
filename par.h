@@ -7,12 +7,12 @@ namespace aed2
 {
 
 template <typename K, typename T>
-class pair{
+class par{
 public:
-	pair();
-	pair(const pair& otro);
-	~pair();
-	void make_pair(const K elem1, const T elem2);
+	par();
+	par(const par& otro);
+	~par();
+	void make_par(const K elem1, const T elem2);
 	K& first();
 	T& second();
 
@@ -22,29 +22,31 @@ private:
 	T second_;
 };
 template <typename K, typename T>
-pair<K,T>::pair(){}
+par<K,T>::par(){}
 
 template <typename K, typename T>
-pair<K,T>::pair(const pair& otro){
-	make_pair(otro.first(), otro.second());
+par<K,T>::par(const par& otro){
+	first_=otro.first_;
+	second_=otro.second_;
+	//make_par(otro.first(), otro.second());
 }
 
 template <typename K, typename T>
-pair<K,T>::~pair(){}
+par<K,T>::~par(){}
 
 template <typename K, typename T>
-void pair<K,T>::make_pair(const K elem1, const T elem2){
+void par<K,T>::make_par(const K elem1, const T elem2){
 	first_=elem1;
 	second_=elem2;
 }
 
 template <typename K, typename T>
-K& pair<K,T>::first(){
+K& par<K,T>::first(){
 	return first_;
 }
 
 template <typename K, typename T>
-T& pair<K,T>::second(){
+T& par<K,T>::second(){
 	return second_;
 }
 }

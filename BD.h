@@ -6,7 +6,7 @@
 #include "dicA.h"
 #include "tabla.h"
 #include <iostream>
-//#include "pair.h"
+#include "par.h"
 
 
 using namespace aed2;
@@ -56,14 +56,14 @@ private:
 	{
 		tuplaJoin(NombreCampo c, tabla j){
 		campoJ_=c;
-		mod_=Lista< pair<bool,Registro> >();
+		mod_=Lista< par<bool,Registro> >();
 		join_=j;			
 		}
 		tuplaJoin(){}	
 		~tuplaJoin(){}
 		
 		NombreCampo campoJ_;
-		Lista< pair<bool, Registro> > mod_;
+		Lista< par<bool, Registro> > mod_;
 		tabla join_;		
 		
 	};
@@ -170,15 +170,17 @@ void BD::insertarEntrada(Registro r, NombreTabla s){
 		if(hayJoin(s,it.Siguiente())){
 			dicT<tuplaJoin>* dT=&joins_.obtener(s);
 			tuplaJoin* tJ=&dT->obtener(it.Siguiente());
-			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
-			pair<bool,Registro> m=make_pair(true,r);
+			typename::Lista<par<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			par<bool,Registro> m;
+			m.make_par(true,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		if(hayJoin(it.Siguiente(),s)){
 			dicT<tuplaJoin>* dT=&joins_.obtener(it.Siguiente());
 			tuplaJoin* tJ=&dT->obtener(s);
-			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
-			pair<bool,Registro>  m=make_pair(true,r);
+			typename::Lista<par<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			par<bool,Registro>  m;
+			m.make_par(true,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		it.Avanzar();
@@ -193,15 +195,17 @@ void BD::borrar(Registro r, const NombreTabla s){
 	if(hayJoin(s,it.Siguiente())){
 			dicT<tuplaJoin>* dT=&joins_.obtener(s);
 			tuplaJoin* tJ=&dT->obtener(it.Siguiente());
-			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
-			pair<bool,Registro>  m=make_pair(false,r);
+			typename::Lista<par<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			par<bool,Registro>  m;
+			m.make_par(false,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		if(hayJoin(it.Siguiente(),s)){
 			dicT<tuplaJoin>* dT=&joins_.obtener(it.Siguiente());
 			tuplaJoin* tJ=&dT->obtener(s);
-			typename::Lista<pair<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
-			pair<bool,Registro>  m=make_pair(false,r);
+			typename::Lista<par<bool,Registro> >::Iterador modif= tJ->mod_.CrearIt();
+			par<bool,Registro>  m;
+			m.make_par(false,r);
 			modif.AgregarComoSiguiente(m);
 			}
 		it.Avanzar();
@@ -322,15 +326,15 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	NombreCampo c=campoJoin(s1,s2);
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
-	Lista<pair<bool, Registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
+	Lista<par<bool, Registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
 	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
 	Nat i= modificaciones.Longitud();
 	while(i>0){
-		typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
-		pair<bool,Registro> pairBR=modif.Siguiente();
-		bool seAgrego = pairBR.first;
+		typename Lista<par<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+		par<bool,Registro> parBR=modif.Siguiente();
+		bool seAgrego = parBR.first();
 		if(seAgrego){
-			Registro registroAgregado=modif.Siguiente().second;
+			Registro registroAgregado=modif.Siguiente().second();
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
 					join->auxVJ(c, t1, t2, registroAgregado.Significado(c));
 			}
@@ -356,7 +360,7 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 				}
 		}
 		else{
-				Registro registroABorrar=modif.Siguiente().second;
+				Registro registroABorrar=modif.Siguiente().second();
 				if(join->estaValor(registroABorrar.Significado(c))){
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));

@@ -683,7 +683,7 @@ b.agregarTabla(n);
 	b.agregarTabla(t3);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c);
-	b.dameTabla("Tabla2")->indexar(c);
+	//b.dameTabla("Tabla2")->indexar(c);
 	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
@@ -693,6 +693,7 @@ b.agregarTabla(n);
 	b.borrar(r1,"TABLA");
 	b.vistaJoin("TABLA","Tabla2");
 	cout << "HASTA ACA NO HAY ERROR"<< endl;
+	
 }
 int main(int argc, char **argv)
 {
