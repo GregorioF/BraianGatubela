@@ -697,6 +697,7 @@ b.agregarTabla(n);
 	//cout << "HASTA ACA NO HAY ERROR"<< endl;
 	cr=b.buscar(r,"TABLA");
 	cout<< cr<<endl;
+	
 }
 int main(int argc, char **argv)
 {

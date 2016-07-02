@@ -394,6 +394,7 @@ Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
 	typename Registro::Iterador itCrit=criterio.CrearIt();
 	bool esClave=false;
 	NombreCampo criterioClave;
+	if(t->indices().Cardinal()>0){
 	while(itCrit.HaySiguiente()){
 		NombreCampo critActual=itCrit.SiguienteClave();
 		if(pertenece(critActual,t->indices()) && pertenece(critActual, t->claves())){
@@ -401,6 +402,7 @@ Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
 			criterioClave=itCrit.SiguienteClave();
 		}
 		itCrit.Avanzar();
+	}
 	}
 	if(esClave){
 		t->AuxBuscar(criterioClave, criterio, res);
