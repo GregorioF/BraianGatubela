@@ -687,6 +687,7 @@ Lista<Registro> Registro::coincidencias(Lista<Registro> cr){
 			}
 		it.Avanzar();	
 		}
+	return res;	
 	}
 	
 #endif

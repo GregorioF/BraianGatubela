@@ -45,6 +45,7 @@ public:
 	dato maximo(NombreCampo c);
 	void AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c);
 	void AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr);
+	bool estaValor(dato d);
 	
 private:
 	struct indiceNat{
@@ -537,5 +538,14 @@ void tabla::borrarRegistro(Registro& crit){
 			}
 		}
 	}
+	
+	bool tabla::estaValor(dato d){
+		if(d.tipo()){
+			return indiceN_.valoresYreg.definido(d.valorNat());
+		}
+		else{
+			return indiceS_.valoresYreg.definido(d.valorString());
+			}	
+		}
 	
 #endif

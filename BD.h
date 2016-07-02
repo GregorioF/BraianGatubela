@@ -315,7 +315,7 @@ typename::Lista<Registro>::Iterador BD::registros(NombreTabla s){
 	typename::Lista<Registro>::Iterador res=t->registros().CrearIt();
 	return res;
 	}	
-/*
+
 typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
@@ -355,7 +355,7 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		}
 		else{
 				Registro registroABorrar=modif.Siguiente().second;
-				if(join->definido(registroABorrar.Significado(c))){
+				if(join->estaValor(registroABorrar.Significado(c))){
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
@@ -366,7 +366,7 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	}
 	return join->registros().CrearIt();
 	}
-*/	
+	
 	
 Nat BD::cantDeAccesos(NombreTabla s){
 	tabla* t=dameTabla(s);
