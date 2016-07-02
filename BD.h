@@ -315,16 +315,18 @@ typename::Lista<Registro>::Iterador BD::registros(NombreTabla s){
 	typename::Lista<Registro>::Iterador res=t->registros().CrearIt();
 	return res;
 	}	
-
+//cout << "HASTA ACA NO HAY ERROR"<< endl;
 typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
 	NombreCampo c=campoJoin(s1,s2);
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
-	typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
+	Lista<pair<bool, Registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
 	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
-	while(modif.HaySiguiente()){
+	Nat i= modificaciones.Longitud();
+	while(i>0){
+		typename Lista<pair<bool,Registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
 		pair<bool,Registro> pairBR=modif.Siguiente();
 		bool seAgrego = pairBR.first;
 		if(seAgrego){
@@ -361,9 +363,12 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 					join->borrarRegistro(crit);
 				}
 		 }
-		modif.Avanzar();
-		modif.EliminarAnterior();
+		modif.EliminarSiguiente();
+		i--;
+		
 	}
+	Nat n=joins_.obtener(s1).obtener(s2).mod_.Longitud();
+	cout << "Longitud de mod_: "<< n << endl;
 	return join->registros().CrearIt();
 	}
 	

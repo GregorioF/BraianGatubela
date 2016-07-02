@@ -553,8 +553,9 @@ void tabla::borrarRegistro(Registro& crit){
 		
 	void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 		if(d.tipo()){
+
 			if(t1->indiceN_.valoresYreg.definido(d.valorNat())){
-				if(t1->indiceN_.valoresYreg.definido(d.valorNat())){
+				if(t2->indiceN_.valoresYreg.definido(d.valorNat())){
 					dicA<Nat, Lista<estrAux> >* d1=&t1->indiceN_.valoresYreg;
 					dicA<Nat, Lista<estrAux> >* d2=&t2->indiceN_.valoresYreg;
 					Registro rT1(dameRegistroN(d1,d.valorNat()));
@@ -565,8 +566,9 @@ void tabla::borrarRegistro(Registro& crit){
 				}
 			}
 		else{
+			
 			if(t1->indiceS_.valoresYreg.definido(d.valorString())){
-				if(t1->indiceS_.valoresYreg.definido(d.valorString())){
+				if(t2->indiceS_.valoresYreg.definido(d.valorString())){
 					dicT<Lista<estrAux> >* d1=&t1->indiceS_.valoresYreg;
 					dicT<Lista<estrAux> >* d2=&t2->indiceS_.valoresYreg;
 					Registro rT1(dameRegistroT(d1,d.valorString()));

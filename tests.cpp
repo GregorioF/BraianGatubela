@@ -525,7 +525,7 @@ r2.Definir(c3,d8);
 
 
 Registro r3;
-Nat x2=1;
+Nat x2=89;
 dato d9;
 d9.nuevoDatoNat(x2);
 r3.Definir(c,d9);
@@ -535,7 +535,7 @@ dato d10;
 d10.nuevoDatoString(u2);
 r3.Definir(c1,d10);
 
-Nat y2=2;
+Nat y2=25;
 dato d11;
 d11.nuevoDatoNat(y2);
 r3.Definir(c2,d11);
@@ -546,7 +546,7 @@ d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
 Registro r4;
-Nat x4=78;
+Nat x4=778;
 dato d13;
 d13.nuevoDatoNat(x4);
 r4.Definir(c,d13);
@@ -556,7 +556,7 @@ dato d14;
 d14.nuevoDatoString(u4);
 r4.Definir(c1,d14);
 
-Nat y4=24;
+Nat y4=249;
 dato d15;
 d15.nuevoDatoNat(y4);
 r4.Definir(c2,d15);
@@ -617,7 +617,7 @@ b.agregarTabla(n);
   claves.Agregar("LU");
   claves.Agregar("eMail");
   
-  //cout << "col: "<< col << endl;
+  //cout << "HASTA ACA NO HAY ERROR"<< endl;
 
   //CREO TABLA 
   tabla t2;
@@ -688,6 +688,9 @@ b.agregarTabla(n);
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
 	ASSERT(b.hayJoin("TABLA","Tabla2"));
+	b.insertarEntrada(r1,"TABLA");
+   b.insertarEntrada(r3,"TABLA");
+	b.vistaJoin("TABLA","Tabla2");
 	
 	
 }
