@@ -19,6 +19,7 @@ public:
 	dicT();                 //definida
 	///////////////////////////
 	dicT(const dicT<T> &otro);  // falta definir
+	void operator=(const dicT<T> &otro);
 	///////////////////////////
 	~dicT();                //definida
 	///////////////////////////
@@ -250,6 +251,23 @@ dicT<T>::dicT(const dicT<T>& otro){
 	
 		it.Avanzar();
 	}
+}
+
+template <typename T>
+void dicT<T>::operator = (const dicT<T>& otro){
+	raiz= NULL;
+	raiz= new Nodo();
+	Conj<string> claves = otro.claves();
+	typename Conj<string>::const_Iterador it=claves.CrearIt();
+
+	while(it.HaySiguiente()){
+		T elem=T(otro.obtener(it.Siguiente())); //FIJARSE SI ES X COPIA O REFERENCIA !!
+		//cout <<"\n\nHASTA ACA ALM ENOS LLEGAL A RE CONCHA DE TU REMIL PUTA MADRE \n\n\n\n";
+	
+		definir(it.Siguiente(), elem);
+	
+		it.Avanzar();
+	}	
 }
 
 ///////////////////////////////////////////////////////////

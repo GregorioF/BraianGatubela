@@ -136,7 +136,7 @@ BD::~BD(){}
 void BD::agregarTabla(tabla t){
 	tablas_.AgregarAtras(t.nombre());
 	tablasPuntero.definir(t.nombre(),t);
-	
+
 	if(tablas_.Longitud()==1){
 		tablaMax=t.nombre();
 	}
@@ -221,7 +221,6 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 	clave.AgregarRapido(c);
 	tabla j1=tabla();
 	j1.nuevaTabla(j,columnas,clave);
-	cout << " \nllego el momento : \n\n";
 	
 	if(!joins_.definido(s1)){
 		dicT<tuplaJoin> dicTJ;
@@ -266,7 +265,6 @@ typename::Lista<Registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 		
 	}
 	typename Lista<Registro>::Iterador itRegistros=nuevojoin->registros().CrearIt();
-	cout<<"HASTA ACA NO HAy ERROR"<< endl;
 	return itRegistros;
 	
 }	

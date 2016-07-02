@@ -27,6 +27,7 @@ public:
 	dicA();  				//definida
 	///////////////////////////
 	dicA(const dicA<K,T> &otro);// 
+	void operator =(const dicA<K,T> &otro);
 	///////////////////////////
 	~dicA();  				//definida
 	///////////////////////////
@@ -264,6 +265,16 @@ dicA<K,T>::dicA(): raiz(NULL)
 ///////////////////////////////////////////////////////////
 template<typename K, typename T> 
 dicA<K,T>::dicA (const dicA<K,T>& otro){
+	raiz=NULL;
+	typename dicA<K,T>::const_Iterador it= otro.CrearIt2();
+	while(it.HaySiguiente()){
+		definir(it.SiguienteClave(), it.SiguienteSignificado());
+		it.Avanzar();
+	}
+}
+
+template <typename K, typename T>
+void dicA<K,T>::operator =(const dicA<K,T> &otro){
 	raiz=NULL;
 	typename dicA<K,T>::const_Iterador it= otro.CrearIt2();
 	while(it.HaySiguiente()){

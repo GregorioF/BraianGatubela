@@ -594,7 +594,6 @@ ASSERT(n.registros().Longitud() == 0);
 BD b;
 
 b.agregarTabla(n);
-cout << "\n ACA TERMIA LA PRIMER COPIA Y DESTRUCCION DE UNA TABLA VACIA\n"<< endl;
 
 	//HAGO LA COLUMNA DE REFERENCIA
   Registro col;
@@ -618,7 +617,7 @@ cout << "\n ACA TERMIA LA PRIMER COPIA Y DESTRUCCION DE UNA TABLA VACIA\n"<< end
   claves.Agregar("LU");
   claves.Agregar("eMail");
   
-  cout << "col: "<< col << endl;
+  //cout << "col: "<< col << endl;
 
   //CREO TABLA 
   tabla t2;

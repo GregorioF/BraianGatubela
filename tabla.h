@@ -260,7 +260,7 @@ tabla::tabla( const tabla& otra){
 }
 
 tabla::~tabla()
-{cout<< "\n\n a partir de aca es lo que cuenta: \n\n";}
+{}
 
 void tabla::nuevaTabla(String n, Registro& col, Conj<NombreCampo>& c){
 	nombre_= n;
