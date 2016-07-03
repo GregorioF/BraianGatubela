@@ -1,5 +1,6 @@
 #include "Driver.h"
 #include "BD.h"
+#include "tabla.h"
 
 bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
 {
@@ -108,82 +109,194 @@ void Driver::insertarRegistro(const NombreTabla& tabla, const registro& registro
 
 void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
 {
-  // TODO ...
-  assert(false);
+ Registro r;
+ dato d;
+ if(valor.esNat()){
+	 d.nuevoDatoNat(valor.dameNat());
+	 }
+else{
+	d.nuevoDatoString(valor.dameString());
+	}	 
+ r.Definir(columna,d);
+ NombreTabla t=tabla;
+ base.borrar(r,t);
 }
 
-aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
+aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t= base.dameTabla(tabl);
+  Lista<Registro> cr=t->registros();
+  typename Lista<Registro>::const_Iterador it=cr.CrearIt();
+  Conj<Columna> cc;
+  while(it.HaySiguiente()){
+	  Columna c;
+	  c.nombre=it.Siguiente().CrearIt().SiguienteClave();
+	  if(it.Siguiente().CrearIt().SiguienteSignificado().tipo()){
+		  c.tipo=NAT;
+		  }
+	else{
+		c.tipo=STR;
+		}
+		cc.AgregarRapido(c);	  
+	  it.Avanzar();
+	  }
+	  return cc;
 }
 
-aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabla) const
+aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  return t->claves();
 }
 
-aed2::Conj<Driver::registro> Driver::registrosDeTabla(const NombreTabla& tabla) const
+aed2::Conj<Driver::registro> Driver::registrosDeTabla(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  Lista<Registro> lr=t->registros();
+  typename Lista<Registro>::Iterador it=lr.CrearIt();
+  Conj<Driver::registro> cr;
+  while(it.HaySiguiente()){
+	  Driver::registro r;
+	  typename Registro::Iterador itR=it.Siguiente().CrearIt();
+	  
+	  if(itR.SiguienteSignificado().tipo()){
+		  Nat n=itR.SiguienteSignificado().valorNat();
+		  Dato d=Dato(n);
+		  r.Definir(itR.SiguienteClave(), d);
+		  }
+	else{
+		String s=itR.SiguienteSignificado().valorString();
+		  Dato d=Dato(s);
+		  r.Definir(itR.SiguienteClave(), d);
+		}	  
+	  
+	  cr.AgregarRapido(r);
+	  it.Avanzar();
+	  }
+	  return cr;
 }
 
 aed2::Nat Driver::cantidadDeAccesosDeTabla(const NombreTabla& tabla) const
 {
-  // TODO ...
-  assert(false);
+NombreTabla t=tabla;	
+ return base.cantDeAccesos(t);
 }
 
-Driver::Dato Driver::minimo(const NombreTabla& tabla, const NombreCampo& columna) const
+Driver::Dato Driver::minimo(const NombreTabla& tabl, const NombreCampo& columna) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  dato d;
+  d=t->minimo(columna);
+  if(d.tipo()){
+	  Nat n=d.valorNat();
+	  Dato d1=Dato(n);
+	  return d1;
+	  }
+	else{
+		 String s=d.valorString();
+	  Dato d1=Dato(s);
+	  return d1;
+		}  
 }
 
-Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna) const
+Driver::Dato Driver::maximo(const NombreTabla& tabl, const NombreCampo& columna) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  dato d;
+  d=t->maximo(columna);
+  if(d.tipo()){
+	  Nat n=d.valorNat();
+	  Dato d1=Dato(n);
+	  return d1;
+	  }
+	else{
+		String s=d.valorString();
+		Dato d1=Dato(s);
+		return d1;
+		}
 }
 
-aed2::Conj<Driver::registro> Driver::buscar(const NombreTabla& tabla, const registro& criterio) const
+aed2::Conj<Driver::registro> Driver::buscar(const NombreTabla& tabl, const registro& criterio) const
 {
-  // TODO ...
-  assert(false);
+  typename registro::const_Iterador it=criterio.CrearIt();
+  Registro crit;
+  while(it.HaySiguiente()){
+	  dato d;
+	  if(it.SiguienteSignificado().tipo() == NAT){
+		  d.nuevoDatoNat(it.SiguienteSignificado().dameNat());
+		  }
+		  else{
+			  d.nuevoDatoString(it.SiguienteSignificado().dameString());
+			  }
+	  crit.Definir(it.SiguienteClave(), d);
+	  }
+	Lista<Registro> lr=base.buscar(crit, tabl);
+	typename Lista<Registro>::Iterador itR=lr.CrearIt();
+	Conj<Driver::registro> cr;
+	while(itR.HaySiguiente()){
+		Driver::registro r;
+	  typename Registro::Iterador itReg=itR.Siguiente().CrearIt();
+	  
+	  if(itReg.SiguienteSignificado().tipo()){
+		  Nat n=itReg.SiguienteSignificado().valorNat();
+		  Dato d=Dato(n);
+		  r.Definir(itReg.SiguienteClave(), d);
+		  }
+	else{
+		String s=itReg.SiguienteSignificado().valorString();
+		  Dato d=Dato(s);
+		  r.Definir(itReg.SiguienteClave(), d);
+		}	  
+	  
+	  cr.AgregarRapido(r);
+	  itR.Avanzar();
+		}
+		return cr;   
 }
 
 aed2::Conj<NombreTabla> Driver::tablas() const
 {
-  // TODO ...
-  assert(false);
+ typename Lista<NombreTabla>::const_Iterador itT=base.tablas();
+ Conj<NombreTabla> ct;
+ while(itT.HaySiguiente()){
+	 ct.AgregarRapido(itT.Siguiente());
+	 }
+	 return ct;
 }
 
 const NombreTabla Driver::tablaMaxima() const
 {
-  // TODO ...
-  assert(false);
+ return base.tablaMaxima();
 }
 
 // Indices
 
-bool Driver::tieneIndiceNat(const NombreTabla& tabla) const
+bool Driver::tieneIndiceNat(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  return t->hayIndiceNat();
 }
 
-bool Driver::tieneIndiceString(const NombreTabla& tabla) const
+bool Driver::tieneIndiceString(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  return t->hayIndiceString();
 }
 
-const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
+const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+tabla* t=base.dameTabla(tabl);	
+  Conj<NombreCampo> ind=t->indices();
+  typename Conj<NombreCampo>::Iterador it=ind.CrearIt();
+  NombreCampo res;
+  while(it.HaySiguiente()){
+	  if(t->tipoCampo(it.Siguiente())){
+		  res=it.Siguiente();
+		  return res;
+		  }
+	it.Avanzar();	  
+	  }
+	  
 }
 
 const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
