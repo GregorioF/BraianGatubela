@@ -30,9 +30,9 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	void borrarJoin(NombreTabla, NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
-	typename::Lista<NombreTabla>::Iterador tablas();
+	typename::Lista<NombreTabla>::const_Iterador tablas() const;
 	//////////////////////////////////////////////////////////////////////////
-	tabla* dameTabla(NombreTabla);
+	tabla* dameTabla(NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
 	bool hayJoin(NombreTabla, NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
@@ -42,11 +42,11 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	typename::Lista<registro>::Iterador vistaJoin(NombreTabla, NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
-	Nat cantDeAccesos(NombreTabla);
+	Nat cantDeAccesos(NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
-	NombreTabla tablaMaxima();
+	NombreTabla tablaMaxima() const;
 	//////////////////////////////////////////////////////////////////////////
-	Lista<registro> buscar(const registro, NombreTabla);
+	Lista<registro> buscar(const registro, NombreTabla) const;
 	
 		
 private:
@@ -127,7 +127,7 @@ private:
 	}
 	///////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////
-	bool pertenece(NombreCampo c, Conj<NombreCampo> cc){
+	bool pertenece(NombreCampo c, Conj<NombreCampo> cc) const{
 		typename::Conj<NombreCampo>::Iterador it=cc.CrearIt();
 		bool res=false;
 		while(it.HaySiguiente()){
@@ -190,7 +190,7 @@ void BD::insertarEntrada(registro r, NombreTabla s){
 	if( t->cantDeAccesos()> maxima->cantDeAccesos()){
 		tablaMax=s;
 		}
-	typename::Lista<NombreTabla>::Iterador it=tablas();
+	typename::Lista<NombreTabla>::const_Iterador it=tablas();
 	while(it.HaySiguiente()){
 		if(hayJoin(s,it.Siguiente())){
 			dicT<tuplaJoin>* dT=&joins_.obtener(s);
@@ -216,7 +216,7 @@ void BD::insertarEntrada(registro r, NombreTabla s){
 void BD::borrar(registro r, const NombreTabla s){
 	tabla* t=dameTabla(s);
 	t->borrarRegistro(r);
-	typename::Lista<NombreTabla>::Iterador it=tablas();
+	typename::Lista<NombreTabla>::const_Iterador it=tablas();
 	while(it.HaySiguiente()){
 	if(hayJoin(s,it.Siguiente())){
 			dicT<tuplaJoin>* dT=&joins_.obtener(s);
@@ -319,13 +319,13 @@ void BD::borrarJoin(NombreTabla s1, NombreTabla s2){
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-typename::Lista<NombreTabla>::Iterador BD::tablas(){
-	typename::Lista<NombreTabla>::Iterador res=tablas_.CrearIt();
+typename::Lista<NombreTabla>::const_Iterador BD::tablas() const{
+	typename::Lista<NombreTabla>::const_Iterador res=tablas_.CrearIt();
 	return res;
 	}
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-tabla* BD::dameTabla(NombreTabla s){
+tabla* BD::dameTabla(NombreTabla s) const{
 	tabla* res=&tablasPuntero.obtener(s);
 	return res;
 	}	
@@ -412,20 +412,20 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	}
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-Nat BD::cantDeAccesos(NombreTabla s){
+Nat BD::cantDeAccesos(NombreTabla s) const{
 	tabla* t=dameTabla(s);
 	Nat res=t->cantDeAccesos();
 	return res;
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-NombreTabla BD::tablaMaxima(){
+NombreTabla BD::tablaMaxima()const{
 	NombreTabla res=tablaMax;
 	return res;
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-Lista<registro> BD::buscar(registro criterio,NombreTabla s){
+Lista<registro> BD::buscar(registro criterio,NombreTabla s) const{
 	Lista<registro> res;
 	tabla* t=dameTabla(s);
 	typename registro::Iterador itCrit=criterio.CrearIt();
