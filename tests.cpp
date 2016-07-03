@@ -49,7 +49,7 @@ using namespace std;
   // ...
 }
 */
-void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
+void DefinirRegistro(registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
   typename Conj<NombreCampo>::Iterador it = campos.CrearIt();
   int i=0;
   while(it.HaySiguiente())it.Avanzar();
@@ -62,7 +62,7 @@ void DefinirRegistro(Registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
 }
 
 void testTabla(){
-  Registro col;
+  registro col;
   dato d;
   String s="perez";
   d.nuevoDatoString(s);
@@ -94,7 +94,7 @@ void testTabla(){
   ASSERT(t.cantDeAccesos() ==  0);
   ASSERT(t.registros().Longitud() == 0);
 
-  Registro r1;
+  registro r1;
   dato charo;
   String s1="Charo";
   charo.nuevoDatoString(s1);
@@ -118,7 +118,7 @@ void testTabla(){
   DefinirRegistro(r1,campos, arregloDato);
   
   
-  Registro r2;
+  registro r2;
   dato lucia;
   String s5="Lucia";
   lucia.nuevoDatoString(s5);
@@ -140,7 +140,7 @@ void testTabla(){
   
   dato arregloDato2 [6]={lucia,romero, lU1, materia1, nota1, email1};
   DefinirRegistro(r2, campos, arregloDato2);
-  Registro r3;
+  registro r3;
   
   dato gregorio;
   String s9="Gregorio";
@@ -168,7 +168,7 @@ void testTabla(){
   t.agregarRegistro(r3);
   ASSERT(t.cantDeAccesos()== 3);
   ASSERT(t.registros().Longitud()==3);
-  Registro crit;
+  registro crit;
   dato d3;
   Nat num=43315;
   d3.nuevoDatoNat(num);
@@ -180,7 +180,7 @@ void testTabla(){
   t.agregarRegistro(r3);
   t.indexar("LU");
   
-  Registro r4;
+  registro r4;
    dato brian;
   String s13="Braian";
   brian.nuevoDatoString(s13);
@@ -206,7 +206,7 @@ void testTabla(){
   
 }
 void agregarRegistroSinIndices(){
-Registro r;
+registro r;
 NombreCampo c="hi";
 Nat x=5;
 dato d;
@@ -238,12 +238,12 @@ n.nuevaTabla(t1,r,camp);
 String nombre=n.nombre();
 cout<< nombre<<endl;
 n.agregarRegistro(r);
-Lista<Registro> lr=n.registros();
+Lista<registro> lr=n.registros();
 Nat longg=lr.Longitud();
 cout << longg<< endl;
-Registro crit;
+registro crit;
 crit.Definir(c,d);
-Registro r1;
+registro r1;
 
 r1.Definir(c,d);
 r1.Definir(c1,d3);
@@ -252,7 +252,7 @@ r1.Definir(c3,d1);
 
 n.agregarRegistro(r1);
 
-Registro r2;
+registro r2;
 Nat x1=1;
 dato d5;
 d5.nuevoDatoNat(x1);
@@ -277,7 +277,7 @@ n.agregarRegistro(r2);
 ASSERT(n.registros().Longitud() == 3);
 ASSERT(n.cantDeAccesos() ==  3);
 
-Registro r3;
+registro r3;
 Nat x2=1;
 dato d9;
 d9.nuevoDatoNat(x2);
@@ -302,7 +302,7 @@ n.agregarRegistro(r3);
 }
 
 void agregarRegConInd(){
-Registro r;
+registro r;
 NombreCampo c="hi";
 Nat x=5;
 dato d;
@@ -335,7 +335,7 @@ String nombre=n.nombre();
 cout<< nombre<<endl;
 n.agregarRegistro(r);
 
-Registro r1;
+registro r1;
 
 r1.Definir(c,d);
 r1.Definir(c1,d3);
@@ -344,7 +344,7 @@ r1.Definir(c3,d1);
 
 n.agregarRegistro(r1);
 
-Registro r2;
+registro r2;
 Nat x1=1;
 dato d5;
 d5.nuevoDatoNat(x1);
@@ -369,7 +369,7 @@ n.agregarRegistro(r2);
 ASSERT(n.registros().Longitud() == 3);
 ASSERT(n.cantDeAccesos() ==  3);
 
-Registro r3;
+registro r3;
 Nat x2=1;
 dato d9;
 d9.nuevoDatoNat(x2);
@@ -390,7 +390,7 @@ dato d12;
 d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
-Registro crit;
+registro crit;
 crit.Definir(c,d5);
 n.borrarRegistro(crit);
 
@@ -401,7 +401,7 @@ ASSERT(n.cantDeAccesos() ==  5);
 
 n.indexar(c1);
 
-Registro r4;
+registro r4;
 Nat x4=78;
 dato d13;
 d13.nuevoDatoNat(x4);
@@ -426,7 +426,7 @@ n.agregarRegistro(r4);
 
 
 
-Registro r5;
+registro r5;
 Nat x5=75;
 dato d17;
 d17.nuevoDatoNat(x5);
@@ -460,7 +460,7 @@ n.agregarRegistro(r5);
 
 
 void BaseDeDatos(){
-Registro r;
+registro r;
 NombreCampo c="hi";
 Nat x=5;
 dato d;
@@ -494,7 +494,7 @@ String nombre=n.nombre();
 cout<< nombre<<endl;
 
 
-Registro r1;
+registro r1;
 
 r1.Definir(c,d);
 r1.Definir(c1,d3);
@@ -502,7 +502,7 @@ r1.Definir(c2,d2);
 r1.Definir(c3,d1);
 
 
-Registro r2;
+registro r2;
 Nat x1=1;
 dato d5;
 d5.nuevoDatoNat(x1);
@@ -524,7 +524,7 @@ d8.nuevoDatoString(t4);
 r2.Definir(c3,d8);
 
 
-Registro r3;
+registro r3;
 Nat x2=89;
 dato d9;
 d9.nuevoDatoNat(x2);
@@ -545,7 +545,7 @@ dato d12;
 d12.nuevoDatoString(t5);
 r3.Definir(c3,d12);
 
-Registro r4;
+registro r4;
 Nat x4=778;
 dato d13;
 d13.nuevoDatoNat(x4);
@@ -567,7 +567,7 @@ d16.nuevoDatoString(t6);
 r4.Definir(c3,d16);
 
 
-Registro r5;
+registro r5;
 Nat x5=75;
 dato d17;
 d17.nuevoDatoNat(x5);
@@ -596,7 +596,7 @@ BD b;
 b.agregarTabla(n);
 
 	//HAGO LA COLUMNA DE REFERENCIA
-  Registro col;
+  registro col;
   
   dato d22;
   d.nuevoDatoString("perez");
@@ -628,7 +628,7 @@ b.agregarTabla(n);
   ASSERT(b.dameTabla("TABLA")->registros().Longitud() == 1);
   ASSERT(n.registros().Longitud() == 0); //COMPROBAMOS QUE SE AGREGA LA TABLA POR COPIA :)
   
-  Registro r18;
+  registro r18;
   dato charo;
   String s1="Charo";
   charo.nuevoDatoString(s1);
@@ -657,7 +657,7 @@ b.agregarTabla(n);
 	ASSERT(b.tablaMaxima() == "TABLA");
 	//cout<< "Cant de accesos a 'candidatos_Para_Calesita_Pab2': " << b.cantDeAccesos("candidatos_Para_Calesita_Pab2")<<endl;	
 	//cout<< "Cant de accesos a 'TABLA': " <<b.cantDeAccesos("TABLA")<<endl;	
-	Registro r19;
+	registro r19;
 	r19.Definir(c1,d6);
 	//cout<< "Cant de registros tabla en BD: " << b.dameTabla("TABLA")->registros().Longitud() <<endl;
 	//cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
@@ -666,7 +666,7 @@ b.agregarTabla(n);
 	//cout<< "Cant de registros tabla en BD: " <<b.dameTabla("TABLA")->registros().Longitud() <<endl;
 	//cout<< "Cant de registros tabla fuera de BD: " << n.registros().Longitud() <<endl;
 	
-	Registro r20;
+	registro r20;
 	dato d45;
 	Nat n56=5;
 	d45.nuevoDatoNat(n56);
@@ -692,7 +692,7 @@ b.agregarTabla(n);
 	b.insertarEntrada(r3,"TABLA");
 	b.borrar(r1,"TABLA");
 	b.vistaJoin("TABLA","Tabla2");
-	Lista<Registro> cr=b.buscar(r20,"Tabla2");
+	Lista<registro> cr=b.buscar(r20,"Tabla2");
 	cout<< cr<<endl;
 	//cout << "HASTA ACA NO HAY ERROR"<< endl;
 	cr=b.buscar(r,"TABLA");

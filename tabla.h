@@ -61,6 +61,8 @@ public:
 	bool estaValor(dato d);
 	//////////////////////////////////////////////////////////////////
 	void auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d);
+	bool hayIndiceNat();
+	bool hayIndiceString();
 	
 private:
 	struct indiceNat{
@@ -123,19 +125,7 @@ private:
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
 	//Se utiliza en agregar registro, minimo y maximo
-	bool hayIndiceString(){
-		bool res=false;
-		if(indiceS_.nombreC.size()!=0){res=true;}
-		return res;
-		}
-	//////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////	
-	//Igual que la de arriba
-	bool hayIndiceNat(){
-		bool res=false;
-		if(indiceN_.nombreC.size()!= 0){res=true;}
-		return res;
-		}			
+		
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
 	//Se utiliza en indexar
@@ -665,6 +655,18 @@ void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 				}
 			
 			}
+		}	
+		
+		bool tabla::hayIndiceString(){
+		bool res=false;
+		if(indiceS_.nombreC.size()!=0){res=true;}
+		return res;
+		}
+
+	bool tabla::hayIndiceNat(){
+		bool res=false;
+		if(indiceN_.nombreC.size()!= 0){res=true;}
+		return res;
 		}	
 	
 #endif
