@@ -361,6 +361,7 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 
 Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
 {
+	if(reg1.Significado(clave) == reg2.Significado(clave)){
   typename Driver::Registro::const_Iterador it=reg1.CrearIt();
   typename Driver::Registro::const_Iterador it2=reg2.CrearIt();
   registro r;
@@ -410,7 +411,10 @@ while(it2.HaySiguiente()){
 		 itR.Avanzar();
 		 }	  
 	  return res;
-  
+  }
+  else{
+  return reg1;
+ }
 }
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
@@ -422,7 +426,6 @@ aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const 
 	  Driver::Registro r;
 	  typename registro::Iterador itR=it.Siguiente().CrearIt();
 	  while(itR.HaySiguiente()){
-		  cout << "HASTA ACA NO HAY ERROR"<< endl;
 	  if(itR.SiguienteSignificado().tipo()){
 		  Nat n=itR.SiguienteSignificado().valorNat();
 		  Dato d=Dato(n);
