@@ -365,8 +365,9 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	Lista<par<bool, registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
 	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
 	Nat i= modificaciones.Longitud();
-	
+	 
 	while(i>0){
+		
 		typename Lista<par<bool,registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
 		par<bool,registro> parBR=modif.Siguiente();
 		bool seAgrego = parBR.first();
@@ -410,7 +411,6 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		i--;
 		
 	}
-	
 	return join->registros().CrearIt();
 	}
 ///////////////////////////////////////////////////////////////////////////	
