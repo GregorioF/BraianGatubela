@@ -44,7 +44,7 @@ class Driver
     /**
      * Esta clase representa un registro, es decir, un mapeo de nombres de columna a valores.
      */
-    typedef aed2::Dicc<NombreCampo, Dato> Registro;
+    typedef aed2::Dicc<NombreCampo, Dato> registro;
 
   // Base de datos
 
@@ -73,7 +73,7 @@ class Driver
      * 
      * PRE: idem especificación TAD Driver :: insertarEntrada
      */
-    void insertarRegistro(const NombreTabla& tabla, const Registro& registro);
+    void insertarRegistro(const NombreTabla& tabla, const registro& registro);
 
     /**
      * Borra una serie de registros de una tabla de la base de datos.
@@ -104,7 +104,7 @@ class Driver
      * 
      * PRE: 'tabla' pertenece a las tablas de la base de datos.
      */
-    aed2::Conj<Registro> registrosDeTabla(const NombreTabla& tabla) const;
+    aed2::Conj<registro> registrosDeTabla(const NombreTabla& tabla) const;
 
     /**
      * Devuelve la cantidad de accesos que se hicieron a la tabla.
@@ -136,7 +136,7 @@ class Driver
      * 
      * PRE: 'tabla' pertenece a las tablas de la base de datos.
      */
-    aed2::Conj<Registro> buscar(const NombreTabla& tabla, const Registro& criterio) const;
+    aed2::Conj<registro> buscar(const NombreTabla& tabla, const registro& criterio) const;
 
     /**
      * Devuelve los nombres de todas las tablas de la base de datos.
@@ -237,7 +237,7 @@ class Driver
      * 
      * PRE: existe un Join entre las tablas 'tabla1' y 'tabla2'.
      */
-    aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
+    aed2::Conj<registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
 
   private:
     BD base;

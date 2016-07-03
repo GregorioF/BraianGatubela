@@ -1,7 +1,6 @@
 #ifndef TABLA_H
 #define TABLA_H
 
-#include "registro.h"
 #include "Conj.h"
 #include "dicA.h"
 #include "dicT.h"
@@ -29,7 +28,7 @@ public:
 	//////////////////////////////////////////////////////////////////
 	~tabla(); 
 	//////////////////////////////////////////////////////////////////
-	void nuevaTabla(String nombre, Registro& columnas ,  Conj<NombreCampo>& claves);
+	void nuevaTabla(const String nombre, Registro& columnas , const Conj<NombreCampo>& claves);
 	//////////////////////////////////////////////////////////////////
 	String nombre();
 	//////////////////////////////////////////////////////////////////
@@ -325,7 +324,7 @@ tabla::tabla( const tabla& otra){
 tabla::~tabla()
 {}
 
-void tabla::nuevaTabla(String n, Registro& col, Conj<NombreCampo>& c){
+void tabla::nuevaTabla(String n, Registro& col, const Conj<NombreCampo>& c){
 	nombre_= n;
 	claves_=c;
 	typename ::Registro::Iterador it = col.CrearIt();

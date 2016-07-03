@@ -1,4 +1,5 @@
 #include "Driver.h"
+#include "BD.h"
 
 bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
 {
@@ -65,34 +66,44 @@ bool Driver::Dato::operator != (const Dato& otro) const
 
 Driver::Driver()
 {
-	b=BD();
-  // TODO ...
-  assert(false);
+	base= BD();
 }
 
 Driver::~Driver()
-{
-  // TODO ...
-  assert(false);
-}
+{}
+
+
 
 // Tablas
 
 void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& columnas, const aed2::Conj<NombreCampo>& claves)
 {
-  // TODO ...
-  assert(false);
+  tabla t;
+  typename Conj<Columna>::const_Iterador it= columnas.CrearIt();
+  Registro col;
+  while(it.HaySiguiente()){
+    dato a;
+    if(it.Siguiente().tipo==NAT) a=0;
+    else  a="aed2";
+    col.Definir(it.Siguiente().nombre,a);
+    it.Avanzar();
+  }
+  t.nuevaTabla(nombre, col, claves);
 }
 
-void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
+void Driver::insertarRegistro(const NombreTabla& tabla, const registro& registro)
 {
 	Registro r;
-	typename Driver::Registro::const_Iterador it=registro.CrearIt();
+	typename Driver::registro::const_Iterador it=registro.CrearIt();
   while(it.HaySiguiente()){
-	  r.Definir(it.SiguienteClave(), it.SiguienteSignificado());
-	  }
+    dato a;
+    if(it.SiguienteSignificado().tipo()==NAT) a=it.SiguienteSignificado().dameNat();
+    else a=it.SiguienteSignificado().dameString();
+	  r.Definir(it.SiguienteClave(), a);
+    it.Avanzar();
+	}
   NombreTabla t=tabla;
-  b.insertarEntrada(r,t);
+  base.insertarEntrada(r,t);
 }
 
 void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
@@ -113,7 +124,7 @@ aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabla) c
   assert(false);
 }
 
-aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabla) const
+aed2::Conj<Driver::registro> Driver::registrosDeTabla(const NombreTabla& tabla) const
 {
   // TODO ...
   assert(false);
@@ -137,7 +148,7 @@ Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna
   assert(false);
 }
 
-aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabla, const Registro& criterio) const
+aed2::Conj<Driver::registro> Driver::buscar(const NombreTabla& tabla, const registro& criterio) const
 {
   // TODO ...
   assert(false);
@@ -219,13 +230,13 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
   assert(false);
 }
 
-Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
+Driver::registro unir(const Driver::registro& reg1, const Driver::registro& reg2, const NombreCampo& clave)
 {
   // TODO ...
   assert(false);
 }
 
-aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
+aed2::Conj<Driver::registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
   // TODO ...
   assert(false);
