@@ -242,11 +242,23 @@ class Driver
   private:
     BD base;
 
+
     /************************************************************************
      * TODO: Va a ser necesario instanciar privadamente el Modulo principal *
      * con el cuál interactuar. Además, pueden declarar todas las           *
      * funciones auxiliares que les hagan falta.                            *
      ************************************************************************/
+
+     void convertirARegistroPiola(const registro& r, const Registro& r2){
+        typename registro::const_Iterador it= r.CrearIt();
+        while(it.HaySiguiente()){
+            dato a ;
+            if(it.SiguienteSignificado()==NAT) a= it.SiguienteSignificado().dameNat();
+            else a= it.SiguienteSignificado().dameString();
+            r2.Definir(it.SiguienteClave(), a);
+            it.Avanzar();
+        }
+     }
 
 }; // class Driver
 
