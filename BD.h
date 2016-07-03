@@ -356,6 +356,7 @@ typename::Lista<registro>::Iterador BD::registros(NombreTabla s){
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
 typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2) const{
+	
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
 	NombreCampo c=campoJoin(s1,s2);
@@ -364,6 +365,7 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	Lista<par<bool, registro> > modificaciones=joins_.obtener(s1).obtener(s2).mod_;
 	tabla* join= &joins_.obtener(s1).obtener(s2).join_;
 	Nat i= modificaciones.Longitud();
+	
 	while(i>0){
 		typename Lista<par<bool,registro> >::Iterador modif=joins_.obtener(s1).obtener(s2).mod_.CrearIt();
 		par<bool,registro> parBR=modif.Siguiente();
@@ -374,6 +376,7 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 					join->auxVJ(c, t1, t2, registroAgregado.Significado(c));
 			}
 			else{
+				
 				Lista<registro> regT1=t1->registros();
 				typename Lista<registro>::Iterador it=regT1.CrearIt();
 				while(it.HaySiguiente()){
@@ -390,6 +393,7 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 							it2.Avanzar();
 							}
 						}
+					
 					it.Avanzar();
 					}
 				}
@@ -406,8 +410,7 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		i--;
 		
 	}
-	Nat n=joins_.obtener(s1).obtener(s2).mod_.Longitud();
-	cout << "Longitud de mod_: "<< n << endl;
+	
 	return join->registros().CrearIt();
 	}
 ///////////////////////////////////////////////////////////////////////////	

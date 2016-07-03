@@ -46,7 +46,25 @@ void ejemplo_simple()
   persona.Definir("apellido", aed2::Driver::Dato("Perez"));
 
   bd.insertarRegistro("personas", persona);
+  bd.crearTabla("lala", columnas_personas, columnas_clave_personas);
+ 
+ aed2::Driver::Registro pers;
+  pers.Definir("DNI", aed2::Driver::Dato(8));
+  pers.Definir("nombre", aed2::Driver::Dato("Juana"));
+  pers.Definir("apellido", aed2::Driver::Dato("Martin"));
 
+ ASSERT_EQ(bd.tablas().Cardinal(), 2);
+ bd.crearTabla("lola", columnas_personas, columnas_clave_personas);
+ ASSERT_EQ(bd.tablas().Cardinal(), 3);
+ bd.insertarRegistro("lola", persona);
+ Conj<aed2::Driver::Registro> cr=bd.registrosDeTabla("lola");
+ cout<< cr.Cardinal() <<endl;
+ bd.generarVistaJoin("lola", "personas","DNI" );
+ bd.insertarRegistro("lola", pers);
+ //ASSERT_EQ(bd.cantidadDeAccesosDeTabla("lola"), 2);
+ //ASSERT_EQ(bd.registrosDeTabla("lola").Cardinal(), 2);
+ //bd.vistaJoin("lola", "personas");
+ bd.borrarVistaJoin("lola", "personas");
  
 }
 

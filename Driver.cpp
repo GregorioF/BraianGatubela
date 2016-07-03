@@ -99,9 +99,16 @@ void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registr)
 	typename Driver::Registro::const_Iterador it=registr.CrearIt();
   while(it.HaySiguiente()){
     dato a;
-    if(it.SiguienteSignificado().tipo()==NAT) a=it.SiguienteSignificado().dameNat();
-    else a=it.SiguienteSignificado().dameString();
-	  r.Definir(it.SiguienteClave(), a);
+    if(it.SiguienteSignificado().tipo()==NAT){
+		Nat n=it.SiguienteSignificado().dameNat();
+		a.nuevoDatoNat(n);
+		r.Definir(it.SiguienteClave(), a);
+		}
+    else{ 
+		String s=it.SiguienteSignificado().dameString();
+		a.nuevoDatoString(it.SiguienteSignificado().dameString());
+		r.Definir(it.SiguienteClave(), a);
+		}
     it.Avanzar();
 	}
   NombreTabla t=tabla;
@@ -127,20 +134,15 @@ else{
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabl) const
 {
   tabla* t= base.dameTabla(tabl);
-  Lista<registro> cr=t->registros();
-  typename Lista<registro>::const_Iterador it=cr.CrearIt();
+  Conj<NombreCampo> campos=t->campos();
   Conj<Columna> cc;
-  while(it.HaySiguiente()){
+  typename Conj<NombreCampo>::Iterador itC=campos.CrearIt();
+  while(itC.HaySiguiente()){
 	  Columna c;
-	  c.nombre=it.Siguiente().CrearIt().SiguienteClave();
-	  if(it.Siguiente().CrearIt().SiguienteSignificado().tipo()){
-		  c.tipo=NAT;
-		  }
-	else{
-		c.tipo=STR;
-		}
-		cc.AgregarRapido(c);	  
-	  it.Avanzar();
+	  c.nombre=itC.Siguiente();
+	  c.tipo= t->tipoCampo(itC.Siguiente());
+	  cc.AgregarRapido(c);
+	  itC.Avanzar();
 	  }
 	  return cc;
 }
@@ -161,8 +163,8 @@ aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabl) c
   Conj<Driver::Registro> cr;
   while(it.HaySiguiente()){
 	  Driver::Registro r;
-	  typename registro::Iterador itR=it.Siguiente().CrearIt();
-	  
+	typename registro::Iterador itR=it.Siguiente().CrearIt();
+	while(itR.HaySiguiente()){	  
 	  if(itR.SiguienteSignificado().tipo()){
 		  Nat n=itR.SiguienteSignificado().valorNat();
 		  Dato d=Dato(n);
@@ -172,7 +174,9 @@ aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabl) c
 		String s=itR.SiguienteSignificado().valorString();
 		  Dato d=Dato(s);
 		  r.Definir(itR.SiguienteClave(), d);
-		}	  
+		}
+	itR.Avanzar();
+	}	  
 	  
 	  cr.AgregarRapido(r);
 	  it.Avanzar();
@@ -242,7 +246,7 @@ aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabl, const Regis
 	while(itR.HaySiguiente()){
 		Driver::Registro r;
 	  typename registro::Iterador itReg=itR.Siguiente().CrearIt();
-	  
+	  while(itReg.HaySiguiente()){
 	  if(itReg.SiguienteSignificado().tipo()){
 		  Nat n=itReg.SiguienteSignificado().valorNat();
 		  Dato d=Dato(n);
@@ -253,7 +257,8 @@ aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabl, const Regis
 		  Dato d=Dato(s);
 		  r.Definir(itReg.SiguienteClave(), d);
 		}	  
-	  
+	  itReg.Avanzar();
+	  }
 	  cr.AgregarRapido(r);
 	  itR.Avanzar();
 		}
@@ -363,5 +368,28 @@ Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
-  base.vistaJoin(tabla1, tabla2);
+  typename Lista<registro>::Iterador it=base.vistaJoin(tabla1, tabla2);
+  Conj<Driver::Registro> res;
+  while(it.HaySiguiente()){
+	
+	  Driver::Registro r;
+	  typename registro::Iterador itR=it.Siguiente().CrearIt();
+	  while(itR.HaySiguiente()){
+	  if(itR.SiguienteSignificado().tipo()){
+		  Nat n=itR.SiguienteSignificado().valorNat();
+		  Dato d=Dato(n);
+		  r.Definir(itR.SiguienteClave(), d);
+		  }
+	  else{
+		  String s=itR.SiguienteSignificado().valorString();
+		  Dato d=Dato(s);
+		  r.Definir(itR.SiguienteClave(), d);
+		  }
+	  
+	  itR.Avanzar();
+  }
+	  res.AgregarRapido(r);
+	  it.Avanzar();
+	  }
+	  return res;
 }

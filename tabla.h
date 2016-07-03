@@ -630,7 +630,6 @@ bool tabla::estaValor(dato d){
 //////////////////////////////////////////////////////////////////	
 void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 		if(d.tipo()){
-
 			if(t1->indiceN_.valoresYreg.definido(d.valorNat())){
 				if(t2->indiceN_.valoresYreg.definido(d.valorNat())){
 					dicA<Nat, Lista<estrAux> >* d1=&t1->indiceN_.valoresYreg;
