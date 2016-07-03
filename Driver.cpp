@@ -375,6 +375,7 @@ aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const 
 	  Driver::Registro r;
 	  typename registro::Iterador itR=it.Siguiente().CrearIt();
 	  while(itR.HaySiguiente()){
+		  cout << "HASTA ACA NO HAY ERROR"<< endl;
 	  if(itR.SiguienteSignificado().tipo()){
 		  Nat n=itR.SiguienteSignificado().valorNat();
 		  Dato d=Dato(n);

@@ -63,7 +63,7 @@ void ejemplo_simple()
  bd.insertarRegistro("lola", pers);
  //ASSERT_EQ(bd.cantidadDeAccesosDeTabla("lola"), 2);
  //ASSERT_EQ(bd.registrosDeTabla("lola").Cardinal(), 2);
- //bd.vistaJoin("lola", "personas");
+ bd.vistaJoin("lola", "personas");
  bd.borrarVistaJoin("lola", "personas");
  
 }
