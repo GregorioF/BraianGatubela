@@ -12,7 +12,7 @@
 using namespace aed2;
 using namespace std;
 
-class Registro{
+class registro{
 public:
 
 	 struct Elem;
@@ -21,9 +21,9 @@ public:
 	class Iterador;
     class const_Iterador;
 
-    Registro();
-    Registro(const Registro& otro);
-    Registro& operator=(const Registro& otro);
+    registro();
+    registro(const registro& otro);
+    registro& operator=(const registro& otro);
 
     Iterador Definir(const NombreCampo& clave, const dato& significado);
     Iterador DefinirRapido(const NombreCampo& clave, const dato& significado);
@@ -42,11 +42,11 @@ public:
     Iterador Buscar(const NombreCampo&);
     const_Iterador Buscar(const NombreCampo&) const;
     Conj<NombreCampo> campos();
-	  void copiarCampos(Conj<NombreCampo> c, Registro r2);
-	  void mergear(Registro&);
-	  bool coincidenTodos(Conj<NombreCampo>& c, Registro& r2);
-	  bool borrar(Registro crit);
-	  Lista<Registro> coincidencias(Lista<Registro> cr);
+	  void copiarCampos(Conj<NombreCampo> c, registro r2);
+	  void mergear(registro&);
+	  bool coincidenTodos(Conj<NombreCampo>& c, registro& r2);
+	  bool borrar(registro crit);
+	  Lista<registro> coincidencias(Lista<registro> cr);
 
     class Iterador
     {
@@ -54,11 +54,11 @@ public:
 
         Iterador();
 
-        Iterador(const typename Registro::Iterador& otro);
+        Iterador(const typename registro::Iterador& otro);
 
-        Iterador& operator = (const typename Registro::Iterador& otro);
+        Iterador& operator = (const typename registro::Iterador& otro);
 
-        bool operator == (const typename Registro::Iterador&) const;
+        bool operator == (const typename registro::Iterador&) const;
 
         bool HaySiguiente() const;
         bool HayAnterior() const;
@@ -78,10 +78,10 @@ public:
         typename Lista<NombreCampo>::Iterador it_claves_;
         typename Lista<dato>::Iterador it_significados_;
 
-        Iterador(Registro* d);
+        Iterador(registro* d);
 
-        friend typename Registro::Iterador Registro::CrearIt();
-        friend class Registro::const_Iterador;
+        friend typename registro::Iterador registro::CrearIt();
+        friend class registro::const_Iterador;
     };
 
     class const_Iterador
@@ -90,13 +90,13 @@ public:
 
         const_Iterador();
 
-        const_Iterador(const typename Registro::Iterador& otro);
+        const_Iterador(const typename registro::Iterador& otro);
 
-        const_Iterador(const typename Registro::const_Iterador& otro);
+        const_Iterador(const typename registro::const_Iterador& otro);
 
-        const_Iterador& operator = (const typename Registro::const_Iterador& otro);
+        const_Iterador& operator = (const typename registro::const_Iterador& otro);
 
-        bool operator==(const typename Registro::const_Iterador&) const;
+        bool operator==(const typename registro::const_Iterador&) const;
 
         bool HaySiguiente() const;
         bool HayAnterior() const;
@@ -114,9 +114,9 @@ public:
         typename Lista<NombreCampo>::const_Iterador it_claves_;
         typename Lista<dato>::const_Iterador it_significados_;
 
-        const_Iterador(const Registro* d);
+        const_Iterador(const registro* d);
 
-        friend typename Registro::const_Iterador Registro::CrearIt() const;
+        friend typename registro::const_Iterador registro::CrearIt() const;
     };
 
     struct Elem
@@ -130,13 +130,13 @@ public:
         //Para sacar esto de aca, necesitariamos definir rasgos y otras yerbas
         //Lamentablemente, sino C++ no reconoce bien los tipos
 
-       // friend std::ostream& operator<<(std::ostream& os, const Registro::Elem& e) {
+       // friend std::ostream& operator<<(std::ostream& os, const registro::Elem& e) {
         //  return os << e.clave << ":" << e.significado;
         
 
       private:
 
-        typename Registro::Elem& operator=(const Registro::Elem&);
+        typename registro::Elem& operator=(const registro::Elem&);
     };
 
     struct const_Elem
@@ -156,7 +156,7 @@ public:
 
       private:
 
-        typename Registro::const_Elem& operator = (const Registro::const_Elem&);
+        typename registro::const_Elem& operator = (const registro::const_Elem&);
     };
 
 	private:
@@ -173,12 +173,12 @@ public:
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-ostream& operator << (std::ostream& out, Registro r){
+ostream& operator << (std::ostream& out, registro r){
   r.Mostrar(out);
   return out;
 }
-void Registro::Mostrar(ostream& out)const{
-    typename Registro::const_Iterador it = CrearIt();
+void registro::Mostrar(ostream& out)const{
+    typename registro::const_Iterador it = CrearIt();
     while(it.HaySiguiente()){
       if(it.SiguienteSignificado().tipo()){
           out <<"(" << it.SiguienteClave() << ", ";
@@ -195,21 +195,21 @@ void Registro::Mostrar(ostream& out)const{
 }
 
 
-bool operator == (const Registro& d1, const Registro& d2);
+bool operator == (const registro& d1, const registro& d2);
 
   // Implementacion Dicc
 
 
-Registro::Registro()
+registro::registro()
 {}
 
 
-Registro::Registro(const Registro& otro)
+registro::registro(const registro& otro)
   : claves_(otro.claves_), significados_(otro.significados_)
 {}
 
 
-Registro& Registro::operator = (const Registro& otro)
+registro& registro::operator = (const registro& otro)
 {
   claves_ = otro.claves_;
   significados_ = otro.significados_;
@@ -218,7 +218,7 @@ Registro& Registro::operator = (const Registro& otro)
 }
 
 
-typename Registro::Iterador Registro::Definir(const NombreCampo& clave, const dato& significado)
+typename registro::Iterador registro::Definir(const NombreCampo& clave, const dato& significado)
 {
   Iterador it = Buscar(clave);
 
@@ -232,7 +232,7 @@ typename Registro::Iterador Registro::Definir(const NombreCampo& clave, const da
 }
 
 
-typename Registro::Iterador Registro::DefinirRapido(const NombreCampo& clave, const dato& significado)
+typename registro::Iterador registro::DefinirRapido(const NombreCampo& clave, const dato& significado)
 {
   #ifdef DEBUG
   assert( not Definido(clave) );
@@ -245,14 +245,14 @@ typename Registro::Iterador Registro::DefinirRapido(const NombreCampo& clave, co
 }
 
 
-bool Registro::Definido(const NombreCampo& clave) const
+bool registro::Definido(const NombreCampo& clave) const
 {
   return Buscar(clave).HaySiguiente();
 }
 
 
 
-const dato& Registro::Significado(const NombreCampo& clave)const
+const dato& registro::Significado(const NombreCampo& clave)const
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -262,7 +262,7 @@ const dato& Registro::Significado(const NombreCampo& clave)const
 }
 
 
-dato& Registro::Significado(const NombreCampo& clave)
+dato& registro::Significado(const NombreCampo& clave)
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -272,7 +272,7 @@ dato& Registro::Significado(const NombreCampo& clave)
 }
 
 
-void Registro::Borrar(const NombreCampo& clave)
+void registro::Borrar(const NombreCampo& clave)
 {
   #ifdef DEBUG
   assert( Definido(clave) );
@@ -282,19 +282,19 @@ void Registro::Borrar(const NombreCampo& clave)
 }
 
 
-Nat Registro::CantClaves() const
+Nat registro::CantClaves() const
 {
   return claves_.Longitud();
 }
 
 
-typename Registro::Iterador Registro::CrearIt()
+typename registro::Iterador registro::CrearIt()
 {
   return Iterador(this);
 }
 
 
-typename Registro::const_Iterador Registro::CrearIt() const
+typename registro::const_Iterador registro::CrearIt() const
 {
   return const_Iterador(this);
 }
@@ -302,16 +302,16 @@ typename Registro::const_Iterador Registro::CrearIt() const
   // Implementacion Iterador
 
 
-Registro::Iterador::Iterador()
+registro::Iterador::Iterador()
 {}
 
 
-Registro::Iterador::Iterador(const typename Registro::Iterador& otro)
+registro::Iterador::Iterador(const typename registro::Iterador& otro)
 : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
-typename Registro::Iterador& Registro::Iterador::operator = (const typename Registro::Iterador& otro)
+typename registro::Iterador& registro::Iterador::operator = (const typename registro::Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -320,19 +320,19 @@ typename Registro::Iterador& Registro::Iterador::operator = (const typename Regi
 }
 
 
-bool Registro::Iterador::HaySiguiente() const
+bool registro::Iterador::HaySiguiente() const
 {
   return it_claves_.HaySiguiente();
 }
 
 
-bool Registro::Iterador::HayAnterior() const
+bool registro::Iterador::HayAnterior() const
 {
   return it_claves_.HayAnterior();
 }
 
 
-const NombreCampo& Registro::Iterador::SiguienteClave() const
+const NombreCampo& registro::Iterador::SiguienteClave() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -342,7 +342,7 @@ const NombreCampo& Registro::Iterador::SiguienteClave() const
 }
 
 
-dato& Registro::Iterador::SiguienteSignificado()
+dato& registro::Iterador::SiguienteSignificado()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -352,7 +352,7 @@ dato& Registro::Iterador::SiguienteSignificado()
 }
 
 
-typename Registro::Elem Registro::Iterador::Siguiente()
+typename registro::Elem registro::Iterador::Siguiente()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -362,7 +362,7 @@ typename Registro::Elem Registro::Iterador::Siguiente()
 }
 
 
-const NombreCampo& Registro::Iterador::AnteriorClave() const
+const NombreCampo& registro::Iterador::AnteriorClave() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -372,7 +372,7 @@ const NombreCampo& Registro::Iterador::AnteriorClave() const
 }
 
 
-dato& Registro::Iterador::AnteriorSignificado()
+dato& registro::Iterador::AnteriorSignificado()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -382,7 +382,7 @@ dato& Registro::Iterador::AnteriorSignificado()
 }
 
 
-typename Registro::Elem Registro::Iterador::Anterior()
+typename registro::Elem registro::Iterador::Anterior()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -392,7 +392,7 @@ typename Registro::Elem Registro::Iterador::Anterior()
 }
 
 
-void Registro::Iterador::Avanzar()
+void registro::Iterador::Avanzar()
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -403,7 +403,7 @@ void Registro::Iterador::Avanzar()
 }
 
 
-void Registro::Iterador::Retroceder()
+void registro::Iterador::Retroceder()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -414,12 +414,12 @@ void Registro::Iterador::Retroceder()
 }
 
 
-Registro::Iterador::Iterador(Registro* d)
+registro::Iterador::Iterador(registro* d)
 : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
 
-void Registro::Iterador::EliminarSiguiente()
+void registro::Iterador::EliminarSiguiente()
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -430,7 +430,7 @@ void Registro::Iterador::EliminarSiguiente()
 }
 
 
-void Registro::Iterador::EliminarAnterior()
+void registro::Iterador::EliminarAnterior()
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -443,21 +443,21 @@ void Registro::Iterador::EliminarAnterior()
   // Implementacion const_Iterador
 
 
-Registro::const_Iterador::const_Iterador()
+registro::const_Iterador::const_Iterador()
 {}
 
 
-Registro::const_Iterador::const_Iterador(const typename Registro::Iterador& otro)
+registro::const_Iterador::const_Iterador(const typename registro::Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
-Registro::const_Iterador::const_Iterador(const typename Registro::const_Iterador& otro)
+registro::const_Iterador::const_Iterador(const typename registro::const_Iterador& otro)
   : it_claves_(otro.it_claves_), it_significados_(otro.it_significados_)
 {}
 
 
-typename Registro::const_Iterador& Registro::const_Iterador::operator=(const typename Registro::const_Iterador& otro)
+typename registro::const_Iterador& registro::const_Iterador::operator=(const typename registro::const_Iterador& otro)
 {
   it_claves_ = otro.it_claves_;
   it_significados_ = otro.it_significados_;
@@ -466,19 +466,19 @@ typename Registro::const_Iterador& Registro::const_Iterador::operator=(const typ
 }
 
 
-bool Registro::const_Iterador::HaySiguiente() const
+bool registro::const_Iterador::HaySiguiente() const
 {
   return it_claves_.HaySiguiente();
 }
 
 
-bool Registro::const_Iterador::HayAnterior() const
+bool registro::const_Iterador::HayAnterior() const
 {
   return it_claves_.HayAnterior();
 }
 
 
-const NombreCampo& Registro::const_Iterador::SiguienteClave() const
+const NombreCampo& registro::const_Iterador::SiguienteClave() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -488,7 +488,7 @@ const NombreCampo& Registro::const_Iterador::SiguienteClave() const
 }
 
 
-const dato& Registro::const_Iterador::SiguienteSignificado() const
+const dato& registro::const_Iterador::SiguienteSignificado() const
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -498,7 +498,7 @@ const dato& Registro::const_Iterador::SiguienteSignificado() const
 }
 
 
-typename Registro::const_Elem Registro::const_Iterador::Siguiente() const
+typename registro::const_Elem registro::const_Iterador::Siguiente() const
 {
   #ifdef DEBUG
   assert( HaySiguiente() );
@@ -508,7 +508,7 @@ typename Registro::const_Elem Registro::const_Iterador::Siguiente() const
 }
 
 
-const NombreCampo& Registro::const_Iterador::AnteriorClave() const
+const NombreCampo& registro::const_Iterador::AnteriorClave() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -518,7 +518,7 @@ const NombreCampo& Registro::const_Iterador::AnteriorClave() const
 }
 
 
-const dato& Registro::const_Iterador::AnteriorSignificado() const
+const dato& registro::const_Iterador::AnteriorSignificado() const
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -528,7 +528,7 @@ const dato& Registro::const_Iterador::AnteriorSignificado() const
 }
 
 
-typename Registro::const_Elem Registro::const_Iterador::Anterior() const
+typename registro::const_Elem registro::const_Iterador::Anterior() const
 {
   #ifdef DEBUG
   assert( HayAnterior() );
@@ -538,7 +538,7 @@ typename Registro::const_Elem Registro::const_Iterador::Anterior() const
 }
 
 
-void Registro::const_Iterador::Avanzar()
+void registro::const_Iterador::Avanzar()
 {
   #ifdef DEBUG
   assert(HaySiguiente());
@@ -549,7 +549,7 @@ void Registro::const_Iterador::Avanzar()
 }
 
 
-void Registro::const_Iterador::Retroceder()
+void registro::const_Iterador::Retroceder()
 {
   #ifdef DEBUG
   assert(HayAnterior());
@@ -560,18 +560,18 @@ void Registro::const_Iterador::Retroceder()
 }
 
 
-Registro::const_Iterador::const_Iterador(const Registro* d)
+registro::const_Iterador::const_Iterador(const registro* d)
 : it_claves_(d->claves_.CrearIt()), it_significados_(d->significados_.CrearIt())
 {}
 
 
-bool Registro::const_Iterador::operator == (const typename Registro::const_Iterador& otro) const
+bool registro::const_Iterador::operator == (const typename registro::const_Iterador& otro) const
 {
   return it_claves_ == otro.it_claves_ && it_significados_ == otro.it_significados_;
 }
 
 
-bool Registro::Iterador::operator == (const typename Registro::Iterador& otro) const
+bool registro::Iterador::operator == (const typename registro::Iterador& otro) const
 {
   return it_claves_ == otro.it_claves_ && it_significados_ == otro.it_significados_;
 }
@@ -579,9 +579,9 @@ bool Registro::Iterador::operator == (const typename Registro::Iterador& otro) c
   ///Funciones auxiliares
 
 
-typename Registro::Iterador Registro::Buscar(const NombreCampo& clave)
+typename registro::Iterador registro::Buscar(const NombreCampo& clave)
 {
-  typename Registro::Iterador it = CrearIt();
+  typename registro::Iterador it = CrearIt();
   while(it.HaySiguiente() && !(it.SiguienteClave() == clave)){
     it.Avanzar();
   }
@@ -589,9 +589,9 @@ typename Registro::Iterador Registro::Buscar(const NombreCampo& clave)
 }
 
 
-typename Registro::const_Iterador Registro::Buscar(const NombreCampo& clave) const
+typename registro::const_Iterador registro::Buscar(const NombreCampo& clave) const
 {
-  typename Registro::const_Iterador it = CrearIt();
+  typename registro::const_Iterador it = CrearIt();
   while(it.HaySiguiente() && !(it.SiguienteClave() == clave)){
       it.Avanzar();
   }
@@ -600,12 +600,12 @@ typename Registro::const_Iterador Registro::Buscar(const NombreCampo& clave) con
 
 
 
-bool operator == (const Registro& d1, const Registro& d2)
+bool operator == (const registro& d1, const registro& d2)
 {
   bool retval = d1.CantClaves() == d2.CantClaves();
-  typename Registro::const_Iterador it1 = d1.CrearIt();
+  typename registro::const_Iterador it1 = d1.CrearIt();
   while(retval and it1.HaySiguiente()){
-    typename Registro::const_Iterador it2 = d2.Buscar(it1.SiguienteClave());
+    typename registro::const_Iterador it2 = d2.Buscar(it1.SiguienteClave());
     retval = it2.HaySiguiente() and it1.SiguienteSignificado() == it2.SiguienteSignificado();
     it1.Avanzar();
   }
@@ -616,8 +616,8 @@ bool operator == (const Registro& d1, const Registro& d2)
 
 
 
-void Registro::mergear(Registro& r2){
-	typename Registro::Iterador itR2= r2.CrearIt();
+void registro::mergear(registro& r2){
+	typename registro::Iterador itR2= r2.CrearIt();
 
 	while(itR2.HaySiguiente()){
 		if(!(Definido(itR2.SiguienteClave()))) 
@@ -626,9 +626,9 @@ void Registro::mergear(Registro& r2){
 	}	
 }
 
-Conj<NombreCampo> Registro::campos(){
+Conj<NombreCampo> registro::campos(){
 	Conj<NombreCampo> res;
-	typename Registro::Iterador itR1= CrearIt();
+	typename registro::Iterador itR1= CrearIt();
 	while(itR1.HaySiguiente()){
 		res.AgregarRapido(itR1.SiguienteClave());
 		itR1.Avanzar();
@@ -636,7 +636,7 @@ Conj<NombreCampo> Registro::campos(){
 	return res;
 }
 	
-void Registro::copiarCampos(Conj<NombreCampo> c, Registro r2){
+void registro::copiarCampos(Conj<NombreCampo> c, registro r2){
 	typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
 	while(it.HaySiguiente()){
 		if(!Definido(it.Siguiente())){
@@ -646,7 +646,7 @@ void Registro::copiarCampos(Conj<NombreCampo> c, Registro r2){
 		} 
 	}
 	
-bool Registro::coincidenTodos(Conj<NombreCampo>& c, Registro& r2){
+bool registro::coincidenTodos(Conj<NombreCampo>& c, registro& r2){
 	bool res=true;
 	if(!c.EsVacio()){
 		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();
@@ -669,18 +669,18 @@ bool Registro::coincidenTodos(Conj<NombreCampo>& c, Registro& r2){
 	return res;	
 }
 
-bool Registro::borrar(Registro crit){
+bool registro::borrar(registro crit){
 	bool res=true;
 	Conj<NombreCampo> c=crit.campos();
 	res=coincidenTodos(c,crit);
 	return res;
 }	
 
-Lista<Registro> Registro::coincidencias(Lista<Registro> cr){
-	Lista<Registro> res;
-	typename Lista<Registro>::Iterador it=cr.CrearIt();
+Lista<registro> registro::coincidencias(Lista<registro> cr){
+	Lista<registro> res;
+	typename Lista<registro>::Iterador it=cr.CrearIt();
 	while(it.HaySiguiente()){
-		Registro r(it.Siguiente());
+		registro r(it.Siguiente());
 		Conj<NombreCampo> camp=campos();
 		if(coincidenTodos(camp,r)){
 			res.AgregarAdelante(r);

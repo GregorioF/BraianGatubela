@@ -90,6 +90,7 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
     it.Avanzar();
   }
   t.nuevaTabla(nombre, col, claves);
+  base.agregarTabla(t);
 }
 
 void Driver::insertarRegistro(const NombreTabla& tabla, const registro& registro)
@@ -120,6 +121,14 @@ else{
  r.Definir(columna,d);
  NombreTabla t=tabla;
  base.borrar(r,t);
+
+  Registro crit;
+  dato a;
+  if(valor.tipo()==NAT) a=valor.dameNat();
+  else a=valor.dameString();
+  crit.Definir(columna, a);
+  base.borrar(crit, tabla);
+
 }
 
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabl) const
@@ -147,10 +156,12 @@ aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabl) co
 {
   tabla* t=base.dameTabla(tabl);
   return t->claves();
+
 }
 
 aed2::Conj<Driver::registro> Driver::registrosDeTabla(const NombreTabla& tabl) const
 {
+
   tabla* t=base.dameTabla(tabl);
   Lista<Registro> lr=t->registros();
   typename Lista<Registro>::Iterador it=lr.CrearIt();
@@ -174,6 +185,7 @@ aed2::Conj<Driver::registro> Driver::registrosDeTabla(const NombreTabla& tabl) c
 	  it.Avanzar();
 	  }
 	  return cr;
+
 }
 
 aed2::Nat Driver::cantidadDeAccesosDeTabla(const NombreTabla& tabla) const
