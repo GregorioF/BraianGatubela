@@ -294,8 +294,8 @@ typename::Lista<registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 					
 			while(it2.HaySiguiente()){				
 				if(it.Siguiente().Significado(c) == it2.Siguiente().Significado(c)){
-					registro r1=registro(it.Siguiente());
-					registro r2=registro(it2.Siguiente());
+					registro r1(it.Siguiente());
+					registro r2(it2.Siguiente());
 					r1.mergear(r2);
 					nuevojoin->agregarRegistro(r1);
 				}
@@ -411,7 +411,9 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		i--;
 		
 	}
+	cout << "HASTA ACA NO HAY ERROR"<< endl;
 	return join->registros().CrearIt();
+	cout << "HASTA ACA NO HAY ERROR"<< endl;
 	}
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
