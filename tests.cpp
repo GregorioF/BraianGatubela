@@ -3,6 +3,7 @@
 
 #include "mini_test.h"
 #include "BD.h"
+#include "Driver.cpp"
 
 #include <string>
 #include <iostream>
@@ -10,7 +11,7 @@
 using namespace aed2;
 using namespace std;
 
-/*void ejemplo_simple()
+void ejemplo_simple()
 {
   aed2::Driver bd;
   ASSERT_EQ(bd.tablas().Cardinal(), 0);
@@ -46,9 +47,9 @@ using namespace std;
 
   bd.insertarRegistro("personas", persona);
 
-  // ...
+ 
 }
-*/
+
 void DefinirRegistro(registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
   typename Conj<NombreCampo>::Iterador it = campos.CrearIt();
   int i=0;
@@ -683,7 +684,8 @@ b.agregarTabla(n);
 	b.agregarTabla(t3);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c);
-	//b.dameTabla("Tabla2")->indexar(c);
+	b.dameTabla("Tabla2")->indexar(c);
+	b.dameTabla("TABLA")->indexar(c1);
 	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
 	b.generarVistaJoin("TABLA","Tabla2",c);
@@ -701,8 +703,8 @@ b.agregarTabla(n);
 }
 int main(int argc, char **argv)
 {
- //RUN_TEST( ejemplo_simple );
- RUN_TEST(testTabla);
+ RUN_TEST( ejemplo_simple );
+	RUN_TEST(testTabla);
   RUN_TEST(agregarRegistroSinIndices);
   RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);

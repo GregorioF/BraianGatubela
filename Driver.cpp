@@ -234,6 +234,7 @@ aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabl, const Regis
 			  d.nuevoDatoString(it.SiguienteSignificado().dameString());
 			  }
 	  crit.Definir(it.SiguienteClave(), d);
+	  it.Avanzar();
 	  }
 	Lista<registro> lr=base.buscar(crit, tabl);
 	typename Lista<registro>::Iterador itR=lr.CrearIt();
@@ -265,6 +266,7 @@ aed2::Conj<NombreTabla> Driver::tablas() const
  Conj<NombreTabla> ct;
  while(itT.HaySiguiente()){
 	 ct.AgregarRapido(itT.Siguiente());
+	 itT.Avanzar();
 	 }
 	 return ct;
 }
@@ -354,7 +356,9 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 
 Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
 {
-  //NO SE Q HACE, AHORA ME FIJO
+  //typename Registro::const_Iterador it=reg1.CrearIt();
+  //typename Registro::const_Iterador it2=reg2.CrearIt();
+  
 }
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
