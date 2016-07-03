@@ -74,6 +74,7 @@ private:
 		Nat maximo;
 		Nat minimo;
 		dicA<Nat, Lista<estrAux> > valoresYreg;
+		
 
 	};
 	struct indiceString{

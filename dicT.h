@@ -266,6 +266,7 @@ dicT<T>::dicT(const dicT<T>& otro){
 		definir(it.Siguiente(), elem);
 	
 		it.Avanzar();
+	
 	}
 }
 
