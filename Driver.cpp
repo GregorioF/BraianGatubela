@@ -65,6 +65,7 @@ bool Driver::Dato::operator != (const Dato& otro) const
 
 Driver::Driver()
 {
+	b=BD();
   // TODO ...
   assert(false);
 }
@@ -85,8 +86,13 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
 
 void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
 {
-  // TODO ...
-  assert(false);
+	Registro r;
+	typename Driver::Registro::const_Iterador it=registro.CrearIt();
+  while(it.HaySiguiente()){
+	  r.Definir(it.SiguienteClave(), it.SiguienteSignificado());
+	  }
+  NombreTabla t=tabla;
+  b.insertarEntrada(r,t);
 }
 
 void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)

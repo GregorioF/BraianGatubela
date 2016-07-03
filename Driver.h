@@ -4,7 +4,7 @@
 #include "Tipos.h"
 #include "Conj.h"
 #include "TiposBasicos.h"
-
+#include "BD.h"
 namespace aed2
 {
 
@@ -239,7 +239,8 @@ class Driver
     aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
 
   private:
-
+		
+		BD b;
     /************************************************************************
      * TODO: Va a ser necesario instanciar privadamente el Modulo principal *
      * con el cuál interactuar. Además, pueden declarar todas las           *

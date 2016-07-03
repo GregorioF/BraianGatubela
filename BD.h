@@ -365,7 +365,6 @@ typename::Lista<Registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 					Registro crit;
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
-					cout << "HASTA ACA NO HAY ERROR"<< endl;
 				}
 		 }
 		modif.EliminarSiguiente();
@@ -395,6 +394,7 @@ Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
 	typename Registro::Iterador itCrit=criterio.CrearIt();
 	bool esClave=false;
 	NombreCampo criterioClave;
+	if(t->indices().Cardinal()>0){
 	while(itCrit.HaySiguiente()){
 		NombreCampo critActual=itCrit.SiguienteClave();
 		if(pertenece(critActual,t->indices()) && pertenece(critActual, t->claves())){
@@ -403,12 +403,13 @@ Lista<Registro> BD::buscar(Registro criterio,NombreTabla s){
 		}
 		itCrit.Avanzar();
 	}
+	}
 	if(esClave){
 		t->AuxBuscar(criterioClave, criterio, res);
 		return res;
 	}
 	else{
-		Lista<Registro> regT=t->registros();
+		Lista<Registro> regT(t->registros());
 		return criterio.coincidencias(regT);
 	}
   
