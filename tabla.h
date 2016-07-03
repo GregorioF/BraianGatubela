@@ -15,7 +15,7 @@ struct estrAux
 			itReg=otra.itReg;
 			itEstr=otra.itEstr;
 		}
-		typename Lista<Registro>::Iterador itReg;
+		typename Lista<registro>::Iterador itReg;
 		typename Lista<estrAux>::Iterador itEstr;		
 	};
 
@@ -28,7 +28,7 @@ public:
 	//////////////////////////////////////////////////////////////////
 	~tabla(); 
 	//////////////////////////////////////////////////////////////////
-	void nuevaTabla(const String nombre, Registro& columnas , const Conj<NombreCampo>& claves);
+	void nuevaTabla(const String nombre, registro& columnas , const Conj<NombreCampo>& claves);
 	//////////////////////////////////////////////////////////////////
 	String nombre();
 	//////////////////////////////////////////////////////////////////
@@ -40,13 +40,13 @@ public:
 	//////////////////////////////////////////////////////////////////
 	TipoCampo tipoCampo(NombreCampo c);
 	//////////////////////////////////////////////////////////////////
-	Lista<Registro> registros();
+	Lista<registro> registros();
 	//////////////////////////////////////////////////////////////////
 	Nat cantDeAccesos();
 	//////////////////////////////////////////////////////////////////
-	void agregarRegistro(Registro& r);
+	void agregarRegistro(registro& r);
 	//////////////////////////////////////////////////////////////////
-	void borrarRegistro(Registro& crit);
+	void borrarRegistro(registro& crit);
 	//////////////////////////////////////////////////////////////////
 	void indexar(NombreCampo c);
 	//////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ public:
 	//////////////////////////////////////////////////////////////////
 	void AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c);
 	//////////////////////////////////////////////////////////////////
-	void AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr);
+	void AuxBuscar(NombreCampo criterioClave, registro& criterio, Lista<registro>& lr);
 	//////////////////////////////////////////////////////////////////
 	bool estaValor(dato d);
 	//////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ private:
 	//////
 	String nombre_;
 	//////
-	Lista<Registro> registros_;
+	Lista<registro> registros_;
 	//////
 	Dicc<NombreCampo,TipoCampo> campos_;
 	//////
@@ -136,7 +136,7 @@ private:
 	//////////////////////////////////////////////////////////////////	
 	//Se utiliza en indexar
 	void indexarNatAux(){ //si no lo paso por referencia hay un error q no sabria bien como resolver
-		typename Lista<Registro>::Iterador it = registros_.CrearIt();
+		typename Lista<registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
 			
 			Nat valorADefinir = it.Siguiente().Significado(indiceN_.nombreC).valorNat();
@@ -176,7 +176,7 @@ private:
 	//////////////////////////////////////////////////////////////////	
 	// Se utilza en indexar
 	void indexarStringAux(){
-		typename Lista<Registro>::Iterador it = registros_.CrearIt();
+		typename Lista<registro>::Iterador it = registros_.CrearIt();
 		while(it.HaySiguiente()){
 			String valorADefinir = it.Siguiente().Significado(indiceS_.nombreC).valorString();
 			
@@ -223,8 +223,8 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	Registro dameRegistroT(dicT<Lista<estrAux> >* d, String s){
-		Registro res;
+	registro dameRegistroT(dicT<Lista<estrAux> >* d, String s){
+		registro res;
 		Lista<estrAux>* aux=&d->obtener(s);
 		typename Lista<estrAux>::Iterador itA=aux->CrearIt();
 		estrAux eaux=itA.Siguiente();
@@ -233,8 +233,8 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	Registro dameRegistroN(dicA<Nat, Lista<estrAux> >* d,Nat n){
-		Registro res;
+	registro dameRegistroN(dicA<Nat, Lista<estrAux> >* d,Nat n){
+		registro res;
 		Lista<estrAux>* aux=&d->obtener(n);
 		typename Lista<estrAux>::Iterador itA=aux->CrearIt();
 		estrAux eaux=itA.Siguiente();
@@ -243,14 +243,14 @@ private:
 	}		
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	void generarRegistroYAgregarS(Lista<Registro>& cr, dicT<Lista<estrAux> >* d,NombreCampo c, tabla* join){
-		typename::Lista<Registro>::Iterador it=cr.CrearIt();
+	void generarRegistroYAgregarS(Lista<registro>& cr, dicT<Lista<estrAux> >* d,NombreCampo c, tabla* join){
+		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
-			Registro rT1=it.Siguiente();
+			registro rT1=it.Siguiente();
 			String valor= rT1.Significado(c).valorString();
 			if(d->definido(valor)){
-				Registro rCopia=Registro(rT1);
-				Registro rT2= dameRegistroT(d,valor);
+				registro rCopia=registro(rT1);
+				registro rT2= dameRegistroT(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
 				join->agregarRegistro(rT1);
 				}
@@ -260,14 +260,14 @@ private:
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
 	// Se utiliza en auxiliarGVJ
-	void generarRegistroYAgregarN(Lista<Registro>& cr, dicA<Nat, Lista<estrAux> >* d,NombreCampo c, tabla* join){
-		typename::Lista<Registro>::Iterador it=cr.CrearIt();
+	void generarRegistroYAgregarN(Lista<registro>& cr, dicA<Nat, Lista<estrAux> >* d,NombreCampo c, tabla* join){
+		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
-			Registro rT1=it.Siguiente(); //COPIA??
+			registro rT1=it.Siguiente(); //COPIA??
 			Nat valor= rT1.Significado(c).valorNat();
 			if(d->definido(valor)){
-				Registro rCopia=Registro(rT1);
-				Registro rT2= dameRegistroN(d,valor);
+				registro rCopia=registro(rT1);
+				registro rT2= dameRegistroN(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
 				join->agregarRegistro(rT1);
 				}
@@ -305,7 +305,7 @@ tabla::tabla( const tabla& otra){
 	accesos_=otra.accesos_;
 	
 	nombre_=otra.nombre_;
-	registros_=Lista<Registro>(otra.registros_);
+	registros_=Lista<registro>(otra.registros_);
 	campos_=Dicc<NombreCampo, TipoCampo>(otra.campos_);
 	claves_=Conj<NombreCampo>(otra.claves_);
 	
@@ -324,10 +324,10 @@ tabla::tabla( const tabla& otra){
 tabla::~tabla()
 {}
 
-void tabla::nuevaTabla(String n, Registro& col, const Conj<NombreCampo>& c){
+void tabla::nuevaTabla(String n, registro& col, const Conj<NombreCampo>& c){
 	nombre_= n;
 	claves_=c;
-	typename ::Registro::Iterador it = col.CrearIt();
+	typename ::registro::Iterador it = col.CrearIt();
 	while(it.HaySiguiente()){
 			if(it.SiguienteSignificado().tipo()){
 			campos_.Definir(it.SiguienteClave(), NAT);
@@ -372,7 +372,7 @@ TipoCampo tabla::tipoCampo(NombreCampo c){
 }
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-Lista<Registro> tabla::registros(){
+Lista<registro> tabla::registros(){
 	return registros_;
 }
 //////////////////////////////////////////////////////////////////
@@ -382,7 +382,7 @@ Nat tabla::cantDeAccesos(){
 }
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::agregarRegistro(Registro& r){
+void tabla::agregarRegistro(registro& r){
 	accesos_++;
 	registros_.AgregarAtras(r);
 	if(hayIndiceNat()){
@@ -391,7 +391,7 @@ void tabla::agregarRegistro(Registro& r){
 			indiceN_.valoresYreg.definir(r.Significado(indiceN_.nombreC).valorNat(), comelaFrancisco);
 		}
 		typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).valorNat()).CrearItUlt();
-		typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+		typename Lista<registro>::Iterador itRegistros= registros_.CrearItUlt();
 		estrAux yaMeMuero;
 		if(itRegistros.HayAnterior()){
 		itRegistros.Retroceder();
@@ -412,7 +412,7 @@ void tabla::agregarRegistro(Registro& r){
 			typename Lista<estrAux>::Iterador it = indiceN_.valoresYreg.obtener(r.Significado(indiceN_.nombreC).valorNat()).CrearItUlt();
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).valorString()).CrearItUlt();
 			estrAux yaMeMuero;
-			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			typename Lista<registro>::Iterador itRegistros= registros_.CrearItUlt();
 			if(itRegistros.HayAnterior()){
 			itRegistros.Retroceder();
 			}
@@ -424,7 +424,7 @@ void tabla::agregarRegistro(Registro& r){
 		else{
 			typename Lista<estrAux>::Iterador it1 = indiceS_.valoresYreg.obtener(r.Significado(indiceS_.nombreC).valorString()).CrearItUlt();
 			estrAux yaMeMuero;
-			typename Lista<Registro>::Iterador itRegistros= registros_.CrearItUlt();
+			typename Lista<registro>::Iterador itRegistros= registros_.CrearItUlt();
 			if(itRegistros.HayAnterior()){
 			itRegistros.Retroceder();
 			}
@@ -438,9 +438,9 @@ void tabla::agregarRegistro(Registro& r){
 }
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::borrarRegistro(Registro& crit){
+void tabla::borrarRegistro(registro& crit){
 	accesos_++;
-	typename Registro::Iterador itCrit=crit.CrearIt();
+	typename registro::Iterador itCrit=crit.CrearIt();
 	NombreCampo claveCrit=itCrit.SiguienteClave();
 	dato significadoCrit=itCrit.SiguienteSignificado();
 	if(pertenece(claveCrit,indices())){
@@ -488,7 +488,7 @@ void tabla::borrarRegistro(Registro& crit){
 			}	
 	}
 	else{
-		typename Lista<Registro>::Iterador it=registros_.CrearIt();
+		typename Lista<registro>::Iterador it=registros_.CrearIt();
 		while(it.HaySiguiente()){
 			bool b=false;
 			if(tipoCampo(claveCrit) == NAT) {
@@ -499,7 +499,7 @@ void tabla::borrarRegistro(Registro& crit){
 			}
 						
 			if(b){
-				Registro registroABorrar=it.Siguiente();
+				registro registroABorrar=it.Siguiente();
 				if(hayIndiceNat()){
 					Nat valor=registroABorrar.Significado(indiceN_.nombreC).valorNat();
 					typename Lista<estrAux>::Iterador itN=indiceN_.valoresYreg.obtener(valor).CrearIt();
@@ -569,12 +569,12 @@ dato tabla::maximo(NombreCampo c){
 //////////////////////////////////////////////////////////////////	
 void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){ 
 		
-			Lista<Registro> registrosDeOtraCopy=otra->registros();
-			typename Lista<Registro>::Iterador regis=registrosDeOtraCopy.CrearIt();
-			Lista<Registro> registt;
+			Lista<registro> registrosDeOtraCopy=otra->registros();
+			typename Lista<registro>::Iterador regis=registrosDeOtraCopy.CrearIt();
+			Lista<registro> registt;
 			
 			while(regis.HaySiguiente()){
-				Registro r;
+				registro r;
 				Conj<NombreCampo> camp=regis.Siguiente().campos();
 				r.copiarCampos(camp,regis.Siguiente());
 				registt.AgregarAtras(r);
@@ -592,16 +592,16 @@ void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){
 		}
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Registro>& lr){
+void tabla::AuxBuscar(NombreCampo criterioClave, registro& criterio, Lista<registro>& lr){
 	if(tipoCampo(criterioClave)){
 			dicA<Nat, Lista<estrAux> >* d= &indiceN_.valoresYreg;
 			Nat n=criterio.Significado(criterioClave).valorNat();
 			if(d->definido(n)){
 			typename Lista<estrAux>::Iterador itLista= d->obtener(n).CrearIt();
-			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
+			registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
 			Conj<NombreCampo> claves=criterio.campos();
 			if(criterio.coincidenTodos(claves, regCriterioClave)){
-				Registro regCoincide(regCriterioClave);
+				registro regCoincide(regCriterioClave);
 				lr.AgregarAdelante(regCoincide);
 			}
 			}
@@ -611,10 +611,10 @@ void tabla::AuxBuscar(NombreCampo criterioClave, Registro& criterio, Lista<Regis
 			String s=criterio.Significado(criterioClave).valorString();
 			if(d->definido(s)){
 			typename Lista<estrAux>::Iterador itLista= d->obtener(s).CrearIt();
-			Registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
+			registro regCriterioClave= itLista.Siguiente().itReg.Siguiente();	
 			Conj<NombreCampo> claves=criterio.campos();
 			if(criterio.coincidenTodos(claves, regCriterioClave)){
-				Registro regCoincide(regCriterioClave);
+				registro regCoincide(regCriterioClave);
 				lr.AgregarAdelante(regCoincide);
 		}
 		}
@@ -640,8 +640,8 @@ void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 				if(t2->indiceN_.valoresYreg.definido(d.valorNat())){
 					dicA<Nat, Lista<estrAux> >* d1=&t1->indiceN_.valoresYreg;
 					dicA<Nat, Lista<estrAux> >* d2=&t2->indiceN_.valoresYreg;
-					Registro rT1(dameRegistroN(d1,d.valorNat()));
-					Registro rT2(dameRegistroN(d2,d.valorNat()));
+					registro rT1(dameRegistroN(d1,d.valorNat()));
+					registro rT2(dameRegistroN(d2,d.valorNat()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
 					}
@@ -653,8 +653,8 @@ void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 				if(t2->indiceS_.valoresYreg.definido(d.valorString())){
 					dicT<Lista<estrAux> >* d1=&t1->indiceS_.valoresYreg;
 					dicT<Lista<estrAux> >* d2=&t2->indiceS_.valoresYreg;
-					Registro rT1(dameRegistroT(d1,d.valorString()));
-					Registro rT2(dameRegistroT(d2,d.valorString()));
+					registro rT1(dameRegistroT(d1,d.valorString()));
+					registro rT2(dameRegistroT(d2,d.valorString()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
 					}
