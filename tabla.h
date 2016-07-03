@@ -64,7 +64,9 @@ public:
 	
 private:
 	struct indiceNat{
-		indiceNat(): maximo(0), minimo(0){}
+		indiceNat(): maximo(0), minimo(0){
+			valoresYreg=dicA<Nat, Lista<estrAux> >();
+		}
 		~indiceNat(){}
 		NombreCampo nombreC;
 		Nat maximo;
@@ -73,7 +75,9 @@ private:
 
 	};
 	struct indiceString{
-		~indiceString(){}
+		~indiceString(){
+			valoresYreg=dicT<Lista<estrAux> >();
+		}
 		NombreCampo nombreC;
 		String maximo;
 		String minimo;

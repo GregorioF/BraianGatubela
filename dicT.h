@@ -46,7 +46,7 @@ public:
 	string Maximo();        //definida
 	///////////////////////////
 	void Vacio(){
-		raiz=NULL;
+		destruir(raiz);
 		raiz=new Nodo();
 	}
 
@@ -142,6 +142,22 @@ private:
 	};
 
 	Nodo* raiz;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	////////////////////////////////////////////////////////////////////////////////
 	//FUNCIONES AUXILIARES PRIVADAS
 	////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +271,7 @@ dicT<T>::dicT(const dicT<T>& otro){
 
 template <typename T>
 void dicT<T>::operator = (const dicT<T>& otro){
-	raiz= NULL;
+	destruir(raiz);
 	raiz= new Nodo();
 	Conj<string> claves = otro.claves();
 	typename Conj<string>::const_Iterador it=claves.CrearIt();
