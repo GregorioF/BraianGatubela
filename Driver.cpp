@@ -361,8 +361,55 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 
 Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
 {
-  //typename Registro::const_Iterador it=reg1.CrearIt();
-  //typename Registro::const_Iterador it2=reg2.CrearIt();
+  typename Driver::Registro::const_Iterador it=reg1.CrearIt();
+  typename Driver::Registro::const_Iterador it2=reg2.CrearIt();
+  registro r;
+  registro r1;
+  while(it.HaySiguiente()){
+	  dato d;
+	  if(it.SiguienteSignificado().tipo() == NAT){
+		  Nat n=it.SiguienteSignificado().dameNat();
+		  d.nuevoDatoNat(n);
+		  }
+		else{
+			String s=it.SiguienteSignificado().dameString();
+			d.nuevoDatoString(s);
+			} 
+		NombreCampo c=it.SiguienteClave();	 
+		r.Definir(c, d);	
+		it.Avanzar();
+	  }
+while(it2.HaySiguiente()){
+	  dato d;
+	  if(it2.SiguienteSignificado().tipo() == NAT){
+		  Nat n=it2.SiguienteSignificado().dameNat();
+		  d.nuevoDatoNat(n);
+		  }
+		else{
+			String s=it2.SiguienteSignificado().dameString();
+			d.nuevoDatoString(s);
+			}  
+		r1.Definir(it2.SiguienteClave(), d);	
+		it2.Avanzar();
+	  }
+	 
+	 r.mergear(r1); 
+	 
+	 typename registro::Iterador itR=r.CrearIt();
+	 Driver::Registro res;
+	 while(itR.HaySiguiente()){
+		 if(itR.SiguienteSignificado().tipo()){
+			 Nat n=itR.SiguienteSignificado().valorNat();
+			 res.Definir(itR.SiguienteClave(), Driver::Dato(n));
+			 }
+			 else{
+			 String s=itR.SiguienteSignificado().valorString();
+			 NombreCampo c=itR.SiguienteClave();
+			 res.Definir(c, Driver::Dato(s));
+			 }
+		 itR.Avanzar();
+		 }	  
+	  return res;
   
 }
 
