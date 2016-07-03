@@ -34,13 +34,13 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	tabla* dameTabla(NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
-	bool hayJoin(NombreTabla, NombreTabla);
+	bool hayJoin(NombreTabla, NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
-	NombreCampo campoJoin(NombreTabla, NombreTabla); 
+	NombreCampo campoJoin(NombreTabla, NombreTabla) const; 
 	//////////////////////////////////////////////////////////////////////////
 	typename::Lista<registro>::Iterador registros(NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
-	typename::Lista<registro>::Iterador vistaJoin(NombreTabla, NombreTabla);
+	typename::Lista<registro>::Iterador vistaJoin(NombreTabla, NombreTabla)const;
 	//////////////////////////////////////////////////////////////////////////
 	Nat cantDeAccesos(NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
@@ -331,7 +331,7 @@ tabla* BD::dameTabla(NombreTabla s) const{
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-bool BD::hayJoin(NombreTabla s1,NombreTabla s2){
+bool BD::hayJoin(NombreTabla s1,NombreTabla s2) const{
 	bool res=joins_.definido(s1);
 	if(res){
 		res=joins_.obtener(s1).definido(s2);
@@ -340,7 +340,7 @@ bool BD::hayJoin(NombreTabla s1,NombreTabla s2){
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-NombreCampo BD::campoJoin(NombreTabla s1,NombreTabla s2){
+NombreCampo BD::campoJoin(NombreTabla s1,NombreTabla s2)const{
 	dicT<tuplaJoin> aux=joins_.obtener(s1);
 	tuplaJoin tj=aux.obtener(s2);
 	NombreCampo res=tj.campoJ_;
@@ -355,7 +355,7 @@ typename::Lista<registro>::Iterador BD::registros(NombreTabla s){
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2){
+typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2) const{
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
 	NombreCampo c=campoJoin(s1,s2);

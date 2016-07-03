@@ -122,13 +122,6 @@ else{
  NombreTabla t=tabla;
  base.borrar(r,t);
 
-  registro crit;
-  dato a;
-  if(valor.tipo()==NAT) a=valor.dameNat();
-  else a=valor.dameString();
-  crit.Definir(columna, a);
-  base.borrar(crit, tabla);
-
 }
 
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabl) const
@@ -302,67 +295,69 @@ tabla* t=base.dameTabla(tabl);
   typename Conj<NombreCampo>::Iterador it=ind.CrearIt();
   NombreCampo res;
   while(it.HaySiguiente()){
-	  if(t->tipoCampo(it.Siguiente())){
+	  if(t->tipoCampo(it.Siguiente()) == NAT){
 		  res=it.Siguiente();
 		  return res;
 		  }
 	it.Avanzar();	  
 	  }
-	  
 }
 
-const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
+const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabl) const
 {
-  // TODO ...
-  assert(false);
+ tabla* t=base.dameTabla(tabl);	
+  Conj<NombreCampo> ind=t->indices();
+  typename Conj<NombreCampo>::Iterador it=ind.CrearIt();
+  NombreCampo res;
+  while(it.HaySiguiente()){
+	  if(t->tipoCampo(it.Siguiente()) == STR){
+		  res=it.Siguiente();
+		  return res;
+		  }
+	it.Avanzar();	  
+	  }
+}	  
+
+void Driver::crearIndiceNat(const NombreTabla& tabl, const NombreCampo& campo)
+{
+   tabla* t=base.dameTabla(tabl);
+   t->indexar(campo);
 }
 
-void Driver::crearIndiceNat(const NombreTabla& tabla, const NombreCampo& campo)
+void Driver::crearIndiceString(const NombreTabla& tabl, const NombreCampo& campo)
 {
-  // TODO ...
-  assert(false);
-}
-
-void Driver::crearIndiceString(const NombreTabla& tabla, const NombreCampo& campo)
-{
-  // TODO ...
-  assert(false);
+  tabla* t=base.dameTabla(tabl);
+  t->indexar(campo);
 }
 
 // Joins
 
 bool Driver::hayJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
-  // TODO ...
-  assert(false);
+  return base.hayJoin(tabla1, tabla2);
 }
 
 const NombreCampo& Driver::campoJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
-  // TODO ...
-  assert(false);
+  return base.campoJoin(tabla1, tabla2);
 }
 
 void Driver::generarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2, const NombreCampo& campo)
 {
-  // TODO ...
-  assert(false);
+  base.generarVistaJoin(tabla1, tabla2, campo);
 }
 
 void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)
 {
-  // TODO ...
-  assert(false);
+  base.borrarJoin(tabla1,tabla2);
 }
 
 Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
 {
-  // TODO ...
-  assert(false);
+  //NO SE Q HACE, AHORA ME FIJO
 }
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
-  // TODO ...
-  assert(false);
+  base.vistaJoin(tabla1, tabla2);
 }
