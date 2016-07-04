@@ -54,13 +54,13 @@ public:
 	//////////////////////////////////////////////////////////////////
 	dato maximo(NombreCampo c);
 	//////////////////////////////////////////////////////////////////
-	void AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c);
+	void AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c);
 	//////////////////////////////////////////////////////////////////
 	void AuxBuscar(NombreCampo criterioClave, registro& criterio, Lista<registro>& lr);
 	//////////////////////////////////////////////////////////////////
 	bool estaValor(dato d);
 	//////////////////////////////////////////////////////////////////
-	void auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d);
+	void auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d);
 	bool hayIndiceNat();
 	bool hayIndiceString();
 	
@@ -218,9 +218,9 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	registro dameRegistroT(dicT<Lista<estrAux> >* d, String s){
+	registro dameRegistroT(dicT<Lista<estrAux> >& d, String s){
 		registro res;
-		Lista<estrAux>* aux=&d->obtener(s);
+		Lista<estrAux>* aux=&d.obtener(s);
 		typename Lista<estrAux>::Iterador itA=aux->CrearIt();
 		estrAux eaux=itA.Siguiente();
 		res=eaux.itReg.Siguiente();
@@ -228,9 +228,9 @@ private:
 	}
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	registro dameRegistroN(dicA<Nat, Lista<estrAux> >* d,Nat n){
+	registro dameRegistroN(dicA<Nat, Lista<estrAux> >& d,Nat n){
 		registro res;
-		Lista<estrAux>* aux=&d->obtener(n);
+		Lista<estrAux>* aux=&d.obtener(n);
 		typename Lista<estrAux>::Iterador itA=aux->CrearIt();
 		estrAux eaux=itA.Siguiente();
 		res=eaux.itReg.Siguiente();
@@ -238,16 +238,16 @@ private:
 	}		
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
-	void generarRegistroYAgregarS(Lista<registro>& cr, dicT<Lista<estrAux> >* d,NombreCampo c, tabla* join){
+	void generarRegistroYAgregarS(Lista<registro>& cr, dicT<Lista<estrAux> >& d,NombreCampo c, tabla& join){
 		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			registro rT1=it.Siguiente();
 			String valor= rT1.Significado(c).valorString();
-			if(d->definido(valor)){
+			if(d.definido(valor)){
 				registro rCopia=registro(rT1);
 				registro rT2= dameRegistroT(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
-				join->agregarRegistro(rT1);
+				join.agregarRegistro(rT1);
 				}
 			it.Avanzar();	
 			}
@@ -255,16 +255,16 @@ private:
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
 	// Se utiliza en auxiliarGVJ
-	void generarRegistroYAgregarN(Lista<registro>& cr, dicA<Nat, Lista<estrAux> >* d,NombreCampo c, tabla* join){
+	void generarRegistroYAgregarN(Lista<registro>& cr, dicA<Nat, Lista<estrAux> >& d,NombreCampo c, tabla& join){
 		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
 			registro rT1=it.Siguiente(); //COPIA??
 			Nat valor= rT1.Significado(c).valorNat();
-			if(d->definido(valor)){
+			if(d.definido(valor)){
 				registro rCopia=registro(rT1);
 				registro rT2= dameRegistroN(d,valor);
 				rCopia.mergear(rT2); //X COPIA AMBOS!
-				join->agregarRegistro(rT1);
+				join.agregarRegistro(rT1);
 				}
 			it.Avanzar();	
 			}
@@ -562,9 +562,9 @@ dato tabla::maximo(NombreCampo c){
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){ 
+void tabla::AuxiliarGVJ(tabla& otra, tabla& join, NombreCampo c){ 
 		
-			Lista<registro> registrosDeOtraCopy=otra->registros();
+			Lista<registro> registrosDeOtraCopy=otra.registros();
 			typename Lista<registro>::Iterador regis=registrosDeOtraCopy.CrearIt();
 			Lista<registro> registt;
 			
@@ -576,13 +576,11 @@ void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){
 				regis.Avanzar();
 			}
 			
-			if(tipoCampo(c)==NAT){
-			dicA<Nat, Lista<estrAux> >* iN=&indiceN_.valoresYreg;			
-			generarRegistroYAgregarN(registt, iN,c,join);
+			if(tipoCampo(c)==NAT){		
+			generarRegistroYAgregarN(registt, indiceN_.valoresYreg ,c,join);
 			}
 		else{
-			dicT<Lista<estrAux> >* iS=&indiceS_.valoresYreg;
-			generarRegistroYAgregarS(registt, iS,c,join);
+			generarRegistroYAgregarS(registt, indiceS_.valoresYreg,c,join);
 			}
 		}
 //////////////////////////////////////////////////////////////////
@@ -628,14 +626,12 @@ bool tabla::estaValor(dato d){
 		
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
+void tabla::auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d){
 		if(d.tipo()){
-			if(t1->indiceN_.valoresYreg.definido(d.valorNat())){
-				if(t2->indiceN_.valoresYreg.definido(d.valorNat())){
-					dicA<Nat, Lista<estrAux> >* d1=&t1->indiceN_.valoresYreg;
-					dicA<Nat, Lista<estrAux> >* d2=&t2->indiceN_.valoresYreg;
-					registro rT1(dameRegistroN(d1,d.valorNat()));
-					registro rT2(dameRegistroN(d2,d.valorNat()));
+			if(t1.indiceN_.valoresYreg.definido(d.valorNat())){
+				if(t2.indiceN_.valoresYreg.definido(d.valorNat())){
+					registro rT1(dameRegistroN(t1.indiceN_.valoresYreg,d.valorNat()));
+					registro rT2(dameRegistroN(t2.indiceN_.valoresYreg,d.valorNat()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
 					}
@@ -643,12 +639,12 @@ void tabla::auxVJ(NombreCampo c, tabla* t1, tabla* t2, dato d){
 			}
 		else{
 			
-			if(t1->indiceS_.valoresYreg.definido(d.valorString())){
-				if(t2->indiceS_.valoresYreg.definido(d.valorString())){
-					dicT<Lista<estrAux> >* d1=&t1->indiceS_.valoresYreg;
-					dicT<Lista<estrAux> >* d2=&t2->indiceS_.valoresYreg;
-					registro rT1(dameRegistroT(d1,d.valorString()));
-					registro rT2(dameRegistroT(d2,d.valorString()));
+			if(t1.indiceS_.valoresYreg.definido(d.valorString())){
+				if(t2.indiceS_.valoresYreg.definido(d.valorString())){
+					
+					
+					registro rT1(dameRegistroT(t1.indiceS_.valoresYreg,d.valorString()));
+					registro rT2(dameRegistroT(t2.indiceS_.valoresYreg,d.valorString()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
 					}

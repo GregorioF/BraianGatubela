@@ -98,12 +98,12 @@ private:
 	}*/
 	///////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////
-	void crearCamposTablaJoin(registro& r, Conj<NombreCampo> c, tabla* t){
+	void crearCamposTablaJoin(registro& r, Conj<NombreCampo> c, tabla& t){
 		typename::Conj<NombreCampo>::Iterador it=c.CrearIt();	
 			
 		while(it.HaySiguiente()){
 			
-			if(t->tipoCampo(it.Siguiente()) == NAT){
+			if(t.tipoCampo(it.Siguiente()) == NAT){
 				Nat n=0;
 				dato d;
 				d.nuevoDatoNat(n);
@@ -255,9 +255,9 @@ void  BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
 	Conj<NombreCampo> c1=t1->campos();
 	Conj<NombreCampo> c2=t2->campos();
 	
-	crearCamposTablaJoin(columnas,c1,t1);
+	crearCamposTablaJoin(columnas,c1,*t1);
 	
-	crearCamposTablaJoin(columnas,c2,t2);
+	crearCamposTablaJoin(columnas,c2,*t2);
 	
 	Conj<NombreCampo> clave;
 	clave.AgregarRapido(c);
@@ -281,7 +281,7 @@ void  BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
 	
 	if(campoJoinIndexadoT1 && campoJoinIndexadoT2){		
-		t1->AuxiliarGVJ(t2, nuevojoin, c);
+		t1->AuxiliarGVJ(*t2, *nuevojoin, c);
 		}
 	else{
 		Lista<registro> listReg=t1->registros();
@@ -323,8 +323,8 @@ typename::Lista<NombreTabla>::const_Iterador BD::tablas() const{
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
 tabla* BD::dameTabla(NombreTabla s) const{
-	tabla* res=&tablasPuntero.obtener(s);
-	return res;
+	return &tablasPuntero.obtener(s);
+	//return res;
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
@@ -371,7 +371,7 @@ Lista<registro> BD::vistaJoin(NombreTabla s1, NombreTabla s2) {
 		if(seAgrego){
 			registro registroAgregado=modif.Siguiente().second();
 			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-					join->auxVJ(c, t1, t2, registroAgregado.Significado(c));
+					join->auxVJ(c, *t1, *t2, registroAgregado.Significado(c));
 			}
 			else{
 				
