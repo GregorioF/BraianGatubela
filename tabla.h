@@ -521,8 +521,8 @@ void tabla::borrarRegistro(registro& crit){
 	}
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
-void tabla::indexar(NombreCampo c){
-		if(tipoCampo(c)== NAT){
+void tabla::indexar(NombreCampo c){	
+		if(tipoCampo(c) == NAT){
 			indiceN_.nombreC=c;
 			indexarNatAux();
 			}
@@ -588,7 +588,7 @@ void tabla::AuxiliarGVJ(tabla* otra, tabla* join, NombreCampo c){
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
 void tabla::AuxBuscar(NombreCampo criterioClave, registro& criterio, Lista<registro>& lr){
-	if(tipoCampo(criterioClave)){
+	if(tipoCampo(criterioClave)==NAT){
 			dicA<Nat, Lista<estrAux> >* d= &indiceN_.valoresYreg;
 			Nat n=criterio.Significado(criterioClave).valorNat();
 			if(d->definido(n)){

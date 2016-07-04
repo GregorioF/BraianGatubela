@@ -40,7 +40,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	typename::Lista<registro>::Iterador registros(NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
-	typename::Lista<registro>::Iterador vistaJoin(NombreTabla, NombreTabla)const;
+	Lista<registro> vistaJoin(NombreTabla, NombreTabla);
 	//////////////////////////////////////////////////////////////////////////
 	Nat cantDeAccesos(NombreTabla) const;
 	//////////////////////////////////////////////////////////////////////////
@@ -356,7 +356,7 @@ typename::Lista<registro>::Iterador BD::registros(NombreTabla s){
 	}	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
-typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2) const{
+Lista<registro> BD::vistaJoin(NombreTabla s1, NombreTabla s2) {
 	
 	tabla* t1=dameTabla(s1);
 	tabla* t2=dameTabla(s2);
@@ -414,9 +414,8 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 	}
 	
 	Lista<registro> lr=join->registros();
-	typename Lista<registro>::Iterador itRegistros=lr.CrearIt();
 	
-	return itRegistros;
+	return lr;
 	
 	}
 ///////////////////////////////////////////////////////////////////////////	

@@ -57,12 +57,12 @@ void ejemplo_simple()
  bd.crearTabla("lola", columnas_personas, columnas_clave_personas);
  ASSERT_EQ(bd.tablas().Cardinal(), 3);
  bd.insertarRegistro("lola", persona);
+ Conj<Driver::Registro> cR=bd.registrosDeTabla("lola");
+ typename Conj<Driver::Registro>::Iterador itR=cR.CrearIt();
+ cout<< itR.Siguiente().CrearIt().SiguienteSignificado().tipo() <<endl;
  Conj<aed2::Driver::Registro> cr=bd.registrosDeTabla("lola");
- cout<< cr.Cardinal() <<endl;
  bd.generarVistaJoin("lola", "personas","DNI" );
- bd.insertarRegistro("lola", pers);
- //ASSERT_EQ(bd.cantidadDeAccesosDeTabla("lola"), 2);
- //ASSERT_EQ(bd.registrosDeTabla("lola").Cardinal(), 2);
+ bd.insertarRegistro("personas", pers);
  bd.vistaJoin("lola", "personas");
  bd.borrarVistaJoin("lola", "personas");
  
@@ -691,7 +691,8 @@ b.agregarTabla(n);
 	d45.nuevoDatoNat(n56);
 	r20.Definir(c,d45);
 	r20.Definir(c1,d6);
-	r20.Definir("nombre",charo);
+	NombreCampo s85="nombre";
+	r20.Definir(s85,charo);
 	Conj<NombreCampo> clv;
 	clv.Agregar(c);
 	
@@ -701,8 +702,11 @@ b.agregarTabla(n);
 
 	b.agregarTabla(t3);
 	b.insertarEntrada(r20, "Tabla2");
-	b.dameTabla("TABLA")->indexar(c);
-	b.dameTabla("Tabla2")->indexar(c);
+	b.dameTabla("TABLA")->indexar(c1);
+	b.dameTabla("Tabla2")->indexar(s85);
+	Lista<registro> cr=b.buscar(r20,"Tabla2");
+	cout<< cr<<endl;
+	cout << r20<<endl;
 	b.dameTabla("TABLA")->indexar(c1);
 	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
@@ -712,8 +716,7 @@ b.agregarTabla(n);
 	b.insertarEntrada(r3,"TABLA");
 	b.borrar(r1,"TABLA");
 	b.vistaJoin("TABLA","Tabla2");
-	Lista<registro> cr=b.buscar(r20,"Tabla2");
-	cout<< cr<<endl;
+
 	//cout << "HASTA ACA NO HAY ERROR"<< endl;
 	cr=b.buscar(r,"TABLA");
 	cout<< cr<<endl;
@@ -722,7 +725,7 @@ b.agregarTabla(n);
 int main(int argc, char **argv)
 {
  RUN_TEST( ejemplo_simple );
-	RUN_TEST(testTabla);
+ RUN_TEST(testTabla);
   RUN_TEST(agregarRegistroSinIndices);
   RUN_TEST(agregarRegConInd);
   RUN_TEST(BaseDeDatos);

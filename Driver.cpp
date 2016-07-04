@@ -1,6 +1,4 @@
 #include "Driver.h"
-#include "BD.h"
-#include "tabla.h"
 
 bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
 {
@@ -66,14 +64,12 @@ bool Driver::Dato::operator != (const Dato& otro) const
 ////////////////////////////////////////////////////////////////////////////////
 
 Driver::Driver()
-{
-	base= BD();
-}
-
-Driver::~Driver()
 {}
 
-
+Driver::~Driver()
+{
+base=BD();
+}
 
 // Tablas
 
@@ -95,7 +91,7 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
 
 void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registr)
 {
-	registro r;
+  registro r;
 	typename Driver::Registro::const_Iterador it=registr.CrearIt();
   while(it.HaySiguiente()){
     dato a;
@@ -117,7 +113,7 @@ void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registr)
 
 void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
 {
- registro r;
+  registro r;
  dato d;
  if(valor.esNat()){
 	 d.nuevoDatoNat(valor.dameNat());
@@ -128,7 +124,6 @@ else{
  r.Definir(columna,d);
  NombreTabla t=tabla;
  base.borrar(r,t);
-
 }
 
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabl) const
@@ -151,13 +146,11 @@ aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabl) co
 {
   tabla* t=base.dameTabla(tabl);
   return t->claves();
-
 }
 
 aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabl) const
 {
-
-  tabla* t=base.dameTabla(tabl);
+tabla* t=base.dameTabla(tabl);
   Lista<registro> lr=t->registros();
   typename Lista<registro>::Iterador it=lr.CrearIt();
   Conj<Driver::Registro> cr;
@@ -182,12 +175,11 @@ aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabl) c
 	  it.Avanzar();
 	  }
 	  return cr;
-
 }
 
 aed2::Nat Driver::cantidadDeAccesosDeTabla(const NombreTabla& tabla) const
 {
-NombreTabla t=tabla;	
+  NombreTabla t=tabla;	
  return base.cantDeAccesos(t);
 }
 
@@ -210,7 +202,7 @@ Driver::Dato Driver::minimo(const NombreTabla& tabl, const NombreCampo& columna)
 
 Driver::Dato Driver::maximo(const NombreTabla& tabl, const NombreCampo& columna) const
 {
-  tabla* t=base.dameTabla(tabl);
+   tabla* t=base.dameTabla(tabl);
   dato d;
   d=t->maximo(columna);
   if(d.tipo()){
@@ -227,7 +219,7 @@ Driver::Dato Driver::maximo(const NombreTabla& tabl, const NombreCampo& columna)
 
 aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabl, const Registro& criterio) const
 {
-  typename Registro::const_Iterador it=criterio.CrearIt();
+typename Registro::const_Iterador it=criterio.CrearIt();
   registro crit;
   while(it.HaySiguiente()){
 	  dato d;
@@ -262,7 +254,7 @@ aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabl, const Regis
 	  cr.AgregarRapido(r);
 	  itR.Avanzar();
 		}
-		return cr;   
+		return cr; 
 }
 
 aed2::Conj<NombreTabla> Driver::tablas() const
@@ -276,9 +268,9 @@ aed2::Conj<NombreTabla> Driver::tablas() const
 	 return ct;
 }
 
-const NombreTabla Driver::tablaMaxima() const
+NombreTabla Driver::tablaMaxima() const
 {
- return base.tablaMaxima();
+  return base.tablaMaxima();
 }
 
 // Indices
@@ -291,13 +283,13 @@ bool Driver::tieneIndiceNat(const NombreTabla& tabl) const
 
 bool Driver::tieneIndiceString(const NombreTabla& tabl) const
 {
-  tabla* t=base.dameTabla(tabl);
+ tabla* t=base.dameTabla(tabl);
   return t->hayIndiceString();
 }
 
-const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabl) const
+NombreCampo Driver::campoIndiceNat(const NombreTabla& tabl) const
 {
-tabla* t=base.dameTabla(tabl);	
+  tabla* t=base.dameTabla(tabl);	
   Conj<NombreCampo> ind=t->indices();
   typename Conj<NombreCampo>::Iterador it=ind.CrearIt();
   NombreCampo res;
@@ -310,9 +302,9 @@ tabla* t=base.dameTabla(tabl);
 	  }
 }
 
-const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabl) const
+NombreCampo Driver::campoIndiceString(const NombreTabla& tabl) const
 {
- tabla* t=base.dameTabla(tabl);	
+   tabla* t=base.dameTabla(tabl);	
   Conj<NombreCampo> ind=t->indices();
   typename Conj<NombreCampo>::Iterador it=ind.CrearIt();
   NombreCampo res;
@@ -323,17 +315,17 @@ const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabl) const
 		  }
 	it.Avanzar();	  
 	  }
-}	  
+}
 
 void Driver::crearIndiceNat(const NombreTabla& tabl, const NombreCampo& campo)
 {
-   tabla* t=base.dameTabla(tabl);
+  tabla* t=base.dameTabla(tabl);
    t->indexar(campo);
 }
 
 void Driver::crearIndiceString(const NombreTabla& tabl, const NombreCampo& campo)
 {
-  tabla* t=base.dameTabla(tabl);
+tabla* t=base.dameTabla(tabl);
   t->indexar(campo);
 }
 
@@ -341,10 +333,10 @@ void Driver::crearIndiceString(const NombreTabla& tabl, const NombreCampo& campo
 
 bool Driver::hayJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
-  return base.hayJoin(tabla1, tabla2);
+   return base.hayJoin(tabla1, tabla2);
 }
 
-const NombreCampo& Driver::campoJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
+NombreCampo Driver::campoJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
 {
   return base.campoJoin(tabla1, tabla2);
 }
@@ -359,73 +351,17 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
   base.borrarJoin(tabla1,tabla2);
 }
 
-Driver::Registro unir(const Driver::Registro& reg1, const Driver::Registro& reg2, const NombreCampo& clave)
+aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)/* const*/
 {
-	if(reg1.Significado(clave) == reg2.Significado(clave)){
-  typename Driver::Registro::const_Iterador it=reg1.CrearIt();
-  typename Driver::Registro::const_Iterador it2=reg2.CrearIt();
-  registro r;
-  registro r1;
-  while(it.HaySiguiente()){
-	  dato d;
-	  if(it.SiguienteSignificado().tipo() == NAT){
-		  Nat n=it.SiguienteSignificado().dameNat();
-		  d.nuevoDatoNat(n);
-		  }
-		else{
-			String s=it.SiguienteSignificado().dameString();
-			d.nuevoDatoString(s);
-			} 
-		NombreCampo c=it.SiguienteClave();	 
-		r.Definir(c, d);	
-		it.Avanzar();
-	  }
-while(it2.HaySiguiente()){
-	  dato d;
-	  if(it2.SiguienteSignificado().tipo() == NAT){
-		  Nat n=it2.SiguienteSignificado().dameNat();
-		  d.nuevoDatoNat(n);
-		  }
-		else{
-			String s=it2.SiguienteSignificado().dameString();
-			d.nuevoDatoString(s);
-			}  
-		r1.Definir(it2.SiguienteClave(), d);	
-		it2.Avanzar();
-	  }
-	 
-	 r.mergear(r1); 
-	 
-	 typename registro::Iterador itR=r.CrearIt();
-	 Driver::Registro res;
-	 while(itR.HaySiguiente()){
-		 if(itR.SiguienteSignificado().tipo()){
-			 Nat n=itR.SiguienteSignificado().valorNat();
-			 res.Definir(itR.SiguienteClave(), Driver::Dato(n));
-			 }
-			 else{
-			 String s=itR.SiguienteSignificado().valorString();
-			 NombreCampo c=itR.SiguienteClave();
-			 res.Definir(c, Driver::Dato(s));
-			 }
-		 itR.Avanzar();
-		 }	  
-	  return res;
-  }
-  else{
-  return reg1;
- }
-}
-
-aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const
-{
-  typename Lista<registro>::Iterador it=base.vistaJoin(tabla1, tabla2);
+  Lista<registro> lr=base.vistaJoin(tabla1, tabla2);
   Conj<Driver::Registro> res;
+  typename Lista<registro>::Iterador it=lr.CrearIt();
   while(it.HaySiguiente()){
 	
 	  Driver::Registro r;
 	  typename registro::Iterador itR=it.Siguiente().CrearIt();
 	  while(itR.HaySiguiente()){
+		 
 	  if(itR.SiguienteSignificado().tipo()){
 		  Nat n=itR.SiguienteSignificado().valorNat();
 		  Dato d=Dato(n);

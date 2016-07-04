@@ -4,7 +4,6 @@
 #include "Tipos.h"
 #include "Conj.h"
 #include "TiposBasicos.h"
-#include "BD.h"
 
 namespace aed2
 {
@@ -148,7 +147,7 @@ class Driver
      * 
      * PRE: existe al menos una tabla en la base de datos.
      */
-    const NombreTabla tablaMaxima() const;
+    NombreTabla tablaMaxima() const;
 
   // Indices
 
@@ -173,7 +172,7 @@ class Driver
      *  - 'tabla' pertenece a las tablas de la base de datos.
      *  - existe un índice de tipo Nat en dicha tabla.
      */
-    const NombreCampo& campoIndiceNat(const NombreTabla& tabla) const;
+    NombreCampo campoIndiceNat(const NombreTabla& tabla) const;
 
     /**
      * Devuelve el campo sobre el cuál está definido el índice de tipo String.
@@ -182,7 +181,7 @@ class Driver
      *  - 'tabla' pertenece a las tablas de la base de datos.
      *  - existe un índice de tipo String en dicha tabla.
      */
-    const NombreCampo& campoIndiceString(const NombreTabla& tabla) const;
+    NombreCampo campoIndiceString(const NombreTabla& tabla) const;
 
     /**
      * Crea un índicede tipo Nat sobre un campo de la tabla.
@@ -216,7 +215,7 @@ class Driver
      * 
      * PRE: existe un Join entre las tablas 'tabla1' y 'tabla2'.
      */
-    const NombreCampo& campoJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
+    NombreCampo campoJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
 
     /**
      * Genera un Join entre dos tablas de la base de datos, sobre el 'campo' especificado.
@@ -234,22 +233,22 @@ class Driver
 
     /**
      * Devuelve el resultado de un join.
+     * Idealmente debería ser 'const', pero como en la materia
+     * no manejamos el concepto de 'mutable' lo dejamos comentado.
      * 
      * PRE: existe un Join entre las tablas 'tabla1' y 'tabla2'.
      */
-    aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
+    aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)/* const*/;
 
   private:
-    BD base;
-
-
+			BD base;
     /************************************************************************
      * TODO: Va a ser necesario instanciar privadamente el Modulo principal *
      * con el cuál interactuar. Además, pueden declarar todas las           *
      * funciones auxiliares que les hagan falta.                            *
      ************************************************************************/
-
-   /*  void convertirARegistroPiola(const registro& r, const Registro& r2){
+     
+      /*  void convertirARegistroPiola(const registro& r, const Registro& r2){
         typename registro::const_Iterador it= r.CrearIt();
         while(it.HaySiguiente()){
             dato a ;
