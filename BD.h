@@ -306,7 +306,8 @@ typename::Lista<registro>::Iterador BD::generarVistaJoin(NombreTabla s1,NombreTa
 		}
 		
 	}
-	typename Lista<registro>::Iterador itRegistros=nuevojoin->registros().CrearIt();
+	Lista<registro> lr=nuevojoin->registros();
+	typename Lista<registro>::Iterador itRegistros=lr.CrearIt();
 	return itRegistros;
 	
 }	
@@ -411,9 +412,12 @@ typename::Lista<registro>::Iterador BD::vistaJoin(NombreTabla s1, NombreTabla s2
 		i--;
 		
 	}
-	cout << "HASTA ACA NO HAY ERROR"<< endl;
-	return join->registros().CrearIt();
-	cout << "HASTA ACA NO HAY ERROR"<< endl;
+	
+	Lista<registro> lr=join->registros();
+	typename Lista<registro>::Iterador itRegistros=lr.CrearIt();
+	
+	return itRegistros;
+	
 	}
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
