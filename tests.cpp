@@ -704,14 +704,26 @@ b.agregarTabla(n);
 	b.insertarEntrada(r20, "Tabla2");
 	b.dameTabla("TABLA")->indexar(c1);
 	b.dameTabla("Tabla2")->indexar(s85);
-	Lista<registro> cr=b.buscar(r20,"Tabla2");
+	
+  Lista<registro> rt1 = b.dameTabla("TABLA")->registros();
+  Lista<registro> rt2 = b.dameTabla("Tabla2")->registros();
+
+  cout << "REGISTROS T1 : "<< rt1<<endl;
+  cout << "REGISTROS T2 : "<< rt2<<endl;
+
+
+  Lista<registro> cr=b.buscar(r20,"Tabla2");
 	cout<< cr<<endl;
 	cout << r20<<endl;
 	b.dameTabla("TABLA")->indexar(c1);
 	b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("LU");
     b.dameTabla("candidatos_Para_Calesita_Pab2")->indexar("eMail");
-	b.generarVistaJoin("TABLA","Tabla2",c);
-	ASSERT(b.hayJoin("TABLA","Tabla2"));
+	
+
+
+b.generarVistaJoin("TABLA","Tabla2",c);
+
+  ASSERT(b.hayJoin("TABLA","Tabla2"));
 	b.insertarEntrada(r1,"TABLA");
 	b.insertarEntrada(r3,"TABLA");
 	b.borrar(r1,"TABLA");
@@ -725,10 +737,10 @@ b.agregarTabla(n);
 int main(int argc, char **argv)
 {
  RUN_TEST( ejemplo_simple );
- RUN_TEST(testTabla);
-  RUN_TEST(agregarRegistroSinIndices);
-  RUN_TEST(agregarRegConInd);
-  RUN_TEST(BaseDeDatos);
+ //RUN_TEST(testTabla);
+  //RUN_TEST(agregarRegistroSinIndices);
+  //RUN_TEST(agregarRegConInd);
+  //RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
    * las funcionalidades de cada módulo.                              *

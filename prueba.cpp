@@ -16,6 +16,10 @@ void devolverBool(bool b){
 	else cout << "False"<< endl;
 }
 
+void f2(dicT<int>a){}
+void f(dicT<int> a){
+	f2(a);
+} 
 
 int main(){
 	dicT<int> a;
@@ -49,6 +53,7 @@ int main(){
 	cout << " y su significado es "<< a.obtener(a.Maximo())<< endl;
 	
 	cout << "\n"<<endl;
+	f(a);
 	dicT<int> b;
 	b.definir(x, *num);
 	b.definir(y, *num);
@@ -84,6 +89,7 @@ int main(){
 		cout <<"   -"<<itera.SiguienteSignificado()<< endl;
 		itera.Avanzar();
 	}
+	b.Vacio();
 
 	delete(num);
 	delete(num2);
