@@ -27,8 +27,8 @@ void ejemplo_simple()
   columna_nombre.tipo = aed2::STR;
 
   aed2::Columna columna_apellido;
-  columna_nombre.nombre = "apellido";
-  columna_nombre.tipo = aed2::STR;
+  columna_apellido.nombre = "apellido";
+  columna_apellido.tipo = aed2::STR;
 
   columnas_personas.Agregar( columna_dni );
   columnas_personas.Agregar( columna_nombre );
@@ -41,7 +41,7 @@ void ejemplo_simple()
   ASSERT_EQ(bd.tablas().Cardinal(), 1);
 
   aed2::Driver::Registro persona;
-  persona.Definir("DNI", aed2::Driver::Dato(1));
+  persona.Definir("DNI", aed2::Driver::Dato(10));
   persona.Definir("nombre", aed2::Driver::Dato("Juan"));
   persona.Definir("apellido", aed2::Driver::Dato("Perez"));
 
@@ -49,7 +49,7 @@ void ejemplo_simple()
   bd.crearTabla("lala", columnas_personas, columnas_clave_personas);
  
  aed2::Driver::Registro pers;
-  pers.Definir("DNI", aed2::Driver::Dato(8));
+  pers.Definir("DNI", aed2::Driver::Dato(88));
   pers.Definir("nombre", aed2::Driver::Dato("Juana"));
   pers.Definir("apellido", aed2::Driver::Dato("Martin"));
 
@@ -62,7 +62,35 @@ void ejemplo_simple()
  cout<< itR.Siguiente().CrearIt().SiguienteSignificado().tipo() <<endl;
  Conj<aed2::Driver::Registro> cr=bd.registrosDeTabla("lola");
  bd.generarVistaJoin("lola", "personas","DNI" );
+ 
  bd.insertarRegistro("personas", pers);
+ ASSERT_EQ(bd.registrosDeTabla("personas").Cardinal(), 2);
+ 
+ bd.borrarRegistro("personas", "nombre", aed2::Driver::Dato("Juan"));
+
+
+ ASSERT_EQ(bd.registrosDeTabla("personas").Cardinal(), 1);
+ Conj<Columna> colum=bd.columnasDeTabla("personas");
+ Conj<NombreCampo> camposs=bd.columnasClaveDeTabla("personas");
+ Conj<Driver::Registro> registr=bd.registrosDeTabla("personas");
+ Nat cantAc=bd.cantidadDeAccesosDeTabla("personas");
+ aed2::Driver::Registro p;
+ p.Definir("nombre", aed2::Driver::Dato("Juana"));
+ Conj<Driver::Registro> conjBuscar=bd.buscar("personas", p);
+ String tabMax=bd.tablaMaxima();
+ bd.tablas();
+ bd.tieneIndiceNat("personas");
+ bd.tieneIndiceString("personas");
+ bd.crearIndiceNat("personas", "DNI");
+ bd.crearIndiceString("personas","nombre");
+ bd.tieneIndiceNat("personas");
+ bd.tieneIndiceString("personas");
+ cout << bd.minimo("personas", "DNI").dameNat() <<endl;
+ cout << bd.maximo("personas", "DNI").dameNat()<<endl;
+ cout << bd.campoIndiceNat("personas") <<endl;
+ cout <<bd.campoIndiceString("personas")<<endl;
+ cout <<bd.campoJoin("lola","personas")<<endl;
+ 
  bd.vistaJoin("lola", "personas");
  bd.borrarVistaJoin("lola", "personas");
  
@@ -737,10 +765,10 @@ b.generarVistaJoin("TABLA","Tabla2",c);
 int main(int argc, char **argv)
 {
  RUN_TEST( ejemplo_simple );
- //RUN_TEST(testTabla);
-  //RUN_TEST(agregarRegistroSinIndices);
-  //RUN_TEST(agregarRegConInd);
-  //RUN_TEST(BaseDeDatos);
+ RUN_TEST(testTabla);
+ RUN_TEST(agregarRegistroSinIndices);
+ RUN_TEST(agregarRegConInd);
+ //RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
    * las funcionalidades de cada módulo.                              *

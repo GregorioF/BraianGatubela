@@ -438,6 +438,7 @@ void tabla::borrarRegistro(registro& crit){
 	typename registro::Iterador itCrit=crit.CrearIt();
 	NombreCampo claveCrit=itCrit.SiguienteClave();
 	dato significadoCrit=itCrit.SiguienteSignificado();
+
 	if(pertenece(claveCrit,indices())){
 		if(tipoCampo(claveCrit)==NAT){
 			if(indiceN_.valoresYreg.definido(significadoCrit.valorNat())){
@@ -451,7 +452,7 @@ void tabla::borrarRegistro(registro& crit){
 							indiceS_.maximo=indiceS_.valoresYreg.Maximo();
 							indiceS_.minimo=indiceS_.valoresYreg.Minimo();
 							}	
-						}
+						}	
 					it.Siguiente().itReg.EliminarSiguiente();
 					it.Avanzar();
 					}
@@ -473,6 +474,7 @@ void tabla::borrarRegistro(registro& crit){
 							indiceN_.minimo=indiceN_.valoresYreg.Minimo();
 							}	
 						}
+							
 					it.Siguiente().itReg.EliminarSiguiente();
 					it.Avanzar();
 					}
@@ -522,6 +524,7 @@ void tabla::borrarRegistro(registro& crit){
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
 void tabla::indexar(NombreCampo c){	
+
 		if(tipoCampo(c) == NAT){
 			indiceN_.nombreC=c;
 			indexarNatAux();
@@ -627,6 +630,7 @@ bool tabla::estaValor(dato d){
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
 void tabla::auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d){
+	
 		if(d.tipo()){
 			if(t1.indiceN_.valoresYreg.definido(d.valorNat())){
 				if(t2.indiceN_.valoresYreg.definido(d.valorNat())){
@@ -665,4 +669,5 @@ void tabla::auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d){
 		return res;
 		}	
 	
+
 #endif
