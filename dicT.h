@@ -412,23 +412,23 @@ bool dicT<T>::operator ==(dicT<T> &otro) {
 ///////////////////////////////////////////////////////////
 template <typename T>
 string dicT<T>::Minimo(){
-	if(raiz!=NULL){
-	Nodo* actual=NULL; // para q entre en el primer while
-	int i=0;
-	while(actual==NULL){
-		actual = raiz->hijos[i];
-		i++;
-	}
-	while(!esPalabraFunc(actual)){
-		Nodo* aux=NULL;
-		i=0;
-		while(aux==NULL){
-			aux=actual->hijos[i];
+	if(raiz!=NULL && !EsVaciaHijos(raiz)){
+		Nodo* actual=NULL; // para q entre en el primer while
+		int i=0;
+		while(actual==NULL){
+			actual = raiz->hijos[i];
 			i++;
 		}
-		actual=aux;
-	}
-	return DameNombre(actual);
+		while(!esPalabraFunc(actual)){
+			Nodo* aux=NULL;
+			i=0;
+			while(aux==NULL){
+				aux=actual->hijos[i];
+				i++;
+			}
+			actual=aux;
+		}
+		return DameNombre(actual);
 	}
 	else{
 		String s;
@@ -439,23 +439,23 @@ string dicT<T>::Minimo(){
 ///////////////////////////////////////////////////////////
 template <typename T>
 string dicT<T>::Maximo(){
-	if(raiz!=NULL){
-	Nodo* actual=NULL; // para q entre en el primer while
-	int i=255;
-	while(actual==NULL){
-		actual = raiz->hijos[i];
-		i--;
-	}
-	while(!EsVaciaHijos(actual)){
-		Nodo* aux=NULL;
-		i=255;
-		while(aux==NULL && i>0){
-			aux=actual->hijos[i];
+	if(raiz!=NULL && !EsVaciaHijos(raiz)){
+		Nodo* actual=NULL; // para q entre en el primer while
+		int i=255;
+		while(actual==NULL){
+			actual = raiz->hijos[i];
 			i--;
 		}
-		actual=aux;
-	}
-	return DameNombre(actual);
+		while(!EsVaciaHijos(actual)){
+			Nodo* aux=NULL;
+			i=255;
+			while(aux==NULL && i>0){
+				aux=actual->hijos[i];
+				i--;
+			}
+			actual=aux;
+		}
+		return DameNombre(actual);
 	}
 	else{
 		String s;

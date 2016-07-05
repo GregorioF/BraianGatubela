@@ -165,7 +165,8 @@ private:
 			}
 			it.Avanzar();
 		}
-		///ACTUALIZAR MAXIMO Y MINIMO!!!
+		indiceN_.minimo= indiceN_.valoresYreg.Minimo();
+		indiceN_.maximo=indiceN_.valoresYreg.Maximo();
 	}		
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
@@ -205,6 +206,8 @@ private:
 			}
 			it.Avanzar();
 		}
+		indiceS_.minimo= indiceS_.valoresYreg.Minimo();
+		//indiceS_.maximo=indiceS_.valoresYreg.Maximo();
 	}
 	//////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////	
@@ -258,12 +261,12 @@ private:
 	void generarRegistroYAgregarN(Lista<registro>& cr, dicA<Nat, Lista<estrAux> >& d,NombreCampo c, tabla& join){
 		typename::Lista<registro>::Iterador it=cr.CrearIt();
 		while(it.HaySiguiente()){
-			registro rT1=it.Siguiente(); //COPIA??
+			registro rT1=it.Siguiente(); 
 			Nat valor= rT1.Significado(c).valorNat();
 			if(d.definido(valor)){
 				registro rCopia=registro(rT1);
 				registro rT2= dameRegistroN(d,valor);
-				rCopia.mergear(rT2); //X COPIA AMBOS!
+				rCopia.mergear(rT2); 
 				join.agregarRegistro(rT1);
 				}
 			it.Avanzar();	

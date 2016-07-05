@@ -213,40 +213,23 @@ private:
 		}
 		else{
 			Nodo* predecesor = predecesorInmediato(n);
-			n->clave=predecesor->clave;
-			n->significado=predecesor->significado;
-			Nodo* padre=predecesor->padre;
-			if(esHoja(predecesor)){
-				if(esHijoDer(predecesor)) padre->der=NULL;
-				else padre->izq=NULL;
-				delete(predecesor);
+			Nodo* padre = predecesor->padre;
+			
+			if(predecesor->izq !=NULL){
+				if(predecesor->padre==n) n ->izq =predecesor->izq;
+				else predecesor->padre->der = predecesor->izq;
 			}
-			else if(tieneUnHijo(predecesor)){
-				if(esHijoDer(predecesor)){
-					if(predecesor->der!=NULL){
-						padre->der=predecesor->der;
-						predecesor->der->padre= padre;	
-					}
-					else {
-						padre->der = predecesor->izq;
-						predecesor->izq->padre=padre;
-					}
-					delete(predecesor);
-				}
-				else{
-					if(predecesor->der!=NULL){
-						padre->izq=predecesor->der;
-
-						predecesor->der->padre= padre;	
-					}
-					else {
-						padre->izq = predecesor->izq;
-						predecesor->izq->padre=padre;
-					}
-					delete(predecesor);
-
-				}
+			else{
+				if(predecesor->padre==n) n->izq = NULL;
+				else predecesor->padre->der = NULL;
 			}
+			predecesor->izq = n->izq;
+			predecesor->izq ->padre = predecesor;
+			predecesor->der = n->der;
+			predecesor->der->padre=predecesor;
+			raiz= predecesor;
+			raiz ->padre=NULL;
+			delete(n);
 		}
 	}
 	/////////////////////////////////////////////
@@ -382,40 +365,23 @@ void dicA<K,T>::borrar(K c){
 	}
 	else{
 		Nodo* predecesor = predecesorInmediato(actual);
-		actual->clave=predecesor->clave;
-		actual->significado=predecesor->significado;
-		padre=predecesor->padre;
-		if(esHoja(predecesor)){
-			if(esHijoDer(predecesor)) padre->der=NULL;
-			else padre->izq=NULL;
-			delete(predecesor);
-		}
-		else if(tieneUnHijo(predecesor)){
-			if(esHijoDer(predecesor)){
-				if(predecesor->der!=NULL){
-					padre->der=predecesor->der;
-					predecesor->der->padre= padre;	
-				}
-				else {
-					padre->der = predecesor->izq;
-					predecesor->izq->padre=padre;
-				}
-				delete(predecesor);
-			}
-			else{
-				if(predecesor->der!=NULL){
-					padre->izq=predecesor->der;
+		if(esHijoDer(actual)) padre->der = predecesor;
+		else padre -> izq = predecesor;
 
-					predecesor->der->padre= padre;	
-				}
-				else {
-					padre->izq = predecesor->izq;
-					predecesor->izq->padre=padre;
-				}
-				delete(predecesor);
-
-			}
+		if(predecesor->izq !=NULL){
+			if(predecesor->padre==actual) actual ->izq =predecesor->izq;
+			else predecesor->padre->der = predecesor->izq;
 		}
+		else{
+			if(predecesor->padre==actual) actual->izq = NULL;
+			else predecesor->padre->der = NULL;
+		}
+		predecesor->padre=padre;
+		predecesor->izq = actual->izq;
+		predecesor->izq->padre =predecesor;
+		predecesor->der = actual->der;
+		predecesor->der->padre=predecesor;
+		delete(actual);
 	}
 }
 ///////////////////////////////////////////////////////////

@@ -283,6 +283,7 @@ void  BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
 	
 	nuevojoin->indexar(c);
 	
+	
 	bool campoJoinIndexadoT1=pertenece(c,t1->indices());
 	bool campoJoinIndexadoT2=pertenece(c,t2->indices());
 	
