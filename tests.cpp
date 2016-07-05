@@ -57,20 +57,24 @@ columnas_clave_personas.Agregar("nombre");
  ASSERT_EQ(bd.tablas().Cardinal(), 2);
  bd.crearTabla("lola", columnas_personas, columnas_clave_personas);
  ASSERT_EQ(bd.tablas().Cardinal(), 3);
- bd.insertarRegistro("lola", persona);
+// 
  Conj<Driver::Registro> cR=bd.registrosDeTabla("lola");
  typename Conj<Driver::Registro>::Iterador itR=cR.CrearIt();
  //cout<< itR.Siguiente().CrearIt().SiguienteSignificado().tipo() <<endl;
  Conj<aed2::Driver::Registro> cr=bd.registrosDeTabla("lola");
  bd.generarVistaJoin("lola", "personas","DNI" );
  
+ bd.insertarRegistro("lola", pers);
  bd.insertarRegistro("personas", pers);
  ASSERT_EQ(bd.registrosDeTabla("personas").Cardinal(), 2);
- 
- bd.borrarRegistro("personas", "nombre", aed2::Driver::Dato("Juana"));
+ bd.insertarRegistro("lola", persona);
 
+// bd.borrarRegistro("personas", "nombre", aed2::Driver::Dato("Juana"));
+bd.crearIndiceNat("personas", "DNI");
+bd.crearIndiceNat("lola", "DNI");
+bd.vistaJoin("lola", "personas");
 
- ASSERT_EQ(bd.registrosDeTabla("personas").Cardinal(), 1);
+ //ASSERT_EQ(bd.registrosDeTabla("personas").Cardinal(), 1);
  Conj<Columna> colum=bd.columnasDeTabla("personas");
  Conj<NombreCampo> camposs=bd.columnasClaveDeTabla("personas");
  Conj<Driver::Registro> registr=bd.registrosDeTabla("personas");
@@ -80,23 +84,23 @@ columnas_clave_personas.Agregar("nombre");
  p.Definir("nombre", aed2::Driver::Dato("Juana"));
  Conj<Driver::Registro> conjBuscar=bd.buscar("personas", p);
  String tabMax=bd.tablaMaxima();
- cout<< tabMax <<endl;
+ //cout<< tabMax <<endl;
  bd.tablas();
- Conj<Driver::Registro> dr=bd.vistaJoin("lola", "personas");
+ //Conj<Driver::Registro> dr=bd.vistaJoin("lola", "personas");
  bd.insertarRegistro("personas", persona);
- cout<<bd.tieneIndiceNat("personas")<<endl;
- cout<<bd.tieneIndiceString("personas")<<endl;
+ //cout<<bd.tieneIndiceNat("personas")<<endl;
+ //cout<<bd.tieneIndiceString("personas")<<endl;
  bd.crearIndiceNat("personas", "DNI");
  bd.crearIndiceString("personas","nombre");
- cout <<bd.tieneIndiceNat("personas")<<endl;
- cout<<bd.tieneIndiceString("personas")<<endl;
- cout << bd.minimo("personas", "DNI").dameNat() <<endl;
- cout << bd.maximo("personas", "DNI").dameNat()<<endl;
- cout << bd.minimo("personas", "nombre").dameString() <<endl;
- cout << bd.maximo("personas", "nombre").dameString()<<endl;
- cout << bd.campoIndiceNat("personas") <<endl;
- cout <<bd.campoIndiceString("personas")<<endl;
- cout <<bd.campoJoin("lola","personas")<<endl;
+ //cout <<bd.tieneIndiceNat("personas")<<endl;
+ //cout<<bd.tieneIndiceString("personas")<<endl;
+ //cout << bd.minimo("personas", "DNI").dameNat() <<endl;
+ //cout << bd.maximo("personas", "DNI").dameNat()<<endl;
+ //cout << bd.minimo("personas", "nombre").dameString() <<endl;
+ //cout << bd.maximo("personas", "nombre").dameString()<<endl;
+ //cout << bd.campoIndiceNat("personas") <<endl;
+ //cout <<bd.campoIndiceString("personas")<<endl;
+ //cout <<bd.campoJoin("lola","personas")<<endl;
  
  bd.vistaJoin("lola", "personas");
  bd.borrarVistaJoin("lola", "personas");
@@ -109,8 +113,8 @@ columnas_clave_personas.Agregar("nombre");
   columna_color.tipo = aed2::STR;
 
   aed2::Columna columna_nom;
-  columna_nombre.nombre = "nombre";
-  columna_nombre.tipo = aed2::STR;
+  columna_nom.nombre = "nombre";
+  columna_nom.tipo = aed2::STR;
 
   aed2::Columna columna_edad;
   columna_edad.nombre = "edad";
@@ -121,7 +125,7 @@ columnas_clave_personas.Agregar("nombre");
   columnas.Agregar( columna_edad );
 
   aed2::Conj<aed2::NombreCampo> columnas_clave;
-  columnas_clave_personas.Agregar("nombre");
+  columnas_clave.Agregar("nombre");
 
   bd.crearTabla("nombreS", columnas, columnas_clave);
  
@@ -129,7 +133,8 @@ columnas_clave_personas.Agregar("nombre");
   colores.Definir("ColorFavorito", aed2::Driver::Dato("ROJO"));
   colores.Definir("nombre", aed2::Driver::Dato("Juana"));
   colores.Definir("edad", aed2::Driver::Dato(15));
-
+ //bd.crearIndiceString("lola","nombre");
+ bd.crearIndiceString("nombreS","nombre");
   bd.insertarRegistro("nombreS", colores);
   bd.generarVistaJoin("lola", "nombreS","nombre" );
   aed2::Driver::Registro colores2;
@@ -138,11 +143,15 @@ columnas_clave_personas.Agregar("nombre");
   colores2.Definir("edad", aed2::Driver::Dato(20));
 
   bd.insertarRegistro("nombreS", colores2);
+   cout<<"nombreS"<<endl;
   bd.vistaJoin("lola", "nombreS");
-  cout <<bd.campoJoin("lola","nombreS")<<endl;
+  cout<< bd.registrosDeTabla("lola").Cardinal()<<endl;
+  cout<< bd.registrosDeTabla("nombreS").Cardinal()<<endl;
+   cout<<"nombreS"<<endl;
+  //cout <<bd.campoJoin("lola","nombreS")<<endl;
   bd.borrarRegistro("nombreS", "ColorFavorito", aed2::Driver::Dato("AZUL"));
     tabMax=bd.tablaMaxima();
-  cout<< tabMax <<endl;
+ // cout<< tabMax <<endl;
   bd.crearIndiceNat("nombreS", "edad");
   aed2::Driver::Registro colores3;
   colores3.Definir("ColorFavorito", aed2::Driver::Dato("AZUL"));
@@ -157,11 +166,30 @@ columnas_clave_personas.Agregar("nombre");
 
   bd.insertarRegistro("nombreS", colores4);
   tabMax=bd.tablaMaxima();
-  cout<< tabMax <<endl;
+ // cout<< tabMax <<endl;
    bd.vistaJoin("lola", "nombreS");
    
-   cout<< bd.cantidadDeAccesosDeTabla("nombreS")<<endl;
-  cout<< bd.cantidadDeAccesosDeTabla("personas")<<endl;
+ //  cout<< bd.cantidadDeAccesosDeTabla("nombreS")<<endl;
+ // cout<< bd.cantidadDeAccesosDeTabla("personas")<<endl;
+   aed2::Driver::Registro colores5;
+  colores5.Definir("ColorFavorito", aed2::Driver::Dato("AZUL"));
+  colores5.Definir("nombre", aed2::Driver::Dato("Fabian"));
+  colores5.Definir("edad", aed2::Driver::Dato(20));
+  bd.insertarRegistro("nombreS", colores5);
+  
+  aed2::Driver::Registro coli;
+  coli.Definir("DNI", aed2::Driver::Dato(54));
+  coli.Definir("nombre", aed2::Driver::Dato("Fabian"));
+  coli.Definir("apellido", aed2::Driver::Dato("Martin"));
+  bd.insertarRegistro("lola", coli);
+   cout<<"nombreS"<<endl;
+     cout<< bd.registrosDeTabla("lola").Cardinal()<<endl;
+  cout<< bd.registrosDeTabla("nombreS").Cardinal()<<endl;
+  bd.vistaJoin("lola", "nombreS");
+  cout<<"nombreS"<<endl;
+  bd.borrarRegistro("lola","apellido", aed2::Driver::Dato("Martin") );
+
+ bd.vistaJoin("lola", "nombreS");
 }
 
 void DefinirRegistro(registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){
@@ -833,10 +861,10 @@ b.generarVistaJoin("TABLA","Tabla2",c);
 int main(int argc, char **argv)
 {
  RUN_TEST( ejemplo_simple );
- RUN_TEST(testTabla);
- RUN_TEST(agregarRegistroSinIndices);
- RUN_TEST(agregarRegConInd);
- RUN_TEST(BaseDeDatos);
+// RUN_TEST(testTabla);
+// RUN_TEST(agregarRegistroSinIndices);
+// RUN_TEST(agregarRegConInd);
+// RUN_TEST(BaseDeDatos);
   /********************************************************************
    * TODO: escribir casos de test exhaustivos para todas              *
    * las funcionalidades de cada módulo.                              *

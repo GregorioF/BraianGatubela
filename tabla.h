@@ -523,11 +523,10 @@ void tabla::borrarRegistro(registro& crit){
 			
 			}
 		}
-	}
+	}//cout << "HASTA ACA NO HAY ERROR"<< endl;
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////	
 void tabla::indexar(NombreCampo c){	
-
 		if(tipoCampo(c) == NAT){
 			indiceN_.nombreC=c;
 			indexarNatAux();
@@ -637,10 +636,12 @@ void tabla::auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d){
 		if(d.tipo()){
 			if(t1.indiceN_.valoresYreg.definido(d.valorNat())){
 				if(t2.indiceN_.valoresYreg.definido(d.valorNat())){
+					if(!estaValor(d)){
 					registro rT1(dameRegistroN(t1.indiceN_.valoresYreg,d.valorNat()));
 					registro rT2(dameRegistroN(t2.indiceN_.valoresYreg,d.valorNat()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
+				}
 					}
 				}
 			}
@@ -649,12 +650,13 @@ void tabla::auxVJ(NombreCampo c, tabla& t1, tabla& t2, dato d){
 			if(t1.indiceS_.valoresYreg.definido(d.valorString())){
 				if(t2.indiceS_.valoresYreg.definido(d.valorString())){
 					
-					
+					if(!estaValor(d)){
 					registro rT1(dameRegistroT(t1.indiceS_.valoresYreg,d.valorString()));
 					registro rT2(dameRegistroT(t2.indiceS_.valoresYreg,d.valorString()));
 					rT1.mergear(rT2);
 					agregarRegistro(rT1);
 					}
+				}
 				}
 			
 			}

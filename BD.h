@@ -313,6 +313,7 @@ void  BD::generarVistaJoin(NombreTabla s1,NombreTabla s2, NombreCampo c){
 		}
 		
 	}
+	cout<< "final generar vista join:"<<nuevojoin->registros().Longitud()<<endl;
 }	
 ///////////////////////////////////////////////////////////////////////////	
 ///////////////////////////////////////////////////////////////////////////
@@ -377,23 +378,27 @@ Lista<registro> BD::vistaJoin(NombreTabla s1, NombreTabla s2) {
 		bool seAgrego = parBR.first();
 		if(seAgrego){
 			registro registroAgregado=modif.Siguiente().second();
-			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){
-					join->auxVJ(c, *t1, *t2, registroAgregado.Significado(c));
+			if(campoJoinIndexadoT1 && campoJoinIndexadoT2){			
+					join->auxVJ(c, *t1, *t2, registroAgregado.Significado(c));				
 			}
 			else{
 				
 				Lista<registro> regT1=t1->registros();
+
 				typename Lista<registro>::Iterador it=regT1.CrearIt();
 				while(it.HaySiguiente()){
+					
 					if(it.Siguiente().Significado(c) == registroAgregado.Significado(c)){
 						Lista<registro> regT2=t2->registros();
 						typename Lista<registro>::Iterador it2=regT2.CrearIt();
 						while(it2.HaySiguiente()){
 							if(it2.Siguiente().Significado(c) == registroAgregado.Significado(c)){
+								if(!join->estaValor(registroAgregado.Significado(c))){
 								registro rT1(it.Siguiente());
 								registro rT2(it2.Siguiente());
 								rT1.mergear(rT2);
 								join->agregarRegistro(rT1);
+							}
 								}
 							it2.Avanzar();
 							}
@@ -401,9 +406,11 @@ Lista<registro> BD::vistaJoin(NombreTabla s1, NombreTabla s2) {
 					
 					it.Avanzar();
 					}
+					cout<< "reg join desp:"<<join->registros().Longitud()<<endl;
 				}
 		}
 		else{
+			cout<< "reg join antes de borrar:"<< join->registros().Longitud()<<endl;
 				registro registroABorrar(modif.Siguiente().second());
 			
 				if(join->estaValor(registroABorrar.Significado(c))){
@@ -412,6 +419,7 @@ Lista<registro> BD::vistaJoin(NombreTabla s1, NombreTabla s2) {
 					crit.Definir(c, registroABorrar.Significado(c));
 					join->borrarRegistro(crit);
 				}
+				cout<< "reg join desp de borrar:"<<join->registros().Longitud()<<endl;
 		 }
 		modif.EliminarSiguiente();
 		i--;
