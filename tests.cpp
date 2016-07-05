@@ -50,9 +50,10 @@ void ejemplo_simple()
  
  aed2::Driver::Registro pers;
   pers.Definir("DNI", aed2::Driver::Dato(88));
-  pers.Definir("nombre", aed2::Driver::Dato("Juan"));
+  pers.Definir("nombre", aed2::Driver::Dato("Gregorio"));
   pers.Definir("apellido", aed2::Driver::Dato("Martin"));
 
+columnas_clave_personas.Agregar("nombre");
  ASSERT_EQ(bd.tablas().Cardinal(), 2);
  bd.crearTabla("lola", columnas_personas, columnas_clave_personas);
  ASSERT_EQ(bd.tablas().Cardinal(), 3);
@@ -79,6 +80,7 @@ void ejemplo_simple()
  p.Definir("nombre", aed2::Driver::Dato("Juana"));
  Conj<Driver::Registro> conjBuscar=bd.buscar("personas", p);
  String tabMax=bd.tablaMaxima();
+ cout<< tabMax <<endl;
  bd.tablas();
  Conj<Driver::Registro> dr=bd.vistaJoin("lola", "personas");
  bd.insertarRegistro("personas", persona);
@@ -90,7 +92,7 @@ void ejemplo_simple()
  cout<<bd.tieneIndiceString("personas")<<endl;
  cout << bd.minimo("personas", "DNI").dameNat() <<endl;
  cout << bd.maximo("personas", "DNI").dameNat()<<endl;
-  cout << bd.minimo("personas", "nombre").dameString() <<endl;
+ cout << bd.minimo("personas", "nombre").dameString() <<endl;
  cout << bd.maximo("personas", "nombre").dameString()<<endl;
  cout << bd.campoIndiceNat("personas") <<endl;
  cout <<bd.campoIndiceString("personas")<<endl;
@@ -100,6 +102,66 @@ void ejemplo_simple()
  bd.borrarVistaJoin("lola", "personas");
  
  
+   aed2::Conj<aed2::Columna> columnas;
+
+  aed2::Columna columna_color;
+  columna_color.nombre = "ColorFavorito";
+  columna_color.tipo = aed2::STR;
+
+  aed2::Columna columna_nom;
+  columna_nombre.nombre = "nombre";
+  columna_nombre.tipo = aed2::STR;
+
+  aed2::Columna columna_edad;
+  columna_edad.nombre = "edad";
+  columna_edad.tipo = aed2::NAT;
+
+  columnas.Agregar( columna_color );
+  columnas.Agregar( columna_nom );
+  columnas.Agregar( columna_edad );
+
+  aed2::Conj<aed2::NombreCampo> columnas_clave;
+  columnas_clave_personas.Agregar("nombre");
+
+  bd.crearTabla("nombreS", columnas, columnas_clave);
+ 
+ aed2::Driver::Registro colores;
+  colores.Definir("ColorFavorito", aed2::Driver::Dato("ROJO"));
+  colores.Definir("nombre", aed2::Driver::Dato("Juana"));
+  colores.Definir("edad", aed2::Driver::Dato(15));
+
+  bd.insertarRegistro("nombreS", colores);
+  bd.generarVistaJoin("lola", "nombreS","nombre" );
+  aed2::Driver::Registro colores2;
+  colores2.Definir("ColorFavorito", aed2::Driver::Dato("AZUL"));
+  colores2.Definir("nombre", aed2::Driver::Dato("Gregorio"));
+  colores2.Definir("edad", aed2::Driver::Dato(20));
+
+  bd.insertarRegistro("nombreS", colores2);
+  bd.vistaJoin("lola", "nombreS");
+  cout <<bd.campoJoin("lola","nombreS")<<endl;
+  bd.borrarRegistro("nombreS", "ColorFavorito", aed2::Driver::Dato("AZUL"));
+    tabMax=bd.tablaMaxima();
+  cout<< tabMax <<endl;
+  bd.crearIndiceNat("nombreS", "edad");
+  aed2::Driver::Registro colores3;
+  colores3.Definir("ColorFavorito", aed2::Driver::Dato("AZUL"));
+  colores3.Definir("nombre", aed2::Driver::Dato("Jazmin"));
+  colores3.Definir("edad", aed2::Driver::Dato(20));
+
+  bd.insertarRegistro("nombreS", colores3);
+   aed2::Driver::Registro colores4;
+  colores4.Definir("ColorFavorito", aed2::Driver::Dato("AZUL"));
+  colores4.Definir("nombre", aed2::Driver::Dato("abril"));
+  colores4.Definir("edad", aed2::Driver::Dato(28));
+
+  bd.insertarRegistro("nombreS", colores4);
+  tabMax=bd.tablaMaxima();
+  cout<< tabMax <<endl;
+   bd.vistaJoin("lola", "nombreS");
+   
+   cout<< bd.cantidadDeAccesosDeTabla("nombreS")<<endl;
+  cout<< bd.cantidadDeAccesosDeTabla("personas")<<endl;
 }
 
 void DefinirRegistro(registro& r1,  Conj<NombreCampo>& campos ,  dato ds [] ){

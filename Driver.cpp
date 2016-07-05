@@ -1,5 +1,5 @@
 #include "Driver.h"
-#include "BD.h"
+
 
 bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
 {
