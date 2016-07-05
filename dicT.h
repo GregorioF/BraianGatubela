@@ -446,10 +446,10 @@ string dicT<T>::Maximo(){
 		actual = raiz->hijos[i];
 		i--;
 	}
-	while(!esPalabraFunc(actual)){
+	while(!EsVaciaHijos(actual)){
 		Nodo* aux=NULL;
 		i=255;
-		while(aux==NULL){
+		while(aux==NULL && i>0){
 			aux=actual->hijos[i];
 			i--;
 		}

@@ -4,6 +4,7 @@
 #include "Tipos.h"
 #include "Conj.h"
 #include "TiposBasicos.h"
+#include "BD.h"
 
 namespace aed2
 {
